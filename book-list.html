@@ -1,0 +1,180 @@
+<link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/pageable-text/pageable-text.html">
+<link rel="import" href="bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<polymer-element name="book-list" attributes="show">
+  <template>
+    <style>
+      .chip-container {
+        position: relative;
+        top: 20px;
+        right: 0;
+        left: 0;
+        text-align: center;
+      }
+
+      .chip {
+        display: inline-block;
+        position: relative;
+        border-radius: 3px;
+        margin: 4px;
+        overflow: hidden;
+        text-align: start;
+        background-color: #fff;
+      }
+
+      .chip-top {
+        width: 200px;
+        height: 200px;
+      }
+
+      .chip-bottom {
+        line-height: 1.5;
+        width: 200px;
+      }
+
+      .chip-book-title, .chip-author {
+        margin-left: 8px;
+        margin-right: 8px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .chip-book-title {
+        font-weight: bold;
+      }
+
+      #details {
+        padding: 200px 10% 0;
+      }
+
+      .list-item {
+        height: 50px;
+        width: 70%;
+        min-width: 400px;
+        border-radius: 3px;
+        text-align: start;
+        overflow: hidden;
+        background: #fff;
+        margin-left: auto;
+        margin-right: auto;
+        border-bottom: 1px;
+        border-bottom-color: black;
+      }
+
+      .list-item-image {
+        width: 50px;
+        height: 50px;
+        margin-right: 8px;
+        float: left;
+      }
+
+      .list-item-info {
+        padding: 24px;
+      }
+
+      pageable-text {
+        position: relative;
+        top: 0;
+        left: 0;
+        bottom: 1000px;
+        right: 0;
+      }
+    </style>
+
+    <core-animated-pages selected="{{selectedPage}}" transitions="hero-transition cross-fade">
+      <section>
+        <div class="chip-container" cross-fade>
+          <template repeat="{{books as book}}">
+            <div class="chip" hero-id="{{book.title}}-{{book.author}}" data-url="{{book.url}}" hero on-tap="{{openBook}}">
+              <div class="chip-top" style="background-image: url({{book.cover}});"></div>
+              <div class="chip-bottom">
+                <div class="chip-book-title">{{book.title}}</div>
+                <div class="chip-author">{{book.author}}</div>
+              </div>
+              <paper-shadow z-index="1"></paper-shadow>
+              <paper-ripple fit></paper-ripple>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <section>
+        <div class="chip-container" cross-fade>
+          <template repeat="{{books as book}}">
+            <div class="list-item" hero-id="{{book.title}}-{{book.author}}" data-url="{{book.url}}" hero on-tap="{{openBook}}">
+              <div class="list-item-image" style="background-image: url({{book.cover}});"></div>
+              <div class="list-item-info" layout horizontal>
+                <div class="chip-book-title">{{book.title}}</div>
+                <div class="chip-author" layout flex>{{book.author}}</div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <section>
+        <div id="text-container" cross-fade>
+          <pageable-text fit>{{bookContent}}</pageable-text>
+        </div>
+      </section>
+    </core-animated-pages>
+
+    <core-ajax auto
+               url="{{url}}"
+               response="{{bookContent}}"
+               handleAs="text"
+               on-core-response="{{handleAjaxResponse}}">
+    </core-ajax>
+
+    <pageable-text>{{bookContent}}</pageable-text>
+  </template>
+
+  <script>
+    Polymer({
+      url: null,
+      selectedPage: 0,
+
+      books: [
+        {
+          title: 'Pride and Prejudice',
+          author: 'Jane Austen',
+          cover: 'http://www.publicbookshelf.com/images/PridePrejudice423x630.jpg',
+          url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt'
+        },
+        {
+          title: 'Adventures of Huckleberry Finn',
+          author: 'Mark Twain',
+          cover: 'http://www.gutenberg.org/cache/epub/76/pg76.cover.medium.jpg',
+          url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt'
+        },
+        {
+          title: 'Alice\'s Adventures in Wonderland',
+          author: 'Lewis Carroll',
+          cover: 'http://media-cache-cd0.pinimg.com/236x/04/fc/25/04fc25cd5b008f940c6dc2a9b9dd4a75.jpg',
+          url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt'
+        }
+      ],
+
+      transition: function() {
+        if (this.selectedPage === 0) {
+          this.selectedPage = 1;
+        } else {
+          this.selectedPage = 0;
+        }
+      },
+
+      openBook: function(e) {
+        this.url = e.srcElement.parentNode.dataset.url;
+      },
+
+      handleAjaxResponse: function() {
+        this.selectedPage = 2;
+      }
+    });
+  </script>
+</polymer-element>

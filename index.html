@@ -11,10 +11,33 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png">
     <link rel="stylesheet" href="index.css">
+
+    <script src="bower_components/platform/platform.js"></script>
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/core-icons/core-icons.html">
+    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="bower_components/service-worker-cache/service-worker-cache.html">
+    <link rel="import" href="book-list.html">
   </head>
 
-  <body>
+  <body unresolved fit fullbleed>
+    <template is="auto-binding" id="main-template">
+      <service-worker-cache></service-worker-cache>
 
+      <core-scaffold id="scaffold">
+        <core-toolbar tool flex> <!-- flex makes the bar span across the top -->
+          <div flex>Book Library</div> <!-- flex justifies the icons to the right-side -->
+          <core-icon-button icon="search"></core-icon-button>
+          <core-icon-button icon="view-list" on-tap="{{handleViewListTap}}"></core-icon-button>
+          <core-icon-button icon="add"></core-icon-button>
+        </core-toolbar>
+
+        <div class="container" layout flex fit>
+          <book-list show="all"></book-list>
+        </div>
+      </core-scaffold>
+    </template>
 
     <script src="index.js"></script>
   </body>
