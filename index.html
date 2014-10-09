@@ -18,25 +18,202 @@
     <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
     <link rel="import" href="bower_components/service-worker-cache/service-worker-cache.html">
+    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-dropdown/core-dropdown.html">
+    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="bower_components/core-menu/core-menu.html">
+    <link rel="import" href="bower_components/core-item/core-item.html">
+    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="bower_components/paper-item/paper-item.html">
+    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
+    <link rel="import" href="bower_components/font-roboto/roboto.html">
+    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
     <link rel="import" href="book-list.html">
   </head>
 
-  <body unresolved fit fullbleed>
-    <template is="auto-binding" id="main-template">
-      <service-worker-cache></service-worker-cache>
+  <body unresolved fullbleed>
+    <template id="app-template" is="auto-binding">
+      <!-- Route controller. -->
+      <flatiron-director route="{{route}}" autoHash></flatiron-director>
+      <!-- Keyboard nav controller. -->
+      <core-a11y-keys id="keys" target="{{parentElement}}"
+                      keys="up down left right space space+shift"
+                      on-keys-pressed="{{keyHandler}}"></core-a11y-keys>
+      <core-drawer-panel id="drawerPanel">
+        <core-header-panel drawer>
+          <core-toolbar>
+            <span>Reader</span>
+          </core-toolbar>
+          <core-menu>
+            <paper-icon-button icon="account-balance"></paper-icon-button>
+            <strong>My Library</strong><br/>
+            <strong>Recent Books</strong>
+            <template repeat="{{ book in recents }}">
+              <div>
+                <img class="recent-book" src="{{book.cover}}" height="100"/>
+                {{book.title}}<br/>
+                {{book.author}}
+              </div>
+              <div class="cf"/>
+            </template>
+          </core-menu>
+        </core-header-panel>
 
-      <core-scaffold id="scaffold">
-        <core-toolbar tool flex> <!-- flex makes the bar span across the top -->
-          <div flex>Book Library</div> <!-- flex justifies the icons to the right-side -->
-          <core-icon-button icon="search"></core-icon-button>
-          <core-icon-button icon="view-list" on-tap="{{handleViewListTap}}"></core-icon-button>
-          <core-icon-button icon="add"></core-icon-button>
-        </core-toolbar>
+        <core-header-panel main>
+          <core-toolbar>
+            <paper-icon-button id="navicon" icon="menu"></paper-icon-button>
+            <span flex>{{title}}</span>
+            <paper-menu-button icon="search" id="search" halign="right">
+              <core-menu>
+                <core-item>Cut</core-item>
+                <core-item>Copy</core-item>
+                <core-item>Paste</core-item>
+              </core-menu>
+            </paper-menu-button>
+            <paper-menu-button icon="book" id="bookmarks" halign="right">
+              <core-menu>
+                <core-item>
+                  <img src="http://img1.imagesbn.com/p/9780140177398_p0_v1_s260x420.JPG"/>
+                </core-item>
+                <core-item>
+                  <div flex>
+                    <paper-tabs selected="0" flex>
+                      <paper-tab flex>Chapters</paper-tab>
+                      <paper-tab flex>Bookmarks</paper-tab>
+                      <paper-tab flex>Annotations</paper-tab>
+                    </paper-tabs>
+                  </div><br/>
+                  <div flex>
+                    <core-pages selected="0">
+                      <div>Chapters</div>
+                      <div>Bookmarks</div>
+                      <div>Annotations</div>
+                    </core-pages>
+                  </div>
+                </core-item>
+                <core-item>Paste</core-item>
+              </core-menu>
+            </paper-menu-button>
 
-        <div class="container" layout flex fit>
-          <book-list show="all"></book-list>
-        </div>
-      </core-scaffold>
+            <paper-menu-button icon="text-format" id="text-format" halign="right">
+              <core-menu>
+                <core-item>Cut</core-item>
+                <core-item>Copy</core-item>
+                <core-item>Paste</core-item>
+              </core-menu>
+            </paper-menu-button>
+          </core-toolbar>
+          <div class="content">
+            <pageable-text>
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+            </pageable-text>
+          </div>
+        </core-header-panel>
+      </core-drawer-panel>
     </template>
 
     <script src="index.js"></script>

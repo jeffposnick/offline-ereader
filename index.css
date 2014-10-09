@@ -1,9 +1,53 @@
-body {
-  position: relative;
-  font-family: 'Open Sans', Helvetica, sans-serif;
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
-core-toolbar {
-  background-color: #526E9C;
-  color: #FFFFFF;
+body {
+  font-family: sans-serif;
+}
+
+core-scaffold {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.content {
+  margin: 1em;
+  background-color: #fff;
+}
+
+pageable-text {
+  height: 80vh;
+}
+
+/* some default styles for mode="cover" on core-scaffold */
+core-scaffold[mode=cover]::shadow core-header-panel::shadow #mainContainer {
+  left: 120px;
+}
+
+core-scaffold[mode=cover] .content {
+  margin: 20px 100px 20px 0;
+}
+
+.recent-book {
+  float: left;
+}
+
+/* Clearfix */
+.cf:before,
+.cf:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+.cf:after {
+  clear: both;
+}
+
+.cf {
+  *zoom: 1;
 }
