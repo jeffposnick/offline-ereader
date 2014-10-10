@@ -34,6 +34,6 @@
     "flatiron-director": "PolymerLabs/flatiron-director#master",
     "pageable-text": "jeffposnick/pageable-text#master",
     "paper-elements": "Polymer/paper-elements#^0.4.2",
-    "service-worker-cache": "wibblymat/service-worker-cache#master"
+    "service-worker-cache": "jeffposnick/service-worker-cache#master"
   }
 }

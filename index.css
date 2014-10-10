@@ -1,53 +1,71 @@
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
 body {
   font-family: sans-serif;
 }
 
-core-scaffold {
+pageable-text {
+  padding: 1em;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 40px;
+}
+
+#info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+dialog {
+  position: absolute;
+  width: 400px;
+  max-width: 85%;
+  top: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+dialog > div {
+  margin: 0.5em;
+}
+
+#close {
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
-  left: 0;
 }
 
-.content {
-  margin: 1em;
-  background-color: #fff;
+.book-container {
+  cursor: pointer;
+  margin: 0.25em;
 }
 
-pageable-text {
-  height: 80vh;
+.book-cover {
+  display: block;
+  width: 100%;
 }
 
-/* some default styles for mode="cover" on core-scaffold */
-core-scaffold[mode=cover]::shadow core-header-panel::shadow #mainContainer {
-  left: 120px;
+.book-title {
+  font-weight: bold;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
 }
 
-core-scaffold[mode=cover] .content {
-  margin: 20px 100px 20px 0;
+.book-author {
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  padding-bottom: 0.75em;
 }
 
-.recent-book {
-  float: left;
+#drawerPanel > core-header-panel {
+  background-color: rgb(255, 255, 255);
 }
 
-/* Clearfix */
-.cf:before,
-.cf:after {
-  content: " "; /* 1 */
-  display: table; /* 2 */
-}
-
-.cf:after {
-  clear: both;
-}
-
-.cf {
-  *zoom: 1;
+#page-slider {
+  width: 80%;
+  position: relative;
+  top: 15px;
 }

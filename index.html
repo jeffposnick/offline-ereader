@@ -1,3 +1,12 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 <!doctype html>
 <html>
   <head>
@@ -10,56 +19,51 @@
 
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png">
-    <link rel="stylesheet" href="index.css">
 
     <script src="bower_components/platform/platform.js"></script>
-    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/core-icons/core-icons.html">
-    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
-    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/service-worker-cache/service-worker-cache.html">
+    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
+    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
     <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
-    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
-    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
-    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
     <link rel="import" href="bower_components/core-dropdown/core-dropdown.html">
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/core-menu/core-menu.html">
     <link rel="import" href="bower_components/core-item/core-item.html">
+    <link rel="import" href="bower_components/core-menu/core-menu.html">
+    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
+    <link rel="import" href="bower_components/font-roboto/roboto.html">
+    <link rel="import" href="bower_components/mark-down/mark-down.html">
+    <link rel="import" href="bower_components/pageable-text/pageable-text.html">
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
+    <link rel="import" href="bower_components/paper-slider/paper-slider.html">
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
-    <link rel="import" href="bower_components/font-roboto/roboto.html">
-    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
-    <link rel="import" href="book-list.html">
+    <link rel="import" href="bower_components/service-worker-cache/service-worker-cache.html">
+
+    <link rel="stylesheet" href="index.css" shim-shadowdom>
   </head>
 
-  <body unresolved fullbleed>
-    <template id="app-template" is="auto-binding">
-      <!-- Route controller. -->
-      <flatiron-director route="{{route}}" autoHash></flatiron-director>
-      <!-- Keyboard nav controller. -->
-      <core-a11y-keys id="keys" target="{{parentElement}}"
-                      keys="up down left right space space+shift"
-                      on-keys-pressed="{{keyHandler}}"></core-a11y-keys>
+  <body unresolved fit fullbleed>
+    <template id="page-template" is="auto-binding">
+      <service-worker-cache></service-worker-cache>
+
       <core-drawer-panel id="drawerPanel">
         <core-header-panel drawer>
           <core-toolbar>
-            <span>Reader</span>
+            <span>Offline eReader</span>
           </core-toolbar>
           <core-menu>
-            <paper-icon-button icon="account-balance"></paper-icon-button>
-            <strong>My Library</strong><br/>
-            <strong>Recent Books</strong>
-            <template repeat="{{ book in recents }}">
-              <div>
-                <img class="recent-book" src="{{book.cover}}" height="100"/>
-                {{book.title}}<br/>
-                {{book.author}}
+            <template repeat="{{book in books}}">
+              <div class="book-container" data-url="{{book.url}}" data-title="{{book.title}}" on-tap="{{handleBookTap}}">
+                <img class="book-cover" src="{{book.cover}}">
+                <p class="book-title">{{book.title}}</p>
+                <p class="book-author">{{book.author}}</p>
+                <paper-shadow z-index="1"></paper-shadow>
               </div>
               <div class="cf"/>
             </template>
@@ -68,152 +72,75 @@
 
         <core-header-panel main>
           <core-toolbar>
-            <paper-icon-button id="navicon" icon="menu"></paper-icon-button>
-            <span flex>{{title}}</span>
-            <paper-menu-button icon="search" id="search" halign="right">
-              <core-menu>
-                <core-item>Cut</core-item>
-                <core-item>Copy</core-item>
-                <core-item>Paste</core-item>
-              </core-menu>
-            </paper-menu-button>
-            <paper-menu-button icon="book" id="bookmarks" halign="right">
-              <core-menu>
-                <core-item>
-                  <img src="http://img1.imagesbn.com/p/9780140177398_p0_v1_s260x420.JPG"/>
-                </core-item>
-                <core-item>
-                  <div flex>
-                    <paper-tabs selected="0" flex>
-                      <paper-tab flex>Chapters</paper-tab>
-                      <paper-tab flex>Bookmarks</paper-tab>
-                      <paper-tab flex>Annotations</paper-tab>
-                    </paper-tabs>
-                  </div><br/>
-                  <div flex>
-                    <core-pages selected="0">
-                      <div>Chapters</div>
-                      <div>Bookmarks</div>
-                      <div>Annotations</div>
-                    </core-pages>
-                  </div>
-                </core-item>
-                <core-item>Paste</core-item>
-              </core-menu>
-            </paper-menu-button>
+            <paper-icon-button icon="menu" on-tap="{{handleTogglePanel}}"></paper-icon-button>
 
-            <paper-menu-button icon="text-format" id="text-format" halign="right">
-              <core-menu>
-                <core-item>Cut</core-item>
-                <core-item>Copy</core-item>
-                <core-item>Paste</core-item>
-              </core-menu>
-            </paper-menu-button>
+            <span flex>{{currentTitle}}</span>
+
+            <paper-menu-button icon="search" id="search" halign="right"></paper-menu-button>
+
+            <paper-menu-button icon="book" id="bookmarks" halign="right"></paper-menu-button>
+
+            <paper-menu-button icon="text-format" id="text-format" halign="right" on-tap="{{handleOpenDialog}}"></paper-menu-button>
           </core-toolbar>
+
           <div class="content">
-            <pageable-text>
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
-              dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds dfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfdsdfsfds
+            <pageable-text columnGap="40"
+                           fontFamily="{{fontFamily}}"
+                           fontSize="{{fontSizePercent}}%"
+                           currentPage="{{currentPage}}"
+                           totalPages="{{totalPages}}">
+              <mark-down text="{{markdown}}"></mark-down>
             </pageable-text>
+
+            <div id="info">
+              <div>
+                <paper-slider id="page-slider" min="1" max="{{totalPages}}" immediateValue="{{currentPage}}"></paper-slider>
+              </div>
+
+              <core-icon-button icon="arrow-back"
+                                on-tap="{{handlePreviousPage}}"
+                                disabled?="{{currentPage == 1}}">
+              </core-icon-button>
+
+              <span id="current-page">{{currentPage}} of {{totalPages}}</span>
+
+              <core-icon-button icon="arrow-forward"
+                                on-tap="{{handleNextPage}}"
+                                disabled?="{{currentPage >= totalPages}}">
+              </core-icon-button>
+            </div>
           </div>
         </core-header-panel>
       </core-drawer-panel>
+
+      <core-ajax auto
+                 url="{{bookUrl}}"
+                 handleAs="text"
+                 response="{{markdown}}">
+      </core-ajax>
+
+      <dialog>
+        <core-icon-button id="close"
+                          icon="close"
+                          on-tap="{{handleCloseDialog}}">
+        </core-icon-button>
+
+        <div>
+          <label for="font-size">Font Size</label>:
+          <input id="font-size"
+                 type="range"
+                 value="{{fontSizePercent}}"
+                 min="50"
+                 max="300"
+                 step="10">
+          <span>{{fontSizePercent}}%</span>
+        </div>
+
+        <div>
+          <label for="font-family">Font</label>:
+          <input id="font-family" type="text" value="{{fontFamily}}">
+        </div>
+      </dialog>
     </template>
 
     <script src="index.js"></script>
