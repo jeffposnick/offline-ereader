@@ -3,24 +3,73 @@
 
   var template = document.querySelector('#page-template');
 
+  template.sortBooks = function() {
+    template.books = template.books.sort(function(a, b) {
+      if (a[template.sortOrder] > b[template.sortOrder]) {
+        return 1;
+      }
+      if (a[template.sortOrder] < b[template.sortOrder]) {
+        return -1;
+      }
+      return 0;
+    });
+  };
+
+  template.sortOrder = 'title';
+  var observer = new PathObserver(template, 'sortOrder');
+  observer.open(function() {
+    template.sortBooks();
+  });
+
+
+  template.toggleSortDialog = function() {
+    document.querySelector('#sort-dialog').toggle();
+  };
+
   template.books = [
     {
-      title: 'Pride and Prejudice',
+      title: '1Pride and Prejudice',
       author: 'Jane Austen',
       cover: 'http://www.publicbookshelf.com/images/PridePrejudice423x630.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt'
+      url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt',
+      lastAccessed: Date.now()
     },
     {
-      title: 'Adventures of Huckleberry Finn',
+      title: '7Adventures of Huckleberry Finn',
       author: 'Mark Twain',
       cover: 'http://www.gutenberg.org/cache/epub/76/pg76.cover.medium.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt'
+      url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt',
+      lastAccessed: Date.now()
     },
     {
-      title: 'Alice\'s Adventures in Wonderland',
+      title: '3Alice\'s Adventures in Wonderland',
       author: 'Lewis Carroll',
       cover: 'http://media-cache-cd0.pinimg.com/236x/04/fc/25/04fc25cd5b008f940c6dc2a9b9dd4a75.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt'
+      url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt',
+      lastAccessed: Date.now()
+    },
+    {
+      title: '4Pride and Prejudice',
+      author: 'Jane Austen',
+      cover: 'http://www.publicbookshelf.com/images/PridePrejudice423x630.jpg',
+      url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt',
+      lastAccessed: Date.now()
+    },
+    {
+      title: '55Adventures of Huckleberry Finn',
+      author: 'Mark Twain',
+      cover: 'http://www.gutenberg.org/cache/epub/76/pg76.cover.medium.jpg',
+      url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt',
+      lastAccessed: Date.now()
+    },
+    {
+      title: '6Alice\'s Adventures in Wonderland',
+      author: 'Lewis Carroll',
+      cover: 'http://media-cache-cd0.pinimg.com/236x/04/fc/25/04fc25cd5b008f940c6dc2a9b9dd4a75.jpg',
+      url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt',
+      lastAccessed: Date.now()
     }
   ];
+
+  template.sortBooks();
 })();

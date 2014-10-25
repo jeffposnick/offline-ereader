@@ -9,3 +9,11 @@ body /deep/ core-toolbar {
   background-color: #1a9ce2;
   color: #ffffff;
 }
+
+paper-ripple {
+  z-index: 10;
+}
+
+core-icon-button[icon="more-vert"] {
+  color: #bcbcbc;
+}

@@ -17,6 +17,10 @@
     <link rel="import" href="bower_components/core-image/core-image.html">
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/font-roboto/roboto.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
+    <link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
+    <link rel="import" href="bower_components/paper-ripple/paper-ripple.html">
 
     <link rel="stylesheet" href="styles/common.css" shim-shadowdom>
     <link rel="stylesheet" href="styles/index.css" shim-shadowdom>
@@ -31,6 +35,16 @@
           <core-icon-button icon="sort"
                             on-tap="{{toggleSortDialog}}">
           </core-icon-button>
+          <paper-dialog id="sort-dialog"
+                        heading="Sort by"
+                        transition="paper-dialog-transition-center">
+            <paper-radio-group selected="{{sortOrder}}"
+                               on-change="{{toggleSortDialog}}">
+              <paper-radio-button name="lastAccessed" label="Recent"></paper-radio-button>
+              <paper-radio-button name="title" label="Title"></paper-radio-button>
+              <paper-radio-button name="author" label="Author"></paper-radio-button>
+            </paper-radio-group>
+          </paper-dialog>
 
           <core-icon-button icon="add"
                             on-tap="{{toggleAddDialog}}">
@@ -40,6 +54,8 @@
         <div fit layout horizontal wrap center-justified>
           <template repeat="{{book in books}}">
             <div class="book">
+              <paper-ripple fit></paper-ripple>
+
               <core-image class="cover"
                           src="{{book.cover}}"
                           preload
