@@ -1,80 +1,87 @@
-var pageTemplate = document.querySelector('#page-template');
+(function() {
+  "use strict";
 
-pageTemplate.fontFamily = 'Georgia';
-pageTemplate.fontSizePercent = 100;
+  var DEFAULT_ROUTE = 'one';
 
-pageTemplate.books = [
-  {
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    cover: 'http://www.publicbookshelf.com/images/PridePrejudice423x630.jpg',
-    url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt'
-  },
-  {
-    title: 'Adventures of Huckleberry Finn',
-    author: 'Mark Twain',
-    cover: 'http://www.gutenberg.org/cache/epub/76/pg76.cover.medium.jpg',
-    url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt'
-  },
-  {
-    title: 'Alice\'s Adventures in Wonderland',
-    author: 'Lewis Carroll',
-    cover: 'http://media-cache-cd0.pinimg.com/236x/04/fc/25/04fc25cd5b008f940c6dc2a9b9dd4a75.jpg',
-    url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt'
-  }
-];
+  var template = document.querySelector('#t');
+  var ajax, pages, scaffold;
+  var cache = {};
 
-pageTemplate.bookUrl = pageTemplate.books[0].url;
-pageTemplate.currentTitle = pageTemplate.books[0].title;
+  template.pages = [
+    {name: 'Intro', hash: 'one', url: '/docs/start/tutorial/intro.html'},
+    {name: 'Step 1', hash: 'two', url: '/docs/start/tutorial/step-1.html'},
+    {name: 'Step 2', hash: 'three', url: '/docs/start/tutorial/step-2.html'},
+    {name: 'Step 3', hash: 'four', url: '/docs/start/tutorial/step-3.html'},
+    {name: 'Step 4', hash: 'five', url: '/docs/start/tutorial/step-4.html'},
+  ];
 
-pageTemplate.handleKeypress = function(e) {
-  console.log('keypress', e);
-};
+  template.addEventListener('template-bound', function(e) {
+    scaffold = document.querySelector('#scaffold');
+    ajax = document.querySelector('#ajax');
+    pages = document.querySelector('#pages');
+    var keys = document.querySelector('#keys');
 
-pageTemplate.addEventListener('template-bound', function() {
-  var dialog = document.querySelector('dialog');
+    // Allow selecting pages by num keypad. Dynamically add
+    // [1, template.pages.length] to key mappings.
+    var keysToAdd = Array.apply(null, template.pages).map(function(x, i) {
+      return i + 1;
+    }).reduce(function(x, y) {
+      return x + ' ' + y;
+    });
+    keys.keys += ' ' + keysToAdd;
 
-  pageTemplate.handleOpenDialog = function() {
-    dialog.show();
-  };
+    this.route = this.route || DEFAULT_ROUTE; // Select initial route.
+  });
 
-  pageTemplate.handleCloseDialog = function() {
-    dialog.close();
-  };
+  template.keyHandler = function(e, detail, sender) {
+    // Select page by num key.
+    var num = parseInt(detail.key);
+    if (!isNaN(num) && num <= this.pages.length) {
+      pages.selectIndex(num - 1);
+      return;
+    }
 
-  var pageableText = document.querySelector('pageable-text');
-
-  window.addEventListener('keydown', function(e) {
-    switch (e.keyCode) {
-      case 37:
-        pageableText.previousPage();
+    switch (detail.key) {
+      case 'left':
+      case 'up':
+        pages.selectPrevious();
         break;
-
-      case 39:
-        pageableText.nextPage();
+      case 'right':
+      case 'down':
+        pages.selectNext();
+        break;
+      case 'space':
+        detail.shift ? pages.selectPrevious() : pages.selectNext();
         break;
     }
-  });
-
-  pageTemplate.handlePreviousPage = function() {
-    pageableText.previousPage();
   };
 
-  pageTemplate.handleNextPage = function() {
-    pageableText.nextPage();
+  template.menuItemSelected = function(e, detail, sender) {
+    if (detail.isSelected) {
+
+      // Need to wait one rAF so <core-ajax> has it's URL set.
+      this.async(function() {
+        if (!cache[ajax.url]) {
+          ajax.go();
+        }
+
+        scaffold.closeDrawer();
+      });
+
+    }
   };
 
-  pageTemplate.handleBookTap = function(e) {
-    pageTemplate.bookUrl = e.target.parentElement.dataset.url;
-    pageTemplate.currentTitle = e.target.parentElement.dataset.title;
+  template.ajaxLoad = function(e, detail, sender) {
+    e.preventDefault(); // prevent link navigation.
   };
 
-  pageTemplate.handleTogglePanel = function() {
-    document.getElementById('drawerPanel').togglePanel();
+  template.onResponse = function(e, detail, sender) {
+    var article = detail.response.querySelector('scroll-area article');
+    var html = article.innerHTML;
+
+    cache[ajax.url] = html; // Primitive caching by URL.
+
+    this.injectBoundHTML(html, pages.selectedItem.firstElementChild);
   };
 
-  var observer = new PathObserver(pageTemplate, 'markdown');
-  observer.open(function() {
-    pageableText.repaginate(true);
-  });
-});
+})();

@@ -1,148 +1,75 @@
-<!--
-    @license
-    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-    Code distributed by Google as part of the polymer project is also
-    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="A web-based eReader with offline support.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>Offline eReader</title>
-
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon.png">
-
     <script src="bower_components/platform/platform.js"></script>
-    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
-    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
-    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
-    <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
-    <link rel="import" href="bower_components/core-dropdown/core-dropdown.html">
-    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
-    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/core-item/core-item.html">
-    <link rel="import" href="bower_components/core-menu/core-menu.html">
-    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
-    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
-    <link rel="import" href="bower_components/font-roboto/roboto.html">
-    <link rel="import" href="bower_components/mark-down/mark-down.html">
-    <link rel="import" href="bower_components/pageable-text/pageable-text.html">
-    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-    <link rel="import" href="bower_components/paper-item/paper-item.html">
-    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
-    <link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
-    <link rel="import" href="bower_components/paper-slider/paper-slider.html">
-    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-    <link rel="import" href="bower_components/service-worker-cache/service-worker-cache.html">
-
-    <link rel="stylesheet" href="index.css" shim-shadowdom>
+    <link rel="stylesheet" href="styles.css" shim-shadowdom>
+    <base target="_blank"></base>
   </head>
 
-  <body unresolved fit fullbleed>
-    <template id="page-template" is="auto-binding">
-      <service-worker-cache></service-worker-cache>
+  <body unresolved fullbleed>
+    <template is="auto-binding" id="t">
+      <flatiron-director route="{{route}}"
+                         autoHash>
+      </flatiron-director>
 
-      <core-drawer-panel id="drawerPanel">
-        <core-header-panel drawer>
+      <core-a11y-keys id="keys"
+                      target="{{parentElement}}"
+                      keys="up down left right space space+shift"
+                      on-keys-pressed="{{keyHandler}}">
+      </core-a11y-keys>
+
+      <core-ajax id="ajax"
+                 url="{{selectedPage.page.url}}"
+                 handleAs="document"
+                 on-core-response="{{onResponse}}">
+      </core-ajax>
+
+      <core-scaffold id="scaffold">
+        <nav>
           <core-toolbar>
             <span>Offline eReader</span>
           </core-toolbar>
-          <core-menu>
-            <template repeat="{{book in books}}">
-              <div class="book-container" data-url="{{book.url}}" data-title="{{book.title}}" on-tap="{{handleBookTap}}">
-                <img class="book-cover" src="{{book.cover}}">
-                <p class="book-title">{{book.title}}</p>
-                <p class="book-author">{{book.author}}</p>
-                <paper-shadow z-index="1"></paper-shadow>
-              </div>
-              <div class="cf"/>
+
+          <core-menu id="menu"
+                     valueattr="hash"
+                     selected="{{route}}"
+                     selectedModel="{{selectedPage}}"
+                     on-core-select="{{menuItemSelected}}"
+                     on-click="{{ajaxLoad}}">
+            <template repeat="{{page in pages}}">
+              <paper-item icon="label{{route != page.hash ? '-outline' : ''}}"
+                          label="{{page.name}}"
+                          hash="{{page.hash}}">
+                <a href="{{page.url}}"></a>
+              </paper-item>
             </template>
           </core-menu>
-        </core-header-panel>
+        </nav>
 
-        <core-header-panel main>
-          <core-toolbar>
-            <paper-icon-button icon="menu" on-tap="{{handleTogglePanel}}"></paper-icon-button>
+        <core-toolbar tool flex>
+          <div flex>{{selectedPage.page.name}}</div>
+          <core-icon-button icon="refresh"></core-icon-button>
+          <core-icon-button icon="add"></core-icon-button>
+        </core-toolbar>
 
-            <span flex>{{currentTitle}}</span>
-
-            <paper-menu-button icon="search" id="search" halign="right"></paper-menu-button>
-
-            <paper-menu-button icon="book" id="bookmarks" halign="right"></paper-menu-button>
-
-            <paper-menu-button icon="text-format" id="text-format" halign="right" on-tap="{{handleOpenDialog}}"></paper-menu-button>
-          </core-toolbar>
-
-          <div class="content">
-            <pageable-text columnGap="40"
-                           fontFamily="{{fontFamily}}"
-                           fontSize="{{fontSizePercent}}%"
-                           currentPage="{{currentPage}}"
-                           totalPages="{{totalPages}}">
-              <mark-down text="{{markdown}}"></mark-down>
-            </pageable-text>
-
-            <div id="info">
-              <div>
-                <paper-slider id="page-slider" min="1" max="{{totalPages}}" immediateValue="{{currentPage}}"></paper-slider>
-              </div>
-
-              <core-icon-button icon="arrow-back"
-                                on-tap="{{handlePreviousPage}}"
-                                disabled?="{{currentPage == 1}}">
-              </core-icon-button>
-
-              <span id="current-page">{{currentPage}} of {{totalPages}}</span>
-
-              <core-icon-button icon="arrow-forward"
-                                on-tap="{{handleNextPage}}"
-                                disabled?="{{currentPage >= totalPages}}">
-              </core-icon-button>
-            </div>
-          </div>
-        </core-header-panel>
-      </core-drawer-panel>
-
-      <core-ajax auto
-                 url="{{bookUrl}}"
-                 handleAs="text"
-                 response="{{markdown}}">
-      </core-ajax>
-
-      <dialog>
-        <core-icon-button id="close"
-                          icon="close"
-                          on-tap="{{handleCloseDialog}}">
-        </core-icon-button>
-
-        <div>
-          <label for="font-size">Font Size</label>:
-          <input id="font-size"
-                 type="range"
-                 value="{{fontSizePercent}}"
-                 min="50"
-                 max="300"
-                 step="10">
-          <span>{{fontSizePercent}}%</span>
+        <div layout horizontal center-center fit>
+          <core-animated-pages id="pages"
+                               selected="{{route}}"
+                               valueattr="hash"
+                               transitions="slide-from-right">
+            <template repeat="{{page in pages}}">
+              <section hash="{{page.hash}}" layout vertical center-center>
+                <div id="loading">Loading...</div>
+              </section>
+            </template>
+          </core-animated-pages>
         </div>
-
-        <div>
-          <label for="font-family">Font</label>:
-          <input id="font-family" type="text" value="{{fontFamily}}">
-        </div>
-      </dialog>
+      </core-scaffold>
     </template>
 
-    <script src="index.js"></script>
+    <script src="app-ajax.js"></script>
   </body>
 </html>

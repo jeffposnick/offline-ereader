@@ -1,71 +1,48 @@
 body {
-  font-family: sans-serif;
+  font-family: "RobotoDraft";
+  font-weight: 300;
 }
 
-pageable-text {
-  padding: 1em;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 40px;
+core-animated-pages {
+  width: 85%;
+  height: 85%;
+  -webkit-user-select: none;
+  overflow: hidden;
 }
 
-#info {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
+core-animated-pages > * {
+  border-radius: 5px;
+  background-color: white;
+  font-size: inherit;
+  overflow-y: auto;
+  padding: 30px;
 }
 
-dialog {
-  position: absolute;
-  width: 400px;
-  max-width: 85%;
-  top: 25px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+body /deep/ core-toolbar {
+  background-color: #03a9f4;
+  color: #fff;
 }
 
-dialog > div {
-  margin: 0.5em;
+core-menu {
+  color: #01579b;
+  margin: 10px 0 0 0;
 }
 
-#close {
-  position: absolute;
-  top: 0;
-  right: 0;
+core-menu > paper-item {
+  transition: all 300ms ease-in-out;
 }
 
-.book-container {
-  cursor: pointer;
-  margin: 0.25em;
+core-menu > paper-item.core-selected {
+  background: #e1f5fe;
 }
 
-.book-cover {
-  display: block;
-  width: 100%;
+@media all and (max-width: 480px) {
+  core-animated-pages {
+    width: 100%;
+    height: 100%;
+  }
 }
 
-.book-title {
-  font-weight: bold;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
-}
-
-.book-author {
-  padding-left: 0.25em;
-  padding-right: 0.25em;
-  padding-bottom: 0.75em;
-}
-
-#drawerPanel > core-header-panel {
-  background-color: rgb(255, 255, 255);
-}
-
-#page-slider {
-  width: 80%;
-  position: relative;
-  top: 15px;
+#loading {
+  max-width: 100%;
 }
