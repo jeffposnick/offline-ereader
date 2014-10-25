@@ -3,9 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
     <title>Offline eReader</title>
+
     <script src="bower_components/platform/platform.js"></script>
-    <link rel="stylesheet" href="styles.css" shim-shadowdom>
+    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
+    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
+    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
+    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="bower_components/core-menu/core-menu.html">
+    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
+    <link rel="import" href="bower_components/font-roboto/roboto.html">
+    <link rel="import" href="bower_components/paper-item/paper-item.html">
+
+    <link rel="stylesheet" href="index.css" shim-shadowdom>
     <base target="_blank"></base>
   </head>
 
@@ -70,6 +84,6 @@
       </core-scaffold>
     </template>
 
-    <script src="app-ajax.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
