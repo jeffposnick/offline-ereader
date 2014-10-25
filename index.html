@@ -2,88 +2,71 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="description" content="A responsive, offline eReader built with Polymer.">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta theme-color="#0277db">
 
-    <title>Offline eReader</title>
+    <title>My Library</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" href="images/icon.png">
 
     <script src="bower_components/platform/platform.js"></script>
-    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
-    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
-    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/core-menu/core-menu.html">
-    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-image/core-image.html">
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
     <link rel="import" href="bower_components/font-roboto/roboto.html">
-    <link rel="import" href="bower_components/paper-item/paper-item.html">
 
-    <link rel="stylesheet" href="index.css" shim-shadowdom>
-    <base target="_blank"></base>
+    <link rel="stylesheet" href="styles/common.css" shim-shadowdom>
+    <link rel="stylesheet" href="styles/index.css" shim-shadowdom>
   </head>
 
-  <body unresolved fullbleed>
-    <template is="auto-binding" id="t">
-      <flatiron-director route="{{route}}"
-                         autoHash>
-      </flatiron-director>
+  <body unresolved fullbleed layout vertical>
+    <template is="auto-binding" id="page-template">
+      <core-header-panel flex>
+        <core-toolbar>
+          <div id="page-title" flex>My Library</div>
 
-      <core-a11y-keys id="keys"
-                      target="{{parentElement}}"
-                      keys="up down left right space space+shift"
-                      on-keys-pressed="{{keyHandler}}">
-      </core-a11y-keys>
+          <core-icon-button icon="sort"
+                            on-tap="{{toggleSortDialog}}">
+          </core-icon-button>
 
-      <core-ajax id="ajax"
-                 url="{{selectedPage.page.url}}"
-                 handleAs="document"
-                 on-core-response="{{onResponse}}">
-      </core-ajax>
-
-      <core-scaffold id="scaffold">
-        <nav>
-          <core-toolbar>
-            <span>Offline eReader</span>
-          </core-toolbar>
-
-          <core-menu id="menu"
-                     valueattr="hash"
-                     selected="{{route}}"
-                     selectedModel="{{selectedPage}}"
-                     on-core-select="{{menuItemSelected}}"
-                     on-click="{{ajaxLoad}}">
-            <template repeat="{{page in pages}}">
-              <paper-item icon="label{{route != page.hash ? '-outline' : ''}}"
-                          label="{{page.name}}"
-                          hash="{{page.hash}}">
-                <a href="{{page.url}}"></a>
-              </paper-item>
-            </template>
-          </core-menu>
-        </nav>
-
-        <core-toolbar tool flex>
-          <div flex>{{selectedPage.page.name}}</div>
-          <core-icon-button icon="refresh"></core-icon-button>
-          <core-icon-button icon="add"></core-icon-button>
+          <core-icon-button icon="add"
+                            on-tap="{{toggleAddDialog}}">
+          </core-icon-button>
         </core-toolbar>
 
-        <div layout horizontal center-center fit>
-          <core-animated-pages id="pages"
-                               selected="{{route}}"
-                               valueattr="hash"
-                               transitions="slide-from-right">
-            <template repeat="{{page in pages}}">
-              <section hash="{{page.hash}}" layout vertical center-center>
-                <div id="loading">Loading...</div>
-              </section>
-            </template>
-          </core-animated-pages>
+        <div fit layout horizontal wrap center-justified>
+          <template repeat="{{book in books}}">
+            <div class="book">
+              <core-image class="cover"
+                          src="{{book.cover}}"
+                          preload
+                          fade
+                          sizing="crop">
+              </core-image>
+
+              <div class="book-bottom" layout horizontal>
+                <div class="text" layout vertical>
+                  <div class="title">{{book.title}}</div>
+                  <div class="author">{{book.author}}</div>
+                </div>
+                <div class="icons" layout vertical>
+                  <core-icon-button icon="more-vert"
+                                    on-tap="{{toggleBookDialog}}">
+                  </core-icon-button>
+                  <template if="{{book.downloaded}}">
+                    <core-icon icon="check-circle"></core-icon>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
         </div>
-      </core-scaffold>
+      </core-header-panel>
     </template>
 
-    <script src="index.js"></script>
+    <script src="js/index.js"></script>
   </body>
 </html>

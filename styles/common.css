@@ -1,0 +1,11 @@
+body {
+  font-family: "RobotoDraft";
+  font-weight: 500;
+  background-color: #e0e0e0;
+  font-size: 16px;
+}
+
+body /deep/ core-toolbar {
+  background-color: #1a9ce2;
+  color: #ffffff;
+}
