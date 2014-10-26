@@ -20,6 +20,7 @@
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
     <link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
@@ -38,20 +39,51 @@
           <core-icon-button icon="sort"
                             on-tap="{{toggleSortDialog}}">
           </core-icon-button>
+
           <paper-dialog id="sort-dialog"
                         heading="Sort by"
                         transition="paper-dialog-transition-center">
             <paper-radio-group selected="{{sortOrder}}"
                                on-change="{{toggleSortDialog}}">
-              <paper-radio-button name="lastAccessed" label="Recent"></paper-radio-button>
-              <paper-radio-button name="title" label="Title"></paper-radio-button>
-              <paper-radio-button name="author" label="Author"></paper-radio-button>
+              <paper-radio-button name="lastAccessed"
+                                  label="Recent">
+              </paper-radio-button>
+              <paper-radio-button name="title"
+                                  label="Title">
+              </paper-radio-button>
+              <paper-radio-button name="author"
+                                  label="Author">
+              </paper-radio-button>
             </paper-radio-group>
           </paper-dialog>
 
           <core-icon-button icon="add"
                             on-tap="{{toggleAddDialog}}">
           </core-icon-button>
+
+          <paper-dialog id="add-dialog"
+                        heading="Add to library"
+                        transition="paper-dialog-transition-center">
+            <paper-input label="Title"
+                         value="{{toBeAddedTitle}}"
+                         autofocus
+                         required>
+            </paper-input>
+            <paper-input label="Author"
+                         value="{{toBeAddedAuthor}}">
+            </paper-input>
+            <paper-input label="Text URL"
+                         value="{{toBeAddedUrl}}"
+                         type="url"
+                         required>
+            </paper-input>
+            <paper-input label="Cover URL"
+                         value="{{toBeAddedCover}}"
+                         type="url">
+            </paper-input>
+            <paper-button dismissive autofocus>Cancel</paper-button>
+            <paper-button affirmative on-tap="{{addBook}}">Add</paper-button>
+          </paper-dialog>
         </core-toolbar>
 
         <div fit layout horizontal wrap center-justified>

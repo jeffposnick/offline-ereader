@@ -1,6 +1,10 @@
 paper-dialog {
-  max-width: 400px;
+  max-width: 500px;
   width: 90%;
+}
+
+paper-dialog paper-input {
+  width: 95%;
 }
 
 paper-radio-button {

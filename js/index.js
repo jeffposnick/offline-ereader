@@ -25,6 +25,10 @@
     document.querySelector('#sort-dialog').toggle();
   };
 
+  template.toggleAddDialog = function() {
+    document.querySelector('#add-dialog').toggle();
+  };
+
   template.books = [
     {
       title: '1Pride and Prejudice',
@@ -77,6 +81,15 @@
 
   template.removeBook = function() {
     template.books.splice(template.toBeRemoved.i, 1);
+  };
+
+  template.addBook = function(e) {
+    template.books.push({
+      title: template.toBeAddedTitle,
+      author: template.toBeAddedAuthor,
+      cover: template.toBeAddedCover,
+      url: template.toBeAddedUrl
+    });
   };
 
   template.sortBooks();
