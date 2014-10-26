@@ -3,6 +3,10 @@
   font-weight: 500;
 }
 
+#book-list {
+  margin-top: 8px;
+}
+
 paper-dialog {
   max-width: 500px;
   width: 90%;
@@ -23,7 +27,7 @@ paper-radio-button {
   display: block;
   height: 320px;
   margin: 8px;
-  min-width: 140px;
+  min-width: 200px;
   position: relative;
   width: 200px;
 }
