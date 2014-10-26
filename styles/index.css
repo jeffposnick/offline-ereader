@@ -1,6 +1,6 @@
-#page-title {
-  font-size: 20px;
-  font-weight: 500;
+body /deep/ core-toolbar {
+  background-color: #1a9ce2;
+  color: #ffffff;
 }
 
 #book-list {

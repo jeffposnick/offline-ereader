@@ -1,13 +1,13 @@
 body {
   font-family: "RobotoDraft";
   font-weight: 300;
-  background-color: #e0e0e0;
+  background-color: #eeeeee;
   font-size: 14px;
 }
 
-body /deep/ core-toolbar {
-  background-color: #1a9ce2;
-  color: #ffffff;
+#page-title {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 paper-ripple {

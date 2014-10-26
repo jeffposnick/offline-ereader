@@ -1,0 +1,14 @@
+body /deep/ core-toolbar {
+  color: #212121;
+  background-color: inherit;
+}
+
+a.icon-button {
+  text-decoration: none;
+  color: #212121;
+}
+
+pageable-text {
+  background-color: #ffffff;
+  padding: 40px;
+}
