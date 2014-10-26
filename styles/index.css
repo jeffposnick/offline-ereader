@@ -1,8 +1,5 @@
-#page-title {
-  font-size: 1.2em;
-}
-
 paper-dialog {
+  max-width: 400px;
   width: 90%;
 }
 
@@ -22,31 +19,40 @@ paper-radio-button {
   width: 200px;
 }
 
-.cover {
+.book .cover {
   background-color: #323232;
   height: 240px;
   width: 100%;
 }
 
-.book-bottom {
+.book .book-bottom {
   margin-left: 8px;
   margin-right: 8px;
+  position: relative;
 }
 
-.text {
+.book .text {
   width: 160px;
 }
 
-.title {
+.book .title {
   color: #212121;
   max-height: 40px;
   overflow-y: hidden;
 }
 
-.author {
+.book .author {
   color: #4d4d4d;
   font-size: 0.8em;
   height: 1em;
   margin-top: 4px;
   overflow-y: hidden;
+}
+
+.book paper-menu-button {
+  color: #bcbcbc;
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  z-index: 2;
 }

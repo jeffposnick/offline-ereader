@@ -11,9 +11,5 @@ body /deep/ core-toolbar {
 }
 
 paper-ripple {
-  z-index: 10;
-}
-
-core-icon-button[icon="more-vert"] {
-  color: #bcbcbc;
+  z-index: 1;
 }

@@ -21,7 +21,6 @@
     template.sortBooks();
   });
 
-
   template.toggleSortDialog = function() {
     document.querySelector('#sort-dialog').toggle();
   };
@@ -70,6 +69,15 @@
       lastAccessed: Date.now()
     }
   ];
+
+  template.toggleRemoveDialog = function(e) {
+    template.toBeRemoved = e.target.templateInstance.model;
+    document.querySelector('#remove-dialog').toggle();
+  };
+
+  template.removeBook = function() {
+    template.books.splice(template.toBeRemoved.i, 1);
+  };
 
   template.sortBooks();
 })();

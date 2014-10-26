@@ -17,8 +17,11 @@
     <link rel="import" href="bower_components/core-image/core-image.html">
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/font-roboto/roboto.html">
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
+    <link rel="import" href="bower_components/paper-item/paper-item.html">
+    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
     <link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
     <link rel="import" href="bower_components/paper-ripple/paper-ripple.html">
 
@@ -52,7 +55,7 @@
         </core-toolbar>
 
         <div fit layout horizontal wrap center-justified>
-          <template repeat="{{book in books}}">
+          <template repeat="{{book, i in books}}">
             <div class="book">
               <paper-ripple fit></paper-ripple>
 
@@ -63,22 +66,29 @@
                           sizing="crop">
               </core-image>
 
-              <div class="book-bottom" layout horizontal>
+              <div class="book-bottom">
                 <div class="text" layout vertical>
                   <div class="title">{{book.title}}</div>
                   <div class="author">{{book.author}}</div>
                 </div>
-                <div class="icons" layout vertical>
-                  <core-icon-button icon="more-vert"
-                                    on-tap="{{toggleBookDialog}}">
-                  </core-icon-button>
-                  <template if="{{book.downloaded}}">
-                    <core-icon icon="check-circle"></core-icon>
-                  </template>
-                </div>
+
+                <paper-menu-button icon="more-vert">
+                  <paper-item>Download</paper-item>
+                  <paper-item on-tap="{{toggleRemoveDialog}}">Delete from library</paper-item>
+                  <paper-item>Edit info</paper-item>
+                </paper-menu-button>
               </div>
             </div>
           </template>
+
+          <paper-dialog id="remove-dialog"
+                        heading="Delete from library?"
+                        transition="paper-dialog-transition-center">
+            <p class="title">{{toBeRemoved.book.title}}</p>
+            <p>This book will be removed from the list of available books.</p>
+            <paper-button dismissive autofocus>Cancel</paper-button>
+            <paper-button affirmative on-tap="{{removeBook}}">Delete</paper-button>
+          </paper-dialog>
         </div>
       </core-header-panel>
     </template>
