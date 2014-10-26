@@ -10,5 +10,15 @@ a.icon-button {
 
 pageable-text {
   background-color: #ffffff;
+  font-weight: 500;
   padding: 40px;
+}
+
+pageable-text /deep/ .chapter {
+  font-size: 2em;
+  font-weight: 600;
+  font-variant: small-caps;
+  text-align: center;
+  -webkit-column-break-before: always;
+  break-before: column;
 }

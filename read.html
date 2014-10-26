@@ -12,6 +12,7 @@
     <link rel="shortcut icon" href="images/icon.png">
 
     <script src="bower_components/platform/platform.js"></script>
+    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
     <link rel="import" href="bower_components/core-ajax/core-ajax.html">
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
@@ -31,6 +32,11 @@
 
   <body unresolved fit fullbleed>
     <template is="auto-binding" id="page-template">
+      <core-a11y-keys target="{{parentElement}}"
+                      keys="left right space"
+                      on-keys-pressed="{{handleKeyPress}}">
+      </core-a11y-keys>
+
       <core-toolbar hidden>
         <a class="icon-button" href="index.html">
           <core-icon-button icon="arrow-back"></core-icon-button>
@@ -64,19 +70,17 @@
         </core-ajax>
       </template>
 
-      <template if="{{markdown}}">
-        <pageable-text fit
-                       columnGap="40"
-                       savedProgressId="{{bookUrl}}"
-                       fontFamily="{{fontFamily}}"
-                       fontSize="{{fontSizePercent}}%"
-                       currentPage="{{currentPage}}"
-                       totalPages="{{totalPages}}">
-          <pageable-text-source-markdown markdownText="{{markdown}}"
-                                         chapterElements="{{chapterElements}}">
-          </pageable-text-source-markdown>
-        </pageable-text>
-      </template>
+      <pageable-text fit
+                     columnGap="40"
+                     savedProgressId="{{bookUrl}}"
+                     fontFamily="{{fontFamily}}"
+                     fontSize="{{fontSizePercent}}%"
+                     currentPage="{{currentPage}}"
+                     totalPages="{{totalPages}}">
+        <pageable-text-source-markdown chapterElements="{{chapterElements}}"
+                                       markdownText="{{markdown}}">
+        </pageable-text-source-markdown>
+      </pageable-text>
     </template>
 
     <script src="js/read.js"></script>
