@@ -1,3 +1,8 @@
+#page-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
 paper-dialog {
   max-width: 500px;
   width: 90%;
@@ -41,13 +46,13 @@ paper-radio-button {
 
 .book .title {
   color: #212121;
+  font-weight: 500;
   max-height: 40px;
   overflow-y: hidden;
 }
 
 .book .author {
-  color: #4d4d4d;
-  font-size: 0.8em;
+  color: #212121;
   height: 1em;
   margin-top: 4px;
   overflow-y: hidden;
