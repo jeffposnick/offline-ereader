@@ -1,8 +1,16 @@
+/* See http://samcroft.co.uk/2012/alternative-to-webkit-tap-highlight-color-in-phonegap-apps/
+   Tap highlighting a) looks weird in this context and b) had a serious performance penalty. */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+  outline: 0;
+}
+
 body {
-  font-family: "RobotoDraft";
-  font-weight: 300;
   background-color: #eeeeee;
+  font-family: "RobotoDraft";
   font-size: 14px;
+  font-weight: 300;
 }
 
 .hidden {
