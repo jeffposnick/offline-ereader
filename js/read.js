@@ -5,7 +5,7 @@
   template.fontFamily = 'Georgia';
   template.fontSizePercent = '100';
   template.theme = 'Light';
-  template.showToolbars = true;
+  template.showToolbars = false;
 
   var urlParams = new Map(window.location.search.substring(1).split('&').map(function(keyValuePair) {
     return keyValuePair.split('=').map(decodeURIComponent);
@@ -33,15 +33,29 @@
       template.showToolbars = toolbarAnimation.direction === 'reverse';
     };
 
+    var EDGE_FRACTION = 0.15;
+    template.handleClick = function(e) {
+      if (pageableText.clientWidth > 0) {
+        var percentOfWidth = e.clientX / pageableText.clientWidth;
+        if (percentOfWidth <= EDGE_FRACTION) {
+          pageableText.previousPage();
+        } else if (percentOfWidth >= (1 - EDGE_FRACTION)){
+          pageableText.nextPage();
+        } else {
+          template.toggleToolbars();
+        }
+      }
+    };
+
     template.handleKeyPress = function(e) {
       switch (e.detail.key) {
+        case 'left':
+          pageableText.previousPage();
+        break;
+
         case 'right':
         case 'space':
           pageableText.nextPage();
-        break;
-
-        case 'left':
-          pageableText.previousPage();
         break;
 
         case 'esc':

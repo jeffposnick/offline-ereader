@@ -57,6 +57,7 @@ a.icon-button {
 
 pageable-text {
   background-color: #ffffff;
+  cursor: pointer;
   font-weight: 300;
   padding: 40px;
 }
