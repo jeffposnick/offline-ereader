@@ -1,6 +1,7 @@
 core-toolbar {
-  color: #212121;
   background-color: inherit;
+  color: #212121;
+  opacity: 0.95;
 }
 
 #topBar {
@@ -66,12 +67,12 @@ pageable-text.narrow {
   padding: 8px;
 }
 
-pageable-text.Light {
+pageable-text.light {
   background-color: #ffffff;
   color: #000000;
 }
 
-pageable-text.Dark {
+pageable-text.dark {
   background-color: #000000;
   color: #ffffff;
 }

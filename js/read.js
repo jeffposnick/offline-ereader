@@ -5,7 +5,7 @@
   template.fontFamily = 'Georgia';
   template.fontSizePercent = '100';
   template.theme = 'Light';
-  template.showToolbars = false;
+  template.showToolbars = true;
 
   var urlParams = new Map(window.location.search.substring(1).split('&').map(function(keyValuePair) {
     return keyValuePair.split('=').map(decodeURIComponent);

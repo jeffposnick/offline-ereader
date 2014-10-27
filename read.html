@@ -106,7 +106,7 @@
       </template>
 
       <pageable-text id="text"
-                     class="{{ {narrow: narrow, theme: true} | tokenList }}"
+                     class="{{ {narrow: narrow, light: theme == 'Light', dark: theme == 'Dark'} | tokenList }}"
                      fit
                      columnGap="40"
                      savedProgressId="{{bookUrl}}"
