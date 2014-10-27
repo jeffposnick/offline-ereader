@@ -2,7 +2,9 @@
   "use strict";
 
   var template = document.querySelector('#page-template');
-  template.fontFamily = 'sans-serif';
+  template.fontFamily = 'Georgia';
+  template.fontSizePercent = '100';
+  template.theme = 'Light';
   template.bookUrl = window.location.search.split('=')[1];
   template.showToolbars = true;
 
@@ -41,6 +43,11 @@
           template.toggleToolbars();
         break;
       }
+    };
+
+    var formatDialog = document.querySelector('#format-dialog');
+    template.toggleFormatDialog = function() {
+      formatDialog.toggle();
     };
   });
 })();

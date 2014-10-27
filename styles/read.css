@@ -57,8 +57,18 @@ a.icon-button {
 
 pageable-text {
   background-color: #ffffff;
-  font-weight: 500;
+  font-weight: 300;
   padding: 40px;
+}
+
+pageable-text.Light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+pageable-text.Dark {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 pageable-text /deep/ .chapter {
@@ -72,4 +82,13 @@ pageable-text /deep/ .chapter {
 
 #page-display {
   width: 4em;
+}
+
+paper-dialog label {
+  font-weight: 600;
+  margin-right: 1em;
+}
+
+#font-size {
+  vertical-align: top;
 }

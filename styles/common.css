@@ -13,3 +13,8 @@ body {
 paper-ripple {
   z-index: 1;
 }
+
+paper-dialog {
+  max-width: 500px;
+  width: 90%;
+}

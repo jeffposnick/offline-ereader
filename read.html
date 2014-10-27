@@ -24,6 +24,7 @@
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
+    <link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
@@ -53,7 +54,42 @@
         </core-icon-button>
 
         <paper-dialog id="format-dialog"
+                      heading="Format"
                       transition="paper-dialog-transition-center">
+          <div>
+            <label>Theme</label>
+            <paper-dropdown-menu label="Theme"
+                                 selected="{{theme}}"
+                                 valueattr="label">
+              <paper-item label="Light"></paper-item>
+              <paper-item label="Dark"></paper-item>
+            </paper-dropdown-menu>
+          </div>
+
+          <div>
+            <label>Font</label>
+            <paper-dropdown-menu label="Font"
+                                 selected="{{fontFamily}}"
+                                 valueattr="label"
+                                 valign="bottom">
+              <paper-item label="Georgia"></paper-item>
+              <paper-item label="Arial"></paper-item>
+              <paper-item label="RobotoDraft"></paper-item>
+            </paper-dropdown-menu>
+          </div>
+
+          <div>
+            <label>Size (%)</label>
+              <paper-slider id="font-size"
+                            pin
+                            value="{{fontSizePercent}}"
+                            min="50"
+                            max="300"
+                            step="10">
+              </paper-slider>
+          </div>
+
+          <paper-button affirmative autofocus>Close</paper-button>
         </paper-dialog>
       </core-toolbar>
 
@@ -66,6 +102,7 @@
       </template>
 
       <pageable-text id="text"
+                     class="{{theme}}"
                      fit
                      columnGap="40"
                      savedProgressId="{{bookUrl}}"
