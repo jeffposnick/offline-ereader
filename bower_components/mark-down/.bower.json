@@ -1,0 +1,41 @@
+{
+  "name": "mark-down",
+  "version": "0.6.3",
+  "authors": [
+    "Rob Dodson <robdodson@google.com>"
+  ],
+  "description": "A polymer element for rendering markdown",
+  "main": [
+    "mark-down.html",
+    "mark-down-editor.html"
+  ],
+  "keywords": [
+    "markdown",
+    "polymer",
+    "web-components",
+    "custom-elements",
+    "polymer-elements"
+  ],
+  "license": "MIT",
+  "homepage": "http://robdodson.me",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.4.2",
+    "marked": "~0.3.2"
+  },
+  "_release": "0.6.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.6.3",
+    "commit": "3dcb16cf6b3e32dea43d54b07d0a70a6edf80dd0"
+  },
+  "_source": "git://github.com/robdodson/mark-down.git",
+  "_target": "^0.6.1",
+  "_originalSource": "robdodson/mark-down"
+}

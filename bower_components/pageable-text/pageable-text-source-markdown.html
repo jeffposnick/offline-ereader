@@ -1,0 +1,60 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mark-down/mark-down.html">
+
+<!--
+A Polymer element that represents the source for a `<pageable-text>`'s content. In this case,
+the content is rendered Markdown, using `<mark-down>` under the hood.
+
+##### Example
+
+    <pageable-text>
+      <pageable-text-source-markdown text="{{markdownText}}"></pageable-text-source-markdown>
+    </pageable-text>
+
+@element pageable-text-source-markdown
+@blurb A Markdown content source for pageable-text
+@status alpha
+@homepage https://jeffposnick.github.io/pageable-text
+-->
+<polymer-element name="pageable-text-source-markdown"
+                 attributes="chapterClass chapterElements chapterRegex markdownText">
+  <template>
+    <mark-down id="container"
+               text="{{markdownText}}"
+               on-mark-down-ready="{{_handleMarkdownReady}}"></mark-down>
+  </template>
+
+  <script>
+    Polymer({
+      chapterClass: 'chapter',
+      chapterElements: null,
+      chapterRegex: /^chapter\s/i,
+
+      _handleMarkdownReady: function() {
+        this.chapterElements = [];
+        if (this.chapterRegex) {
+          this.chapterElements = [];
+          var markdownParent = this.$.container.shadowRoot.querySelector('#markdown');
+          for (var i = 0; i < markdownParent.children.length; i++) {
+            var childElement = markdownParent.children[i];
+            if (this.chapterRegex.test(childElement.textContent)) {
+              childElement.classList.add(this.chapterClass);
+              this.chapterElements.push(childElement);
+            }
+          }
+        }
+
+        this.asyncFire('pageable-text-source-updated');
+      }
+    });
+  </script>
+</polymer-element>

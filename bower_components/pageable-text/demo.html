@@ -1,0 +1,223 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>&lt;pageable-text> Demo</title>
+    <script src="../platform/platform.js"></script>
+    <link rel="import" href="../core-ajax/core-ajax.html">
+    <link rel="import" href="../core-icon-button/core-icon-button.html">
+    <link rel="import" href="../mark-down/mark-down.html">
+    <link rel="import" href="../paper-button/paper-button.html">
+    <link rel="import" href="../paper-dialog/paper-dialog.html">
+    <link rel="import" href="pageable-text.html">
+    <link rel="import" href="pageable-text-source-markdown.html">
+
+    <style shim-shadowdom>
+      body {
+        font-family: sans-serif;
+      }
+
+      pageable-text {
+        padding: 1em;
+        background-color: rgb(248, 248, 248);
+        border-radius: 1em;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 40px;
+      }
+
+      #markdown-url {
+        width: 100%;
+      }
+
+      #info {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 0;
+      }
+
+      #chapters {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+
+      #settings {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+      }
+
+      #settings-dialog div {
+        margin: 1em;
+      }
+
+      #chapters-dialog {
+        width: 300px;
+      }
+
+      #chapters-dialog ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        height: 300px;
+      }
+
+      #chapters-dialog ol li {
+        margin: 1em;
+        cursor: pointer;
+      }
+
+      pageable-text /deep/ .chapter {
+        font-size: 2em;
+        font-variant: small-caps;
+        text-align: center;
+        -webkit-column-break-before: always;
+        break-before: column;
+      }
+    </style>
+  </head>
+
+  <body unresolved fit fullbleed>
+    <template id="page-template" is="auto-binding">
+      <core-ajax auto
+                 url="{{markdownUrl}}"
+                 handleAs="text"
+                 response="{{markdown}}">
+      </core-ajax>
+
+      <pageable-text columnGap="40"
+                     savedProgressId="{{markdownUrl}}"
+                     fontFamily="{{fontFamily}}"
+                     fontSize="{{fontSizePercent}}%"
+                     currentPage="{{currentPage}}"
+                     totalPages="{{totalPages}}">
+        <pageable-text-source-markdown markdownText="{{markdown}}"
+                                       chapterElements="{{chapterElements}}">
+        </pageable-text-source-markdown>
+      </pageable-text>
+
+      <core-icon-button id="chapters"
+                        icon="bookmark"
+                        on-tap="{{handleOpenChaptersDialog}}">
+      </core-icon-button>
+
+      <div id="info">
+        <core-icon-button icon="arrow-back"
+                          on-tap="{{handlePreviousPage}}"
+                          disabled?="{{currentPage == 1}}">
+        </core-icon-button>
+
+        <span id="current-page">{{currentPage}} of {{totalPages}}</span>
+
+        <core-icon-button icon="arrow-forward"
+                          on-tap="{{handleNextPage}}"
+                          disabled?="{{currentPage >= totalPages}}">
+        </core-icon-button>
+      </div>
+
+      <core-icon-button id="settings"
+                        icon="settings"
+                        on-tap="{{handleOpenSettingsDialog}}">
+      </core-icon-button>
+
+      <paper-dialog id="settings-dialog" heading="Settings">
+        <div>
+          <label for="markdown-url">Markdown URL (must support <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>)</label>:
+          <input id="markdown-url" type="text" value="{{markdownUrl}}">
+        </div>
+
+        <div>
+          <label for="font-size">Font Size</label>:
+          <input id="font-size"
+                 type="range"
+                 value="{{fontSizePercent}}"
+                 min="50"
+                 max="300"
+                 step="10">
+          <span>{{fontSizePercent}}%</span>
+        </div>
+
+        <div>
+          <label for="font-family">Font</label>:
+          <input id="font-family" type="text" value="{{fontFamily}}">
+        </div>
+
+        <paper-button affirmative>Close</paper-button>
+      </paper-dialog>
+
+      <paper-dialog id="chapters-dialog" heading="Chapters">
+        <ol>
+          <template repeat="{{chapterElement in chapterElements}}">
+            <li on-tap="{{handleChapterTap}}">{{chapterElement.textContent}}</li>
+          </template>
+        </ol>
+
+        <paper-button affirmative>Close</paper-button>
+      </paper-dialog>
+    </template>
+
+    <script>
+      var pageTemplate = document.querySelector('#page-template');
+
+      // rawgit.com serves resources with CORS headers, so it's a good source of URLs.
+      pageTemplate.markdownUrl = 'https://cdn.rawgit.com/GITenberg/Frankenstein_84/master/84.txt'; //https://cdn.rawgit.com/GITenberg/Essentials-of-Economic-TheoryAs-Applied-to-Modern-Problems-of-Industry-and-Public-Policy_31159/master/31159-8.txt
+      pageTemplate.fontFamily = 'sans-serif';
+      pageTemplate.fontSizePercent = 100;
+      pageTemplate.chapterElements = [];
+
+      pageTemplate.addEventListener('template-bound', function() {
+        pageTemplate.handleOpenSettingsDialog = function() {
+          document.querySelector('#settings-dialog').toggle();
+        };
+
+        pageTemplate.handleOpenChaptersDialog = function() {
+          document.querySelector('#chapters-dialog').toggle();
+        };
+
+        var pageableText = document.querySelector('pageable-text');
+
+        window.addEventListener('keydown', function(e) {
+          switch (e.keyCode) {
+            case 37:
+              pageableText.previousPage();
+            break;
+
+            case 39:
+              pageableText.nextPage();
+            break;
+          }
+        });
+
+        pageTemplate.handlePreviousPage = function() {
+          pageableText.previousPage();
+        };
+
+        pageTemplate.handleNextPage = function() {
+          pageableText.nextPage();
+        };
+
+        pageTemplate.handleChapterTap = function(e) {
+          pageableText.scrollToElement(e.target.templateInstance.model.chapterElement);
+        };
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "core-localstorage",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#master"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.1.0"
+  },
+  "homepage": "https://github.com/jeffposnick/core-localstorage",
+  "_release": "b8dcdf8e67",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "b8dcdf8e676606194d673d107ee15fc7f6d0d062"
+  },
+  "_source": "git://github.com/jeffposnick/core-localstorage.git",
+  "_target": "master",
+  "_originalSource": "jeffposnick/core-localstorage"
+}

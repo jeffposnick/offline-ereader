@@ -1,0 +1,377 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-animation/core-animation.html">
+<link rel="import" href="../core-localstorage/core-localstorage.html">
+<link rel="import" href="../core-media-query/core-media-query.html">
+
+<!--
+A Polymer element that simplifies paging through text, e.g. in an eReader.
+
+The text is specified as child elements, and any standard HTML markup should be properly displayed.
+
+##### Example
+
+    <pageable-text selectable
+                   columnGap="30"
+                   fontFamily="Helvetica"
+                   fontSize="1.2em"
+                   currentPage="{{currentPage}}"
+                   totalPages="{{totalPages}}">
+      <strong>Lorem</strong> ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </pageable-text>
+
+@element pageable-text
+@blurb A Polymer element that simplifies paging through text, e.g. in an eReader.
+@status alpha
+@homepage https://jeffposnick.github.io/pageable-text
+-->
+<polymer-element name="pageable-text"
+                 attributes="animationDuration chapterElements chapterRegex columnGap currentPage fontFamily fontSize lineHeight savedProgressId selectable text totalPages">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      #container {
+        -moz-column-width: 1px;
+        -moz-column-count: 2;
+        -webkit-column-width: 1px;
+        -webkit-column-count: 2;
+        column-width: 1px;
+        column-count: 2;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        text-align: justify;
+        font-family: serif;
+      }
+
+      .narrow {
+        -moz-column-count: 1 !important;
+        -webkit-column-count: 1 !important;
+        column-count: 1 !important;
+      }
+
+      .selectable {
+        -moz-user-select: text;
+        -webkit-user-select: text;
+        user-select: text;
+        cursor: text;
+      }
+
+      .not-selectable {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    </style>
+
+    <core-media-query query="max-width: 640px"
+                      queryMatches="{{narrow}}"
+                      on-core-media-change="{{_handleCoreMediaChange}}">
+    </core-media-query>
+
+    <template if="{{savedProgressId}}">
+      <core-localstorage id="localstorage"
+                         name="pageable-text-{{savedProgressId}}"
+                         value="{{_percentRead}}"
+                         useraw
+                         on-core-localstorage-load="{{_handleCoreLocalstorageLoad}}">
+      </core-localstorage>
+    </template>
+
+    <!-- We need to use inline styles since the polyfills don't fully support binding to variables in <style> definitions. -->
+    <div id="container"
+         class="{{ {narrow: narrow, selectable: selectable, 'not-selectable': !selectable} | tokenList }}"
+         style="-webkit-column-gap: {{columnGap}}px; -moz-column-gap: {{columnGap}}px; column-gap: {{columnGap}}px; font-family: '{{fontFamily}}'; font-size: {{fontSize}}; line-height: {{lineHeight}};"
+         on-pageable-text-source-updated="{{repaginate}}">
+      <content></content>
+    </div>
+
+    <core-animation id="pageAnimation"
+                    target="{{$.container}}"
+                    duration="{{animationDuration}}"
+                    on-core-animation-finish="{{_handleAnimationFinish}}">
+    </core-animation>
+  </template>
+
+  <script>
+    Polymer({
+      /**
+       * The `animationDuration` is the number of milliseconds the page transition animation will run for.
+       *
+       * To disable page transition animations, set to `0`.
+       *
+       * @attribute animationDuration
+       * @type number
+       * @default 150
+       */
+      animationDuration: 150,
+
+      /**
+       * The `chapterRegex` attribute is what's used to determine where chapter breaks are in the text.
+       *
+       * If set to null, then there won't be any attempt made to determine where chapters are.
+       *
+       * If non-null, then every element in the `<content>` will be checked to see if its `textContent`
+       * matches. If there's a match, that element is assigned the class `.chapter` and it's added
+       * to the array of chapters exposed via `this.chapterElements`.
+       *
+       * @attribute chapterRegex
+       * @type Regex
+       * @default /^chapter\s/i
+       */
+      chapterRegex: /^chapter\s/i,
+
+      /**
+       * The `chapterElements` attribute contains a array of elements that are chapter headers, as
+       * determined by `this.chapterRegex`.
+       *
+       * The array is recalculated each time `this.repaginate()` is called.
+       *
+       * @attribute chapterElements
+       * @type array
+       */
+      chapterElements: null,
+
+      /**
+       * The `columnGap` is the number of pixels in between each column when the `<pageable-text>` element is
+       * wide enough to support multiple columns.
+       *
+       * This needs to be a number, and the `px` is implied.
+       *
+       * (It would be nice if this supported other units, e.g. `em`, but that's not currently possible.)
+       *
+       * @attribute columnGap
+       * @type number
+       * @default 20
+       */
+      columnGap: 40,
+
+      /**
+       * The `currentPage` attribute reflects the current page.
+       *
+       * The first page is `1`, not `0`!
+       *
+       * You can also update this attribute to jump to a specific page.
+       *
+       * @attribute currentPage
+       * @type number
+       * @default 1
+       */
+      currentPage: 1,
+
+      /**
+       * The `fontFamily` attribute corresponds to the `font-family` style used for the text.
+       *
+       * While it's possible to apply arbitrary styles from the host page via `page-element /deep/ #content-container`,
+       * `fontFamily` is an alternative that has the advantage of triggering repagination when it's changed.
+       *
+       * @attribute fontFamily
+       * @type string
+       * @default 'inherit'
+       */
+      fontFamily: 'inherit',
+
+      /**
+       * The `fontSize` attribute corresponds to the `font-size` style used for the text.
+       *
+       * While it's possible to apply arbitrary styles from the host page via `page-element /deep/ #content-container`,
+       * `fontSize` is an alternative that has the advantage of triggering repagination when it's changed.
+       *
+       * @attribute fontSize
+       * @type string
+       * @default '100%'
+       */
+      fontSize: '100%',
+
+      /**
+       * The `lineHeight` attribute corresponds to the `line-height` style used for the text.
+       *
+       * While it's possible to apply arbitrary styles from the host page via `page-element /deep/ #content-container`,
+       * `lineHeight` is an alternative that has the advantage of triggering repagination when it's changed.
+       *
+       * @attribute lineHeight
+       * @type number
+       * @default 1.2
+       */
+      lineHeight: 1.2,
+
+      /**
+       * The `savedProgressId` attribute should be set to a unqiue identifier for the text being paginated.
+       *
+       * If the text is loaded from a URL, the URL is a good choice for unqiue identifier.
+       * Ditto for a name of a local file.
+       *
+       * If this is set, the percentage of the text that's been read will be stored via `<core-localstorage>` and used
+       * to find the appropriate page to resume reading at the next time the page is loaded.
+       *
+       * If this is not set, then the text will always start on page 1, regardless of past progress.
+       *
+       * @attribute savedProgressId
+       * @type string
+       * @default null
+       */
+      savedProgressId: null,
+
+      /**
+       * The `selectable` attribute indicates whether or not the text being paginated is selectable.
+       *
+       * If set to `false`, then text is not selectable and clicking on the text will navigate to the previous/next page
+       * (depending on whether you click on the left or right half of the page.)
+       *
+       * If set to `true`, then the text is selectable and you need to explicitly call the `previousPage()` and
+       * `nextPage()` methods to navigate.
+       *
+       * @attribute selectable
+       * @type boolean
+       * @default false
+       */
+      selectable: false,
+
+      /**
+       * The `totalPages` attribute is set to the total number of pages.
+       *
+       * @attribute totalPages
+       * @type number
+       */
+      totalPages: 1,
+
+      _percentRead: 0,
+      _coreLocalStorageLoaded: false,
+
+      /**
+       * The `nextPage` method displays the next page of text.
+       *
+       * @method nextPage
+       */
+      nextPage: function() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
+      },
+
+      /**
+       * The `previousPage` method displays the previous page of text.
+       *
+       * @method previousPage
+       */
+      previousPage: function() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
+      },
+
+      savedProgressIdChanged: function() {
+        this._coreLocalStorageLoaded = false;
+      },
+
+      currentPageChanged: function(oldValue, newValue) {
+        var largestPage;
+        if (oldValue < newValue) {
+          largestPage = newValue;
+          this.$.pageAnimation.direction = 'normal';
+        } else {
+          largestPage = oldValue;
+          this.$.pageAnimation.direction = 'reverse';
+        }
+
+        var pageWidth = this.$.container.clientWidth + this.columnGap;
+
+        this.$.pageAnimation.customEffect = function(timeFraction, target) {
+          target.scrollLeft = (largestPage - 2 + timeFraction) * pageWidth;
+        };
+
+        this.$.pageAnimation.play();
+
+        // Special case where newValue is set to 1, which always should indicate the very first page and is equivalent
+        // to setting _percentRead to 0. This is a workaround for the fact that the smallest value for currentPage
+        // is 1 and not 0.
+        if (newValue === 1) {
+          this._percentRead = 0;
+        } else {
+          this._percentRead = newValue / this.totalPages;
+        }
+      },
+
+      // Ensure that we have fully moved on to the proper page. This is neccessary since a timeFraction of 1.0 isn't
+      // always passed in to the pageAnimation.
+      _handleAnimationFinish: function() {
+        this.$.container.scrollLeft = (this.$.container.clientWidth + this.columnGap) * (this.currentPage - 1);
+      },
+
+      _handleCoreMediaChange: function() {
+        this.repaginate();
+      },
+
+      _handleCoreLocalstorageLoad: function() {
+        if (this._percentRead == null) {
+          this._percentRead = 0;
+        }
+
+        this._coreLocalStorageLoaded = true;
+        this.repaginate();
+      },
+
+      fontFamilyChanged: function() {
+        this.repaginate();
+      },
+
+      fontSizeChanged: function() {
+        this.repaginate();
+      },
+
+      lineHeightChanged: function() {
+        this.repaginate();
+      },
+
+      /**
+       * The `repaginate` method updates `this.totalPages` based on the current content and layout.
+       *
+       * It is automatically called when the element is first added to a page, and can be manually invoked if you
+       * know that you've resized the element or changed its content.
+       *
+       * @method repaginate
+       */
+      repaginate: function() {
+        // We don't want to repaginate until we've loaded in the previous progress from core-localstorage.
+        // Otherwise, the repagination will cause that value to be overwritten.
+        // Once that's done, we can repaginate anytime a font, size, media-query, etc. changes.
+        if (this._coreLocalStorageLoaded || this.savedProgressId == null) {
+          this.async(function() {
+            var newTotalPages = Math.ceil(this.$.container.scrollWidth / (this.$.container.clientWidth + this.columnGap));
+            var newCurrentPage = Math.floor(this._percentRead * newTotalPages);
+            if (newCurrentPage < 1) {
+              newCurrentPage = 1;
+            }
+
+            this.totalPages = newTotalPages;
+            this.currentPage = newCurrentPage;
+          });
+        }
+      },
+
+      /**
+       * The `scrollToElement` updates the current page so that `el` is visible.
+       *
+       * It's particularly useful to use in conjunction with the elements exposed in `this.chapterElements`.
+       *
+       * @method scrollToElement
+       * @param Element The element to scroll to.
+       */
+      scrollToElement: function(el) {
+        this.currentPage = Math.ceil(this.totalPages * el.offsetLeft / this.$.container.scrollWidth);
+      }
+    });
+  </script>
+</polymer-element>
