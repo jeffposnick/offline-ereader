@@ -89,9 +89,8 @@
 
         <div id="book-list" fit layout horizontal wrap center-justified>
           <template repeat="{{book, i in books}}">
-            <div class="book"
-                 on-click="{{readBook}}">
-              <paper-ripple fit></paper-ripple>
+            <div class="book">
+              <paper-ripple fit on-click="{{readBook}}"></paper-ripple>
 
               <core-image class="cover"
                           src="{{book.cover}}"
