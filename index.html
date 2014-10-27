@@ -12,6 +12,7 @@
     <link rel="shortcut icon" href="images/icon.png">
 
     <script src="bower_components/platform/platform.js"></script>
+    <script src="bower_components/es6-shim/es6-shim.min.js"></script>
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
     <link rel="import" href="bower_components/core-image/core-image.html">
@@ -88,7 +89,8 @@
 
         <div id="book-list" fit layout horizontal wrap center-justified>
           <template repeat="{{book, i in books}}">
-            <div class="book">
+            <div class="book"
+                 on-click="{{readBook}}">
               <paper-ripple fit></paper-ripple>
 
               <core-image class="cover"

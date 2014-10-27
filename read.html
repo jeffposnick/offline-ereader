@@ -12,6 +12,7 @@
     <link rel="shortcut icon" href="images/icon.png">
 
     <script src="bower_components/platform/platform.js"></script>
+    <script src="bower_components/es6-shim/es6-shim.min.js"></script>
     <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
     <link rel="import" href="bower_components/core-ajax/core-ajax.html">
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
@@ -47,7 +48,7 @@
           <core-icon-button icon="arrow-back"></core-icon-button>
         </a>
 
-        <div id="page-title" flex>Book Title</div>
+        <div id="page-title" flex>{{title}}</div>
 
         <core-icon-button icon="text-format"
                           on-tap="{{toggleFormatDialog}}">
@@ -120,6 +121,7 @@
                     layout horizontal
                     hidden?="{{!showToolbars}}">
         <paper-menu-button id="chapters-menu"
+                           hidden?="{{chapterElements.length < 1}}"
                            icon="list"
                            noTransition="true"
                            halign="left"
@@ -137,7 +139,8 @@
                       immediateValue="{{currentPage}}">
         </paper-slider>
 
-        <div id="page-display">
+        <div id="page-display"
+             class="{{ {hidden: currentPage < 1 || totalPages < 1} | tokenList }}">
           {{currentPage}}/{{totalPages}}
         </div>
       </core-toolbar>

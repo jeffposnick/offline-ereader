@@ -3,6 +3,23 @@
 
   var template = document.querySelector('#page-template');
 
+  function serializeUrlParams(params) {
+    return Object.keys(params).map(function(key) {
+      return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+    }).join('&');
+  }
+
+  template.readBook = function(e) {
+    var readUrl = 'read.html?' + serializeUrlParams({
+      bookUrl: e.target.templateInstance.model.book.url,
+      title: e.target.templateInstance.model.book.title
+    });
+
+    setTimeout(function() {
+      window.location.href = readUrl;
+    }, 150);
+  };
+
   template.sortBooks = function() {
     template.books = template.books.sort(function(a, b) {
       if (a[template.sortOrder] > b[template.sortOrder]) {

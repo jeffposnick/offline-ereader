@@ -5,6 +5,10 @@ body {
   font-size: 14px;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 #page-title {
   font-size: 20px;
   font-weight: 500;

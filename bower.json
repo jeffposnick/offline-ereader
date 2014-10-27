@@ -31,6 +31,7 @@
   "dependencies": {
     "core-image": "Polymer/core-image#^0.4.2",
     "core-elements": "Polymer/core-elements#^0.4.2",
+    "es6-shim": "paulmillr/es6-shim",
     "pageable-text": "jeffposnick/pageable-text#master",
     "paper-elements": "Polymer/paper-elements#^0.4.2",
     "service-worker-cache": "jeffposnick/service-worker-cache#master"

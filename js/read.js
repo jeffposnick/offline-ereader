@@ -5,8 +5,13 @@
   template.fontFamily = 'Georgia';
   template.fontSizePercent = '100';
   template.theme = 'Light';
-  template.bookUrl = window.location.search.split('=')[1];
   template.showToolbars = true;
+
+  var urlParams = new Map(window.location.search.substring(1).split('&').map(function(keyValuePair) {
+    return keyValuePair.split('=').map(decodeURIComponent);
+  }));
+  template.bookUrl = urlParams.get('bookUrl');
+  template.title = urlParams.get('title');
 
   template.addEventListener('template-bound', function() {
     var pageableText = document.querySelector('#text');
