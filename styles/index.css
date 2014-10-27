@@ -19,6 +19,7 @@ paper-radio-button {
   background-color: #ffffff;
   border-radius: 2px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  cursor: pointer;
   display: block;
   height: 320px;
   margin: 8px;
