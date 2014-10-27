@@ -48,48 +48,42 @@
 
   template.books = [
     {
-      title: '1Pride and Prejudice',
+      title: 'Pride and Prejudice',
       author: 'Jane Austen',
       cover: 'http://www.publicbookshelf.com/images/PridePrejudice423x630.jpg',
       url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt',
       lastAccessed: Date.now()
     },
     {
-      title: '7Adventures of Huckleberry Finn',
+      title: 'Adventures of Huckleberry Finn',
       author: 'Mark Twain',
       cover: 'http://www.gutenberg.org/cache/epub/76/pg76.cover.medium.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt',
+      url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_76/master/76.txt',
       lastAccessed: Date.now()
     },
     {
-      title: '3Alice\'s Adventures in Wonderland',
+      title: 'Alice\'s Adventures in Wonderland',
       author: 'Lewis Carroll',
       cover: 'http://media-cache-cd0.pinimg.com/236x/04/fc/25/04fc25cd5b008f940c6dc2a9b9dd4a75.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt',
+      url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_11/master/11.txt',
       lastAccessed: Date.now()
     },
     {
-      title: '4Pride and Prejudice',
-      author: 'Jane Austen',
-      cover: 'http://www.publicbookshelf.com/images/PridePrejudice423x630.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Pride-and-Prejudice_1342/master/1342.txt',
+      title: 'Frankenstein',
+      author: 'Mary Wollstonecraft Shelley',
+      cover: 'https://c1.staticflickr.com/3/2705/4533219490_b8e67307d9_z.jpg',
+      url: 'https://cdn.rawgit.com/GITenberg/Frankenstein_84/master/84.txt',
       lastAccessed: Date.now()
     },
     {
-      title: '55Adventures of Huckleberry Finn',
-      author: 'Mark Twain',
-      cover: 'http://www.gutenberg.org/cache/epub/76/pg76.cover.medium.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Adventures-of-Huckleberry-Finn_19640/master/19640.txt',
-      lastAccessed: Date.now()
-    },
-    {
-      title: '6Alice\'s Adventures in Wonderland',
-      author: 'Lewis Carroll',
-      cover: 'http://media-cache-cd0.pinimg.com/236x/04/fc/25/04fc25cd5b008f940c6dc2a9b9dd4a75.jpg',
-      url: 'https://cdn.rawgit.com/GITenberg/Alice-s-Adventures-in-Wonderland_19033/master/19033-8.txt',
+      title: 'Moby Dick',
+      author: 'Herman Melville',
+      cover: 'https://c2.staticflickr.com/4/3110/2847467731_22450764ba_z.jpg',
+      url: 'https://cdn.rawgit.com/GITenberg/Moby-Dick--Or-The-Whale_2701/master/2701.txt',
       lastAccessed: Date.now()
     }
   ];
+
 
   template.toggleRemoveDialog = function(e) {
     template.toBeRemoved = e.target.templateInstance.model;
