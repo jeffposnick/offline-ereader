@@ -1,11 +1,58 @@
-body /deep/ core-toolbar {
+core-toolbar {
   color: #212121;
   background-color: inherit;
 }
 
+#topBar {
+  height: 64px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
+#bottomBar {
+  bottom: 0;
+  height: 64px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}
+
+#chapters-menu {
+  z-index: 2;
+}
+
+#chapters-menu paper-item {
+  margin-right: 0.5em;
+}
+
+#page-slider {
+  /* TODO: Find a way to get this to properly layout without having to assign a dummy width. */
+  width: 100000px;
+}
+
+paper-slider::shadow #sliderBar::shadow #activeProgress {
+  background-color: #1a9ce2;
+}
+
+paper-slider::shadow #sliderKnobInner {
+  background-color: #1a9ce2;
+}
+
+paper-slider::shadow #sliderKnobInner::before {
+  background-color: #1a9ce2;
+}
+
+paper-slider::shadow #sliderKnobInner::after {
+  color: #1a9ce2;
+}
+
 a.icon-button {
-  text-decoration: none;
   color: #212121;
+  text-decoration: none;
 }
 
 pageable-text {
@@ -21,4 +68,8 @@ pageable-text /deep/ .chapter {
   text-align: center;
   -webkit-column-break-before: always;
   break-before: column;
+}
+
+#page-display {
+  width: 4em;
 }

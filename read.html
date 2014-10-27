@@ -25,6 +25,9 @@
     <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
     <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
+    <link rel="import" href="bower_components/paper-item/paper-item.html">
+    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="bower_components/paper-slider/paper-slider.html">
 
     <link rel="stylesheet" href="styles/common.css" shim-shadowdom>
     <link rel="stylesheet" href="styles/read.css" shim-shadowdom>
@@ -33,25 +36,17 @@
   <body unresolved fit fullbleed>
     <template is="auto-binding" id="page-template">
       <core-a11y-keys target="{{parentElement}}"
-                      keys="left right space"
+                      keys="left right space esc"
                       on-keys-pressed="{{handleKeyPress}}">
       </core-a11y-keys>
 
-      <core-toolbar hidden>
+      <core-toolbar id="topBar"
+                    hidden?="{{!showToolbars}}">
         <a class="icon-button" href="index.html">
           <core-icon-button icon="arrow-back"></core-icon-button>
         </a>
 
         <div id="page-title" flex>Book Title</div>
-
-        <core-icon-button icon="list"
-                          on-tap="{{toggleChaptersDialog}}">
-        </core-icon-button>
-
-        <paper-dialog id="chapters-dialog"
-                      heading="Chapters"
-                      transition="paper-dialog-transition-center">
-        </paper-dialog>
 
         <core-icon-button icon="text-format"
                           on-tap="{{toggleFormatDialog}}">
@@ -70,17 +65,57 @@
         </core-ajax>
       </template>
 
-      <pageable-text fit
+      <pageable-text id="text"
+                     fit
                      columnGap="40"
                      savedProgressId="{{bookUrl}}"
                      fontFamily="{{fontFamily}}"
                      fontSize="{{fontSizePercent}}%"
                      currentPage="{{currentPage}}"
-                     totalPages="{{totalPages}}">
+                     totalPages="{{totalPages}}"
+                     on-tap="{{toggleToolbars}}">
         <pageable-text-source-markdown chapterElements="{{chapterElements}}"
                                        markdownText="{{markdown}}">
         </pageable-text-source-markdown>
       </pageable-text>
+
+      <core-toolbar id="bottomBar"
+                    layout horizontal
+                    hidden?="{{!showToolbars}}">
+        <paper-menu-button id="chapters-menu"
+                           icon="list"
+                           noTransition="true"
+                           halign="left"
+                           valign="bottom">
+          <template repeat="{{chapterElement in chapterElements}}">
+            <paper-item on-tap="{{jumpToChapter}}">{{chapterElement.textContent}}</paper-item>
+          </template>
+        </paper-menu-button>
+
+        <paper-slider id="page-slider"
+                      flex
+                      pin="true"
+                      min="1"
+                      max="{{totalPages}}"
+                      immediateValue="{{currentPage}}">
+        </paper-slider>
+
+        <div id="page-display">
+          {{currentPage}}/{{totalPages}}
+        </div>
+      </core-toolbar>
+
+      <core-animation id="toolbar-animation"
+                      duration="150"
+                      fill="both"
+                      on-core-animation-finish="{{finishToolbarAnimation}}">
+        <core-animation-keyframe>
+          <core-animation-prop name="opacity" value="1"></core-animation-prop>
+        </core-animation-keyframe>
+        <core-animation-keyframe>
+          <core-animation-prop name="opacity" value="0"></core-animation-prop>
+        </core-animation-keyframe>
+      </core-animation>
     </template>
 
     <script src="js/read.js"></script>
