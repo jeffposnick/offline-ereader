@@ -3,7 +3,8 @@
 
   var template = document.querySelector('#page-template');
   template.fontFamily = 'Georgia';
-  template.fontSizePercent = '100';
+  template.fontSizePercent = 100;
+  template.lineHeight = 1.2;
   template.theme = 'Light';
   template.showToolbars = true;
 

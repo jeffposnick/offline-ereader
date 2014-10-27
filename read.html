@@ -83,6 +83,18 @@
           </div>
 
           <div>
+            <label>Line Height</label>
+            <paper-dropdown-menu label="Line Height"
+                                 selected="{{lineHeight}}"
+                                 valueattr="value"
+                                 valign="bottom">
+              <paper-item label="Tight" value="1.0"></paper-item>
+              <paper-item label="Normal" value="1.2"></paper-item>
+              <paper-item label="Loose" value="1.5"></paper-item>
+            </paper-dropdown-menu>
+          </div>
+
+          <div>
             <label>Size (%)</label>
               <paper-slider id="font-size"
                             pin
@@ -112,6 +124,7 @@
                      savedProgressId="{{bookUrl}}"
                      fontFamily="{{fontFamily}}"
                      fontSize="{{fontSizePercent}}%"
+                     lineHeight="{{lineHeight}}"
                      currentPage="{{currentPage}}"
                      totalPages="{{totalPages}}"
                      on-click="{{handleClick}}">
