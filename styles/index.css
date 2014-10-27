@@ -53,9 +53,9 @@ paper-radio-button {
 }
 
 .book .author {
-  color: #212121;
+  color: #555555;
   font-size: 12px;
-  height: 1em;
+  height: 1.2em;
   margin-top: 4px;
   overflow-y: hidden;
 }

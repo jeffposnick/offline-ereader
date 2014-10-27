@@ -62,6 +62,10 @@ pageable-text {
   padding: 40px;
 }
 
+pageable-text.narrow {
+  padding: 8px;
+}
+
 pageable-text.Light {
   background-color: #ffffff;
   color: #000000;

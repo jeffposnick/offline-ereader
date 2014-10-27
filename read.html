@@ -17,6 +17,7 @@
     <link rel="import" href="bower_components/core-ajax/core-ajax.html">
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/font-roboto/roboto.html">
     <link rel="import" href="bower_components/mark-down/mark-down.html">
@@ -37,6 +38,8 @@
 
   <body unresolved fit fullbleed>
     <template is="auto-binding" id="page-template">
+      <core-media-query query="max-width: 640px" queryMatches="{{narrow}}"></core-media-query>
+
       <core-a11y-keys target="{{parentElement}}"
                       keys="left right space esc"
                       on-keys-pressed="{{handleKeyPress}}">
@@ -103,7 +106,7 @@
       </template>
 
       <pageable-text id="text"
-                     class="{{theme}}"
+                     class="{{ {narrow: narrow, theme: true} | tokenList }}"
                      fit
                      columnGap="40"
                      savedProgressId="{{bookUrl}}"
