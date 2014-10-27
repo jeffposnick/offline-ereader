@@ -12,6 +12,7 @@
   }));
   template.bookUrl = urlParams.get('bookUrl');
   template.title = urlParams.get('title');
+  document.title = template.title;
 
   template.addEventListener('template-bound', function() {
     var pageableText = document.querySelector('#text');
