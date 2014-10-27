@@ -1,148 +1,132 @@
-<!--
-    @license
-    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-    Code distributed by Google as part of the polymer project is also
-    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="A web-based eReader with offline support.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A responsive, offline eReader built with Polymer.">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta theme-color="#0277db">
 
-    <title>Offline eReader</title>
+    <title>My Library</title>
 
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon.png">
+    <link rel="shortcut icon" href="images/icon.png">
 
     <script src="bower_components/platform/platform.js"></script>
-    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
-    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
-    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
-    <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
-    <link rel="import" href="bower_components/core-dropdown/core-dropdown.html">
+    <script src="bower_components/es6-shim/es6-shim.min.js"></script>
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/core-item/core-item.html">
-    <link rel="import" href="bower_components/core-menu/core-menu.html">
-    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-image/core-image.html">
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/flatiron-director/flatiron-director.html">
     <link rel="import" href="bower_components/font-roboto/roboto.html">
-    <link rel="import" href="bower_components/mark-down/mark-down.html">
-    <link rel="import" href="bower_components/pageable-text/pageable-text.html">
-    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
-    <link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
-    <link rel="import" href="bower_components/paper-slider/paper-slider.html">
-    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-    <link rel="import" href="bower_components/service-worker-cache/service-worker-cache.html">
+    <link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
+    <link rel="import" href="bower_components/paper-ripple/paper-ripple.html">
 
-    <link rel="stylesheet" href="index.css" shim-shadowdom>
+    <link rel="stylesheet" href="styles/common.css" shim-shadowdom>
+    <link rel="stylesheet" href="styles/index.css" shim-shadowdom>
   </head>
 
-  <body unresolved fit fullbleed>
-    <template id="page-template" is="auto-binding">
-      <service-worker-cache></service-worker-cache>
+  <body unresolved fullbleed layout vertical>
+    <template is="auto-binding" id="page-template">
+      <core-header-panel flex>
+        <core-toolbar>
+          <div id="page-title" flex>My Library</div>
 
-      <core-drawer-panel id="drawerPanel">
-        <core-header-panel drawer>
-          <core-toolbar>
-            <span>Offline eReader</span>
-          </core-toolbar>
-          <core-menu>
-            <template repeat="{{book in books}}">
-              <div class="book-container" data-url="{{book.url}}" data-title="{{book.title}}" on-tap="{{handleBookTap}}">
-                <img class="book-cover" src="{{book.cover}}">
-                <p class="book-title">{{book.title}}</p>
-                <p class="book-author">{{book.author}}</p>
-                <paper-shadow z-index="1"></paper-shadow>
+          <core-icon-button icon="sort"
+                            on-tap="{{toggleSortDialog}}">
+          </core-icon-button>
+
+          <paper-dialog id="sort-dialog"
+                        heading="Sort by"
+                        transition="paper-dialog-transition-center">
+            <paper-radio-group selected="{{sortOrder}}"
+                               on-change="{{toggleSortDialog}}">
+              <paper-radio-button name="lastAccessed"
+                                  label="Recent">
+              </paper-radio-button>
+              <paper-radio-button name="title"
+                                  label="Title">
+              </paper-radio-button>
+              <paper-radio-button name="author"
+                                  label="Author">
+              </paper-radio-button>
+            </paper-radio-group>
+          </paper-dialog>
+
+          <core-icon-button icon="add"
+                            on-tap="{{toggleAddDialog}}">
+          </core-icon-button>
+
+          <paper-dialog id="add-dialog"
+                        heading="Add to library"
+                        transition="paper-dialog-transition-center">
+            <paper-input label="Title"
+                         value="{{toBeAddedTitle}}"
+                         autofocus
+                         required>
+            </paper-input>
+            <paper-input label="Author"
+                         value="{{toBeAddedAuthor}}">
+            </paper-input>
+            <paper-input label="Text URL"
+                         value="{{toBeAddedUrl}}"
+                         type="url"
+                         required>
+            </paper-input>
+            <paper-input label="Cover URL"
+                         value="{{toBeAddedCover}}"
+                         type="url">
+            </paper-input>
+            <paper-button dismissive autofocus>Cancel</paper-button>
+            <paper-button affirmative on-tap="{{addBook}}">Add</paper-button>
+          </paper-dialog>
+        </core-toolbar>
+
+        <div id="book-list" fit layout horizontal wrap center-justified>
+          <template repeat="{{book, i in books}}">
+            <div class="book"
+                 on-click="{{readBook}}">
+              <paper-ripple fit></paper-ripple>
+
+              <core-image class="cover"
+                          src="{{book.cover}}"
+                          preload
+                          fade
+                          sizing="crop">
+              </core-image>
+
+              <div class="book-bottom">
+                <div class="text" layout vertical>
+                  <div class="title">{{book.title}}</div>
+                  <div class="author">{{book.author}}</div>
+                </div>
+
+                <paper-menu-button icon="more-vert">
+                  <paper-item>Download</paper-item>
+                  <paper-item on-tap="{{toggleRemoveDialog}}">Delete from library</paper-item>
+                  <paper-item>Edit info</paper-item>
+                </paper-menu-button>
               </div>
-              <div class="cf"/>
-            </template>
-          </core-menu>
-        </core-header-panel>
-
-        <core-header-panel main>
-          <core-toolbar>
-            <paper-icon-button icon="menu" on-tap="{{handleTogglePanel}}"></paper-icon-button>
-
-            <span flex>{{currentTitle}}</span>
-
-            <paper-menu-button icon="search" id="search" halign="right"></paper-menu-button>
-
-            <paper-menu-button icon="book" id="bookmarks" halign="right"></paper-menu-button>
-
-            <paper-menu-button icon="text-format" id="text-format" halign="right" on-tap="{{handleOpenDialog}}"></paper-menu-button>
-          </core-toolbar>
-
-          <div class="content">
-            <pageable-text columnGap="40"
-                           fontFamily="{{fontFamily}}"
-                           fontSize="{{fontSizePercent}}%"
-                           currentPage="{{currentPage}}"
-                           totalPages="{{totalPages}}">
-              <mark-down text="{{markdown}}"></mark-down>
-            </pageable-text>
-
-            <div id="info">
-              <div>
-                <paper-slider id="page-slider" min="1" max="{{totalPages}}" immediateValue="{{currentPage}}"></paper-slider>
-              </div>
-
-              <core-icon-button icon="arrow-back"
-                                on-tap="{{handlePreviousPage}}"
-                                disabled?="{{currentPage == 1}}">
-              </core-icon-button>
-
-              <span id="current-page">{{currentPage}} of {{totalPages}}</span>
-
-              <core-icon-button icon="arrow-forward"
-                                on-tap="{{handleNextPage}}"
-                                disabled?="{{currentPage >= totalPages}}">
-              </core-icon-button>
             </div>
-          </div>
-        </core-header-panel>
-      </core-drawer-panel>
+          </template>
 
-      <core-ajax auto
-                 url="{{bookUrl}}"
-                 handleAs="text"
-                 response="{{markdown}}">
-      </core-ajax>
-
-      <dialog>
-        <core-icon-button id="close"
-                          icon="close"
-                          on-tap="{{handleCloseDialog}}">
-        </core-icon-button>
-
-        <div>
-          <label for="font-size">Font Size</label>:
-          <input id="font-size"
-                 type="range"
-                 value="{{fontSizePercent}}"
-                 min="50"
-                 max="300"
-                 step="10">
-          <span>{{fontSizePercent}}%</span>
+          <paper-dialog id="remove-dialog"
+                        heading="Delete from library?"
+                        transition="paper-dialog-transition-center">
+            <p class="title">{{toBeRemoved.book.title}}</p>
+            <p>This book will be removed from the list of available books.</p>
+            <paper-button dismissive autofocus>Cancel</paper-button>
+            <paper-button affirmative on-tap="{{removeBook}}">Delete</paper-button>
+          </paper-dialog>
         </div>
-
-        <div>
-          <label for="font-family">Font</label>:
-          <input id="font-family" type="text" value="{{fontFamily}}">
-        </div>
-      </dialog>
+      </core-header-panel>
     </template>
 
-    <script src="index.js"></script>
+    <script src="js/index.js"></script>
   </body>
 </html>

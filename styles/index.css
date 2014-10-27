@@ -1,0 +1,69 @@
+body /deep/ core-toolbar {
+  background-color: #1a9ce2;
+  color: #ffffff;
+}
+
+#book-list {
+  margin-top: 8px;
+}
+
+paper-dialog paper-input {
+  width: 95%;
+}
+
+paper-radio-button {
+  display: block;
+}
+
+.book {
+  background-color: #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  display: block;
+  height: 320px;
+  margin: 8px;
+  min-width: 200px;
+  position: relative;
+  width: 200px;
+}
+
+.book .cover {
+  background-color: #323232;
+  height: 240px;
+  width: 100%;
+}
+
+.book .book-bottom {
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 8px;
+  position: relative;
+}
+
+.book .text {
+  width: 144px;
+}
+
+.book .title {
+  color: #212121;
+  font-size: 16px;
+  font-weight: 500;
+  max-height: 40px;
+  overflow-y: hidden;
+}
+
+.book .author {
+  color: #555555;
+  font-size: 12px;
+  height: 1.2em;
+  margin-top: 4px;
+  overflow-y: hidden;
+}
+
+.book paper-menu-button {
+  color: #bcbcbc;
+  position: absolute;
+  top: -4px;
+  right: -16px;
+  z-index: 2;
+}

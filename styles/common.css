@@ -1,0 +1,24 @@
+body {
+  font-family: "RobotoDraft";
+  font-weight: 300;
+  background-color: #eeeeee;
+  font-size: 14px;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+#page-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+paper-ripple {
+  z-index: 1;
+}
+
+paper-dialog {
+  max-width: 500px;
+  width: 90%;
+}
