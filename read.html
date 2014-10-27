@@ -122,7 +122,7 @@
 
       <core-toolbar id="bottomBar"
                     layout horizontal
-                    hidden?="{{!showToolbars}}">
+                    hidden?="{{!showToolbars || totalPages <= 1}}">
         <paper-menu-button id="chapters-menu"
                            hidden?="{{chapterElements.length < 1}}"
                            icon="list"
