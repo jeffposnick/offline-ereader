@@ -134,12 +134,13 @@
           </template>
         </paper-menu-button>
 
+        <!-- TODO: There are some bugs here that lead to the currentPage being reset if either min="1"
+             or immediateValue="{{currentPage}}" are set. -->
         <paper-slider id="page-slider"
                       flex
                       pin="true"
-                      min="1"
                       max="{{totalPages}}"
-                      immediateValue="{{currentPage}}">
+                      value="{{currentPage}}">
         </paper-slider>
 
         <div id="page-display"
@@ -153,7 +154,7 @@
                       fill="both"
                       on-core-animation-finish="{{finishToolbarAnimation}}">
         <core-animation-keyframe>
-          <core-animation-prop name="opacity" value="1"></core-animation-prop>
+          <core-animation-prop name="opacity" value="0.95"></core-animation-prop>
         </core-animation-keyframe>
         <core-animation-keyframe>
           <core-animation-prop name="opacity" value="0"></core-animation-prop>
