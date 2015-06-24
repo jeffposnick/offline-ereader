@@ -28,7 +28,11 @@
     "paper-styles": "polymerelements/paper-styles#~1.0.6",
     "paper-header-panel": "polymerelements/paper-header-panel#~1.0.2",
     "paper-toolbar": "polymerelements/paper-toolbar#~1.0.2",
-    "paper-icon-button": "polymerelements/paper-icon-button#~1.0.2"
+    "paper-icon-button": "polymerelements/paper-icon-button#~1.0.2",
+    "paper-dialog": "polymerelements/paper-dialog#~1.0.0",
+    "paper-dialog-scrollable": "polymerelements/paper-dialog-scrollable#~1.0.1",
+    "paper-radio-group": "polymerelements/paper-radio-group#~1.0.3",
+    "paper-radio-button": "polymerelements/paper-radio-button#~1.0.3"
   },
   "resolutions": {
     "polymer": "^1.0.0",

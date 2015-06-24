@@ -19,18 +19,30 @@
   </head>
 
   <body class="fullbleed layout vertical">
-    <template is="dom-bind" id="page-template">
+    <template is="dom-bind" id="pageTemplate">
       <paper-header-panel class="flex">
         <paper-toolbar>
           <div class="flex paper-font-title">My Library</div>
-          <paper-icon-button icon="sort" on-tap="toggleSortDialog"></paper-icon-button>
+
+          <paper-icon-button icon="sort" on-tap="openSortDialog"></paper-icon-button>
+          <paper-dialog id="sortDialog">
+            <h2>Sort by</h2>
+            <paper-radio-group selected="{{sortOrder}}"
+                               on-change="closeSortDialog">
+              <paper-radio-button name="lastAccessed">Recent</paper-radio-button>
+              <paper-radio-button name="title">Title</paper-radio-button>
+              <paper-radio-button name="author">Author</paper-radio-button>
+            </paper-radio-group>
+          </paper-dialog>
+
           <paper-icon-button icon="add" on-tap="addBook"></paper-icon-button>
         </paper-toolbar>
 
-        <div id="book-list" class="fit layout horizontal wrap center-justified">
-          <template is="dom-repeat" items="[[books]]">
+        <div class="fit layout horizontal wrap center-justified">
+          <template is="dom-repeat" id="bookRepeat" items="[[books]]">
             <book-cover author="[[item.author]]"
                         title="[[item.title]]"
+                        url="[[item.url]]"
                         on-tap="selectBook"></book-cover>
           </template>
         </div>

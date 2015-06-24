@@ -1,9 +1,11 @@
 'use strict';
 
+import connect from 'connect';
 import del from 'del';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import sequence from 'run-sequence';
+import serveStatic from 'serve-static';
 import {exec} from 'child_process';
 
 const $ = gulpLoadPlugins();
@@ -39,8 +41,12 @@ gulp.task('copy-src-files', () => {
 
 gulp.task('default', ['serve:dev']);
 
-gulp.task('serve:dev', ['build'], () => {
-  exec('node_modules/http-server/bin/http-server dev -c-1');
+gulp.task('serve:dev', ['build'], callback => {
+  connect().use(serveStatic(DEV_DIR)).listen(8080, error => {
+    if (error) {
+      callback(error);
+    }
+  });
 });
 
 gulp.task('watch', () => {
