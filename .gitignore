@@ -1,2 +1,4 @@
 src/components
 node_modules
+dev
+dist

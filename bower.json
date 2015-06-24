@@ -23,10 +23,8 @@
     "tests"
   ],
   "dependencies": {
-    "iron-elements": "PolymerElements/iron-elements#^1.0.1",
     "marked-element": "jeffposnick/marked-element#master",
-    "pageable-text": "jeffposnick/pageable-text#^2.0.0",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.1"
+    "pageable-text": "jeffposnick/pageable-text#^2.0.0"
   },
   "resolutions": {
     "polymer": "^1.0.0",

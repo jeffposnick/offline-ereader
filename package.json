@@ -13,7 +13,8 @@
   "devDependencies": {
     "del": "^1.2.0",
     "gulp-babel": "^5.1.0",
-    "http-server": "^0.8.0"
+    "http-server": "^0.8.0",
+    "run-sequence": "^1.1.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
