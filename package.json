@@ -1,0 +1,31 @@
+{
+  "name": "offline-ereader",
+  "version": "1.0.0",
+  "description": "A web-based offline-first eReader.",
+  "main": "dist/index.html",
+  "dependencies": {
+    "babel": "^5.6.4",
+    "gulp": "^3.9.0",
+    "gulp-bower": "^0.0.10",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "sw-precache": "^2.0.0"
+  },
+  "devDependencies": {
+    "del": "^1.2.0",
+    "gulp-babel": "^5.1.0",
+    "http-server": "^0.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeffposnick/offline-ereader"
+  },
+  "author": "Jeff Posnick <jeffy@google.com> (https://jeffy.info)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jeffposnick/offline-ereader/issues"
+  },
+  "homepage": "https://github.com/jeffposnick/offline-ereader"
+}

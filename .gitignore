@@ -1,3 +1,2 @@
-bower_components
-.idea
-*.iml
+src/components
+node_modules

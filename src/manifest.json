@@ -1,13 +1,13 @@
 {
   "name": "Offline eReader",
+  "short_name": "Offline eReader",
   "icons": [
     {
       "src": "images/icon.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "density": "4.0"
+      "type": "image/png"
     }
   ],
-  "start_url": "index.html",
+  "start_url": "index.html?utm_source=web_app_manifest",
   "display": "standalone"
 }
