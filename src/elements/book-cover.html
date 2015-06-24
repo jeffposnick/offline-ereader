@@ -12,16 +12,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="book-cover">
   <style>
     :host {
-      background-color: [[color]];
+      background-color: var(--book-cover-background-color);
       height: 10em;
       width: 8em;
       border: 1px solid #bdbdbd;
     }
+
+    #title {
+      @apply(--book-cover-title-theme);
+    }
+
+    #author {
+      @apply(--book-cover-author-theme);
+    }
   </style>
 
   <template>
-    <div>[[title]]</div>
-    <div>[[author]]</div>
+    <div id="title">[[title]]</div>
+    <div id="author">[[author]]</div>
   </template>
 </dom-module>
 

@@ -1,0 +1,19 @@
+<style is="custom-style">
+  #book-list > book-cover {
+    margin: 16px;
+    padding: 8px;
+    cursor: pointer;
+
+    @apply(--shadow-elevation-2dp);
+
+    --book-cover-background-color: var(--light-primary-color);
+
+    --book-cover-title-theme: {
+      @apply(--paper-font-title);
+    };
+
+    --book-cover-author-theme: {
+      @apply(--paper-font-subhead);
+    };
+  }
+</style>

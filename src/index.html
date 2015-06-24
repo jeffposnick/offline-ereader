@@ -15,7 +15,7 @@
 
     <link rel="import" href="elements/elements.html">
 
-    <link rel="stylesheet" href="styles/index.css">
+    <link rel="import" href="styles/index.html">
   </head>
 
   <body class="fullbleed layout vertical">
@@ -23,16 +23,20 @@
       <paper-header-panel class="flex">
         <paper-toolbar>
           <div class="flex paper-font-title">My Library</div>
+          <paper-icon-button icon="sort" on-tap="toggleSortDialog"></paper-icon-button>
           <paper-icon-button icon="add" on-tap="addBook"></paper-icon-button>
         </paper-toolbar>
 
         <div id="book-list" class="fit layout horizontal wrap center-justified">
           <template is="dom-repeat" items="[[books]]">
-            <book-cover title="[[item.title]]"></book-cover>
+            <book-cover author="[[item.author]]"
+                        title="[[item.title]]"
+                        on-tap="selectBook"></book-cover>
           </template>
         </div>
       </paper-header-panel>
     </template>
+
     <!--<template is="auto-binding" id="page-template">
       <core-header-panel flex>
         <core-toolbar>

@@ -39,8 +39,8 @@ gulp.task('copy-src-files', () => {
 
 gulp.task('default', ['serve:dev']);
 
-gulp.task('serve:dev', ['build'], callback => {
-  exec('node_modules/http-server/bin/http-server dev -c-1', callback);
+gulp.task('serve:dev', ['build'], () => {
+  exec('node_modules/http-server/bin/http-server dev -c-1');
 });
 
 gulp.task('watch', () => {
