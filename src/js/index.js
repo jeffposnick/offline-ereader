@@ -1,8 +1,26 @@
-(function() {
-  "use strict";
+const t = document.querySelector('#page-template');
+t.books = [{
+  title: 'first'
+}, {
+  title: 'second'
+}, {
+  title: 'third'
+}, {
+  title: 'first'
+}, {
+  title: 'second'
+}, {
+  title: 'third'
+}, {
+  title: 'first'
+}, {
+  title: 'second'
+}, {
+  title: 'third'
+}];
 
-  var template = document.querySelector('#page-template');
 
+/*
   function serializeUrlParams(params) {
     return Object.keys(params).map(function(key) {
       return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
@@ -105,3 +123,4 @@
 
   template.sortBooks();
 })();
+*/

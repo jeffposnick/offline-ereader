@@ -11,14 +11,29 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="images/icon.png">
 
-    <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-    <link rel="stylesheet" href="styles/common.css">
+    <link rel="import" href="elements/elements.html">
+
     <link rel="stylesheet" href="styles/index.css">
   </head>
 
-  <body>
-    <template is="auto-binding" id="page-template">
+  <body class="fullbleed layout vertical">
+    <template is="dom-bind" id="page-template">
+      <paper-header-panel class="flex">
+        <paper-toolbar>
+          <div class="flex paper-font-title">My Library</div>
+          <paper-icon-button icon="add" on-tap="addBook"></paper-icon-button>
+        </paper-toolbar>
+
+        <div id="book-list" class="fit layout horizontal wrap center-justified">
+          <template is="dom-repeat" items="[[books]]">
+            <book-cover title="[[item.title]]"></book-cover>
+          </template>
+        </div>
+      </paper-header-panel>
+    </template>
+    <!--<template is="auto-binding" id="page-template">
       <core-header-panel flex>
         <core-toolbar>
           <div id="page-title" flex>My Library</div>
@@ -110,7 +125,7 @@
           </paper-dialog>
         </div>
       </core-header-panel>
-    </template>
+    </template>-->
 
     <script src="js/index.js"></script>
   </body>
