@@ -18,13 +18,13 @@
     <link rel="import" href="styles/index.html">
   </head>
 
-  <body class="fullbleed layout vertical">
+  <body class="fullbleed fit layout vertical">
     <template is="dom-bind" id="pageTemplate">
       <paper-header-panel class="flex">
         <paper-toolbar>
           <div class="flex paper-font-title">My Library</div>
 
-          <paper-icon-button icon="sort" on-tap="openSortDialog"></paper-icon-button>
+          <paper-icon-button icon="sort" on-click="openSortDialog"></paper-icon-button>
           <paper-dialog id="sortDialog">
             <h2>Sort by</h2>
             <paper-radio-group selected="{{sortOrder}}"
