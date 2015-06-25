@@ -27,12 +27,29 @@ function assignHelperMethods() {
   t.repaginate = () => {
     t.$.pageableText.repaginate();
   };
+
+  t.navigateToIndex = () => {
+    window.location.href = 'index.html';
+  };
+
+  t.openFormatDialog = () => {
+    t.$.formatDialog.open();
+  };
+
+  t.calculateFontSize = fontSizePercent => {
+    return `${fontSizePercent}%`;
+  };
+
+  t.calculatePageableTextClass = theme => {
+    return `${theme} fit`;
+  };
 }
 
 function assignProperties() {
   t.fontFamily = 'Georgia';
   t.fontSizePercent = 100;
   t.lineHeight = 1.2;
+  t.theme = 'light';
 
   const urlParams = new Map(window.location.search.substring(1).split('&').map(keyValuePair => {
     return keyValuePair.split('=').map(decodeURIComponent);

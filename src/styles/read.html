@@ -1,6 +1,17 @@
 <style is="custom-style">
   pageable-text {
-    margin: 80px 40px 40px 40px;
+    padding: 80px 40px 40px 40px;
+    z-index: -1;
+  }
+
+  pageable-text.light {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  pageable-text.dark {
+    background-color: #4c4c4c;
+    color: #ededed;
   }
 
   #bottomBar {
@@ -8,5 +19,15 @@
     left: 0;
     position: absolute;
     right: 0;
+  }
+
+  #pageDisplay {
+    margin-left: 8px;
+    min-width: 50px;
+    @apply(--paper-font-body1);
+  }
+
+  paper-dialog > div > h3 {
+    margin-bottom: 0;
   }
 </style>

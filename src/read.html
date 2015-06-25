@@ -34,13 +34,49 @@
         <div class="flex paper-font-title">[[title]]</div>
 
         <paper-icon-button icon="text-format" on-click="openFormatDialog"></paper-icon-button>
+        <paper-dialog id="formatDialog">
+          <div>
+            <h3>Theme</h3>
+            <paper-radio-group selected="{{theme}}">
+              <paper-radio-button name="light">Light</paper-radio-button>
+              <paper-radio-button name="dark">Dark</paper-radio-button>
+            </paper-radio-group>
+          </div>
+
+          <div>
+            <h3>Font</h3>
+            <paper-radio-group selected="{{fontFamily}}">
+              <paper-radio-button name="Georgia">Georgia</paper-radio-button>
+              <paper-radio-button name="Roboto">Roboto</paper-radio-button>
+            </paper-radio-group>
+          </div>
+
+          <div>
+            <h3>Line Spacing</h3>
+            <paper-radio-group selected="{{lineHeight}}">
+              <paper-radio-button name="1.0">Tight</paper-radio-button>
+              <paper-radio-button name="1.2">Normal</paper-radio-button>
+              <paper-radio-button name="1.5">Loose</paper-radio-button>
+            </paper-radio-group>
+          </div>
+
+          <div>
+            <h3>Size (%)</h3>
+            <paper-slider pin
+                          value="{{fontSizePercent}}"
+                          min="50"
+                          max="300"
+                          step="10">
+            </paper-slider>
+          </div>
+        </paper-dialog>
       </paper-toolbar>
 
       <pageable-text id="pageableText"
-                     class="fit"
+                     class$="[[calculatePageableTextClass(theme)]]"
                      column-gap="40"
                      font-family="[[fontFamily]]"
-                     font-size="[[fontSizePercent]]"
+                     font-size="[[calculateFontSize(fontSizePercent)]]"
                      line-height="[[lineHeight]]"
                      current-page="{{currentPage}}"
                      total-pages="{{totalPages}}"
@@ -49,15 +85,16 @@
       </pageable-text>
 
       <template is="dom-if" if="[[totalPages]]">
-        <div id="bottomBar" class="layout horizontal">
+        <div id="bottomBar" class="layout horizontal center">
           <paper-slider class="flex"
                         pin
+                        min="1"
                         max="[[totalPages]]"
                         value="{{currentPage}}">
           </paper-slider>
 
-          <div id="page-display">
-            <span>[[currentPage]]</span>/<span>[[totalPages]]</span>
+          <div id="pageDisplay">
+            <span>[[currentPage]]</span> / <span>[[totalPages]]</span>
           </div>
 
           <paper-icon-button icon="arrow-back" on-click="previousPage"></paper-icon-button>
