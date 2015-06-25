@@ -36,7 +36,8 @@
     "paper-radio-button": "polymerelements/paper-radio-button#~1.0.3",
     "iron-ajax": "polymerelements/iron-ajax#~1.0.2",
     "iron-icons": "polymerelements/iron-icons#~1.0.3",
-    "paper-slider": "polymerelements/paper-slider#~1.0.2"
+    "paper-slider": "polymerelements/paper-slider#~1.0.2",
+    "platinum-sw": "polymerelements/platinum-sw#~1.0.1"
   },
   "resolutions": {
     "polymer": "^1.0.0",

@@ -2,8 +2,10 @@
 
 import connect from 'connect';
 import del from 'del';
+import ghPages from 'gh-pages';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import path from 'path';
 import sequence from 'run-sequence';
 import serveStatic from 'serve-static';
 import {exec} from 'child_process';
@@ -26,9 +28,7 @@ gulp.task('bower', callback => {
   exec('bower install', callback);
 });
 
-gulp.task('build', callback => {
-  sequence(['bower', 'babel', 'copy-src-files'], 'watch', callback);
-});
+gulp.task('build', ['bower', 'babel', 'copy-src-files']);
 
 gulp.task('clean', callback => {
   del([DEV_DIR, DIST_DIR], callback);
@@ -41,7 +41,11 @@ gulp.task('copy-src-files', () => {
 
 gulp.task('default', ['serve:dev']);
 
-gulp.task('serve:dev', ['build'], callback => {
+gulp.task('gh-pages', ['build'], callback => {
+  ghPages.publish(path.join(__dirname, DEV_DIR), callback);
+});
+
+gulp.task('serve:dev', ['watch'], callback => {
   connect().use(serveStatic(DEV_DIR)).listen(8080, error => {
     if (error) {
       callback(error);
@@ -49,7 +53,7 @@ gulp.task('serve:dev', ['build'], callback => {
   });
 });
 
-gulp.task('watch', () => {
+gulp.task('watch', ['build'], () => {
   gulp.watch('bower.json', ['bower']);
   gulp.watch(JS_FILES_GLOB, ['babel']);
   gulp.watch(SRC_FILES_GLOBS, ['copy-src-files']);

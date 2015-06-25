@@ -18,7 +18,14 @@
     <link rel="import" href="styles/index.html">
   </head>
 
-  <body class="fullbleed fit layout vertical">
+  <body class="fullbleed fit layout vertical" unresolved>
+    <platinum-sw-register skip-waiting
+                          clients-claim
+                          reload-on-install
+                          auto-register>
+      <platinum-sw-cache></platinum-sw-cache>
+    </platinum-sw-register>
+
     <template is="dom-bind" id="pageTemplate">
       <paper-header-panel class="flex">
         <paper-toolbar>
@@ -34,8 +41,6 @@
               <paper-radio-button name="author">Author</paper-radio-button>
             </paper-radio-group>
           </paper-dialog>
-
-          <paper-icon-button icon="add" on-tap="addBook"></paper-icon-button>
         </paper-toolbar>
 
         <div class="fit layout horizontal wrap center-justified">
@@ -48,6 +53,7 @@
         </div>
       </paper-header-panel>
     </template>
+
 
     <!--<template is="auto-binding" id="page-template">
       <core-header-panel flex>
