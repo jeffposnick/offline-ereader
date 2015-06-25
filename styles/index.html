@@ -1,0 +1,23 @@
+<style is="custom-style">
+  book-cover {
+    background-color: var(--light-primary-color);
+    border-radius: 2px;
+    cursor: pointer;
+    height: 280px;
+    margin: 16px;
+    padding: 8px;
+    width: 200px;
+
+    --book-cover-title-theme: {
+      @apply(--paper-font-title);
+    };
+
+    --book-cover-author-theme: {
+      @apply(--paper-font-subhead);
+    };
+  }
+
+  book-cover:hover {
+    @apply(--shadow-elevation-2dp);
+  }
+</style>

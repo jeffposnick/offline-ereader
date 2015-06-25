@@ -2,42 +2,108 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="A responsive, offline eReader built with Polymer.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <meta name="theme-color" content="#0277db">
+    <meta name="theme-color" content="#eeeeff">
 
-    <title>Read</title>
+    <title>Loading book...</title>
 
     <link rel="manifest" href="manifest.json">
-    <link rel="shortcut icon" href="images/icon.png">
+    <link rel="icon" href="images/icon.png">
 
-    <script src="bower_components/platform/platform.js"></script>
-    <script src="bower_components/es6-shim/es6-shim.min.js"></script>
-    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
-    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
-    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
-    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
-    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/font-roboto/roboto.html">
-    <link rel="import" href="bower_components/mark-down/mark-down.html">
-    <link rel="import" href="bower_components/pageable-text/pageable-text.html">
-    <link rel="import" href="bower_components/pageable-text/pageable-text-source-markdown.html">
-    <link rel="import" href="bower_components/paper-button/paper-button.html">
-    <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
-    <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html">
-    <link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-    <link rel="import" href="bower_components/paper-input/paper-input.html">
-    <link rel="import" href="bower_components/paper-item/paper-item.html">
-    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
-    <link rel="import" href="bower_components/paper-slider/paper-slider.html">
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-    <link rel="stylesheet" href="styles/common.css" shim-shadowdom>
-    <link rel="stylesheet" href="styles/read.css" shim-shadowdom>
+    <link rel="import" href="elements/elements.html">
+
+    <link rel="import" href="styles/read.html">
   </head>
 
-  <body unresolved fit fullbleed>
-    <template is="auto-binding" id="page-template">
+  <body class="fullbleed fit" unresolved>
+    <template is="dom-bind" id="pageTemplate">
+      <iron-a11y-keys target="{{}}" keys="left right space" on-keys-pressed="keyPress"></iron-a11y-keys>
+
+      <iron-ajax auto
+                 url="[[bookUrl]]"
+                 handle-as="text"
+                 last-response="{{bookText}}">
+      </iron-ajax>
+
+      <paper-toolbar>
+        <paper-icon-button icon="arrow-back" on-click="navigateToIndex"></paper-icon-button>
+
+        <div class="flex paper-font-title">[[title]]</div>
+
+        <paper-icon-button icon="text-format" on-click="openFormatDialog"></paper-icon-button>
+        <paper-dialog id="formatDialog">
+          <div>
+            <h3>Theme</h3>
+            <paper-radio-group selected="{{theme}}">
+              <paper-radio-button name="light">Light</paper-radio-button>
+              <paper-radio-button name="dark">Dark</paper-radio-button>
+            </paper-radio-group>
+          </div>
+
+          <div>
+            <h3>Font</h3>
+            <paper-radio-group selected="{{fontFamily}}">
+              <paper-radio-button name="Georgia">Georgia</paper-radio-button>
+              <paper-radio-button name="Roboto">Roboto</paper-radio-button>
+            </paper-radio-group>
+          </div>
+
+          <div>
+            <h3>Line Spacing</h3>
+            <paper-radio-group selected="{{lineHeight}}">
+              <paper-radio-button name="1.0">Tight</paper-radio-button>
+              <paper-radio-button name="1.2">Normal</paper-radio-button>
+              <paper-radio-button name="1.5">Loose</paper-radio-button>
+            </paper-radio-group>
+          </div>
+
+          <div>
+            <h3>Size (%)</h3>
+            <paper-slider pin
+                          value="{{fontSizePercent}}"
+                          min="50"
+                          max="300"
+                          step="10">
+            </paper-slider>
+          </div>
+        </paper-dialog>
+      </paper-toolbar>
+
+      <pageable-text id="pageableText"
+                     class$="[[calculatePageableTextClass(theme)]]"
+                     column-gap="40"
+                     font-family="[[fontFamily]]"
+                     font-size="[[calculateFontSize(fontSizePercent)]]"
+                     line-height="[[lineHeight]]"
+                     current-page="{{currentPage}}"
+                     total-pages="{{totalPages}}"
+                     on-marked-render-complete="repaginate">
+          <marked-element markdown="[[bookText]]"></marked-element>
+      </pageable-text>
+
+      <template is="dom-if" if="[[totalPages]]">
+        <div id="bottomBar" class="layout horizontal center">
+          <paper-slider class="flex"
+                        pin
+                        min="1"
+                        max="[[totalPages]]"
+                        value="{{currentPage}}">
+          </paper-slider>
+
+          <div id="pageDisplay">
+            <span>[[currentPage]]</span> / <span>[[totalPages]]</span>
+          </div>
+
+          <paper-icon-button icon="arrow-back" on-click="previousPage"></paper-icon-button>
+          <paper-icon-button icon="arrow-forward" on-click="nextPage"></paper-icon-button>
+        </div>
+      </template>
+    </template>
+
+    <!--<template is="auto-binding" id="page-template">
       <core-media-query query="max-width: 360px" queryMatches="{{narrow}}"></core-media-query>
 
       <core-a11y-keys target="{{parentElement}}"
@@ -148,7 +214,7 @@
         </paper-menu-button>
 
         <!-- TODO: There are some bugs here that lead to the currentPage being reset if either min="1"
-             or immediateValue="{{currentPage}}" are set. -->
+             or immediateValue="{{currentPage}}" are set. --
         <paper-slider id="page-slider"
                       flex
                       pin="true"
@@ -173,7 +239,7 @@
           <core-animation-prop name="opacity" value="0"></core-animation-prop>
         </core-animation-keyframe>
       </core-animation>
-    </template>
+    </template>-->
 
     <script src="js/read.js"></script>
   </body>

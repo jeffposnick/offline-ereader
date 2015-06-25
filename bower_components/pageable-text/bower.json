@@ -1,6 +1,6 @@
 {
   "name": "pageable-text",
-  "version": "1.0.4",
+  "version": "2.0.3",
   "authors": [
     "Jeff Posnick <jeffy@google.com>"
   ],
@@ -18,22 +18,17 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/jeffposnick/pageable-text/",
   "ignore": [
-    "/.*",
-    "/tests/"
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
   ],
   "dependencies": {
-    "core-ajax": "Polymer/core-ajax#^0.4.2",
-    "core-animation": "Polymer/core-animation#^0.4.2",
-    "core-icon-button": "Polymer/core-icon-button#^0.4.2",
-    "core-icons": "Polymer/core-icons#^0.4.2",
-    "core-localstorage": "jeffposnick/core-localstorage#master",
-    "core-media-query": "Polymer/core-media-query#^0.4.2",
-    "mark-down": "robdodson/mark-down#^0.6.1",
-    "paper-button": "Polymer/paper-button#^0.4.2",
-    "paper-dialog": "Polymer/paper-dialog#^0.4.2",
-    "polymer": "Polymer/polymer#^0.4.2"
+    "neon-animation": "PolymerElements/neon-animation#~1.0.3",
+    "polymer": "Polymer/polymer#~1.0.4"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^0.7.3"
+    "iron-component-page": "PolymerElements/iron-component-page#~1.0.5"
   }
 }

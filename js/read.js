@@ -1,4 +1,70 @@
-(function() {
+'use strict';
+
+var t = document.querySelector('#pageTemplate');
+
+function assignHelperMethods() {
+  t.keyPress = function (e) {
+    if (t.$ && t.$.pageableText) {
+      switch (e.detail.combo) {
+        case 'left':
+          t.previousPage();
+          break;
+
+        case 'right':
+        case 'space':
+          t.nextPage();
+          break;
+      }
+    }
+  };
+
+  t.previousPage = function () {
+    t.$.pageableText.previousPage();
+  };
+
+  t.nextPage = function () {
+    t.$.pageableText.nextPage();
+  };
+
+  t.repaginate = function () {
+    t.$.pageableText.repaginate();
+  };
+
+  t.navigateToIndex = function () {
+    window.location.href = 'index.html';
+  };
+
+  t.openFormatDialog = function () {
+    t.$.formatDialog.open();
+  };
+
+  t.calculateFontSize = function (fontSizePercent) {
+    return fontSizePercent + '%';
+  };
+
+  t.calculatePageableTextClass = function (theme) {
+    return theme + ' fit';
+  };
+}
+
+function assignProperties() {
+  t.fontFamily = 'Georgia';
+  t.fontSizePercent = 100;
+  t.lineHeight = 1.2;
+  t.theme = 'light';
+
+  var urlParams = new Map(window.location.search.substring(1).split('&').map(function (keyValuePair) {
+    return keyValuePair.split('=').map(decodeURIComponent);
+  }));
+
+  t.bookUrl = urlParams.get('bookUrl');
+  t.title = document.title = urlParams.get('title');
+}
+
+assignHelperMethods();
+assignProperties();
+
+/*(function() {
   "use strict";
 
   var template = document.querySelector('#page-template');
@@ -72,3 +138,4 @@
     };
   });
 })();
+*/
