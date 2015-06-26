@@ -25,7 +25,7 @@
   "dependencies": {
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#~1.0.2",
     "marked-element": "jeffposnick/marked-element#master",
-    "pageable-text": "jeffposnick/pageable-text#~2.0.3",
+    "pageable-text": "jeffposnick/pageable-text#~2.0.6",
     "paper-styles": "polymerelements/paper-styles#~1.0.6",
     "paper-header-panel": "polymerelements/paper-header-panel#~1.0.2",
     "paper-toolbar": "polymerelements/paper-toolbar#~1.0.2",

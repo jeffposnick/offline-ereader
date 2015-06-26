@@ -1,7 +1,17 @@
 <style is="custom-style">
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+    outline: 0;
+  }
+
   pageable-text {
-    padding: 80px 40px 40px 40px;
-    z-index: -1;
+    bottom: 40px;
+    left: 40px;
+    pointer-events: none;
+    position: absolute;
+    right: 40px;
+    top: 80px;
   }
 
   pageable-text.light {
@@ -19,6 +29,7 @@
     left: 0;
     position: absolute;
     right: 0;
+    height: 40px;
   }
 
   #pageDisplay {

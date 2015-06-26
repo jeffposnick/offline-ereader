@@ -29,7 +29,7 @@
       </iron-ajax>
 
       <paper-toolbar>
-        <paper-icon-button icon="arrow-back" on-click="navigateToIndex"></paper-icon-button>
+        <paper-icon-button icon="arrow-back" on-tap="navigateToIndex"></paper-icon-button>
 
         <div class="flex paper-font-title">[[title]]</div>
 
@@ -74,7 +74,7 @@
 
       <pageable-text id="pageableText"
                      class$="[[calculatePageableTextClass(theme)]]"
-                     column-gap="40"
+                     margin="40"
                      font-family="[[fontFamily]]"
                      font-size="[[calculateFontSize(fontSizePercent)]]"
                      line-height="[[lineHeight]]"
@@ -97,8 +97,8 @@
             <span>[[currentPage]]</span> / <span>[[totalPages]]</span>
           </div>
 
-          <paper-icon-button icon="arrow-back" on-click="previousPage"></paper-icon-button>
-          <paper-icon-button icon="arrow-forward" on-click="nextPage"></paper-icon-button>
+          <paper-icon-button icon="arrow-back" on-tap="previousPage"></paper-icon-button>
+          <paper-icon-button icon="arrow-forward" on-tap="nextPage"></paper-icon-button>
         </div>
       </template>
     </template>
