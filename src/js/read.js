@@ -1,4 +1,86 @@
-(function() {
+const t = document.querySelector('#pageTemplate');
+const EDGE_FRACTION = 0.15;
+
+function assignHelperMethods() {
+  t.keyPress = e => {
+    if (t.$ && t.$.pageableText) {
+      switch (e.detail.combo) {
+        case 'left':
+          t.previousPage();
+        break;
+
+        case 'right':
+        case 'space':
+          t.nextPage();
+        break;
+      }
+    }
+  };
+
+  t.previousPage = () => {
+    t.$.pageableText.previousPage();
+  };
+
+  t.nextPage = () => {
+    t.$.pageableText.nextPage();
+  };
+
+  t.repaginate = () => {
+    t.$.pageableText.repaginate();
+  };
+
+  t.navigateToIndex = () => {
+    window.location.href = 'index.html';
+  };
+
+  t.openFormatDialog = () => {
+    t.$.formatDialog.open();
+  };
+
+  t.calculateFontSize = fontSizePercent => {
+    return `${fontSizePercent}%`;
+  };
+
+  t.calculatePageableTextClass = theme => {
+    return `${theme}`;
+  };
+
+  /*t.handleClick = event => {
+    if (t.$.pageableText.clientWidth > 0) {
+      const percentOfWidth = event.clientX / t.$.pageableText.clientWidth;
+      if (percentOfWidth <= EDGE_FRACTION) {
+        t.$.pageableText.previousPage();
+      } else if (percentOfWidth >= (1 - EDGE_FRACTION)){
+        t.$.pageableText.nextPage();
+      } else {
+        //template.toggleToolbars();
+      }
+    }
+  };*/
+
+  t.immediateChanged = event => {
+    t.currentPage = event.target.immediateValue;
+  };
+}
+
+function assignProperties() {
+  t.fontFamily = 'Georgia';
+  t.fontSizePercent = 100;
+  t.lineHeight = 1.2;
+  t.theme = 'light';
+
+  const urlParams = new Map(window.location.search.substring(1).split('&').map(keyValuePair => {
+    return keyValuePair.split('=').map(decodeURIComponent);
+  }));
+
+  t.bookUrl = urlParams.get('bookUrl');
+  t.title = document.title = urlParams.get('title');
+}
+
+assignHelperMethods();
+assignProperties();
+
+/*(function() {
   "use strict";
 
   var template = document.querySelector('#page-template');
@@ -72,3 +154,4 @@
     };
   });
 })();
+*/
