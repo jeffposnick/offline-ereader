@@ -1,6 +1,7 @@
 'use strict';
 
 var t = document.querySelector('#pageTemplate');
+var EDGE_FRACTION = 0.15;
 
 function assignHelperMethods() {
   t.keyPress = function (e) {
@@ -43,7 +44,24 @@ function assignHelperMethods() {
   };
 
   t.calculatePageableTextClass = function (theme) {
-    return theme + ' fit';
+    return '' + theme;
+  };
+
+  /*t.handleClick = event => {
+    if (t.$.pageableText.clientWidth > 0) {
+      const percentOfWidth = event.clientX / t.$.pageableText.clientWidth;
+      if (percentOfWidth <= EDGE_FRACTION) {
+        t.$.pageableText.previousPage();
+      } else if (percentOfWidth >= (1 - EDGE_FRACTION)){
+        t.$.pageableText.nextPage();
+      } else {
+        //template.toggleToolbars();
+      }
+    }
+  };*/
+
+  t.immediateChanged = function (event) {
+    t.currentPage = event.target.immediateValue;
   };
 }
 

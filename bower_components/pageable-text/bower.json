@@ -1,6 +1,6 @@
 {
   "name": "pageable-text",
-  "version": "2.0.3",
+  "version": "2.0.6",
   "authors": [
     "Jeff Posnick <jeffy@google.com>"
   ],
@@ -25,8 +25,7 @@
     "tests"
   ],
   "dependencies": {
-    "neon-animation": "PolymerElements/neon-animation#~1.0.3",
-    "polymer": "Polymer/polymer#~1.0.4"
+    "polymer": "Polymer/polymer#~1.0.5"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#~1.0.5"

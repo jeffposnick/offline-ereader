@@ -7,7 +7,6 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../neon-animation/web-animations.html">
 
 <!--
 A Polymer element that simplifies paging through text, e.g. in an eReader.
@@ -17,12 +16,12 @@ The text is specified as child elements, and any standard HTML markup should be 
 ##### Example
 
     <pageable-text selectable
-                   columnGap="30"
-                   fontFamily="Helvetica"
-                   fontSize="1.2em"
-                   currentPage="{{currentPage}}"
-                   totalPages="{{totalPages}}">
-      <strong>Lorem</strong> ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                   margin="30"
+                   font-family="Helvetica"
+                   font-size="1.2em"
+                   current-page="{{currentPage}}"
+                   total-pages="{{totalPages}}">
+      <strong>Lorem</strong> ipsum dolor sit amet, consectetur adipisicing elit...
     </pageable-text>
 
 @element pageable-text
@@ -32,145 +31,143 @@ The text is specified as child elements, and any standard HTML markup should be 
 -->
 <dom-module id="pageable-text">
   <style>
+    :host {
+      display: block;
+    }
+
     #container {
-      height: 100%;
-      overflow-x: hidden;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    #text {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
       text-align: justify;
-      width: 100%;
-      will-change: opacity;
+      top: 0;
+      will-change: transform;
     }
   </style>
 
   <template>
     <div id="container">
-      <content></content>
+      <div id="text">
+        <content></content>
+      </div>
     </div>
   </template>
-</dom-module>
 
-<script>
-  'use strict';
+  <script>
+    'use strict';
 
-  Polymer({
-    is: 'pageable-text',
+    Polymer({
+      is: 'pageable-text',
 
-    properties: {
-      animationDuration: {
-        type: Number,
-        value: 100
+      properties: {
+        transition: {
+          type: String,
+          value: 'transform 0.5s cubic-bezier(0, 0, 0.21, 1)'
+        },
+
+        margin: {
+          type: Number,
+          value: 40
+        },
+
+        currentPage: {
+          notify: true,
+          observer: '_currentPageChanged',
+          type: Number,
+          value: 1
+        },
+
+        fontFamily: {
+          type: String,
+          value: 'serif'
+        },
+
+        fontSize: {
+          type: String,
+          value: '100%'
+        },
+
+        lineHeight: {
+          type: Number,
+          value: 1.2
+        },
+
+        totalPages: {
+          notify: true,
+          type: Number,
+          value: 1
+        }
       },
 
-      columnGap: {
-        type: Number,
-        value: 40
+      observers: [
+        '_layoutChanges(transition, margin, fontFamily, fontSize, lineHeight, _columns)'
+      ],
+
+      nextPage: function() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
       },
 
-      currentPage: {
-        notify: true,
-        observer: '_currentPageChanged',
-        type: Number,
-        value: 1
+      previousPage: function() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
       },
 
-      fontFamily: {
-        type: String,
-        value: 'serif'
+      _currentPageChanged: function(newValue, oldValue) {
+        if (oldValue === undefined) {
+          return;
+        }
+
+        if (newValue === 1) {
+          this._percentRead = 0;
+        } else {
+          this._percentRead = newValue / this.totalPages;
+        }
+
+        var dX = (newValue - 1) * (this.$.text.clientWidth + this.margin);
+        this.$.text.style.transform = 'translateX(-' + dX +'px)';
       },
 
-      fontSize: {
-        type: String,
-        value: '100%'
+      repaginate: function() {
+        var newTotalPages = Math.ceil(this.$.text.scrollWidth / (this.$.text.clientWidth + this.margin));
+        var newCurrentPage = Math.floor(this._percentRead * newTotalPages);
+        if (newCurrentPage < 1) {
+          newCurrentPage = 1;
+        }
+
+        this.totalPages = newTotalPages;
+        this.currentPage = newCurrentPage;
       },
 
-      lineHeight: {
-        type: Number,
-        value: 1.2
+      _layoutChanges: function(transition, margin, fontFamily, fontSize, lineHeight, columns) {
+        this.$.text.setAttribute('style', this._computeStyle(transition, margin, fontFamily, fontSize, lineHeight, columns));
+        this.async(this.repaginate, 1);
       },
 
-      totalPages: {
-        notify: true,
-        type: Number,
-        value: 1
-      }
-    },
+      _computeStyle: function(transition, margin, fontFamily, fontSize, lineHeight, columns) {
+        return '-webkit-column-gap: ' + margin + 'px; -moz-column-gap: ' + margin +
+          'px; column-gap: ' + margin + 'px; font-family: ' + fontFamily + '; font-size: ' +
+          fontSize + '; line-height: ' + lineHeight + '; -webkit-column-count: ' + columns +
+          '; -moz-column-count: ' + columns + '; column-count: ' + columns + '; transition: ' + transition;
+      },
 
-    observers: [
-      '_layoutChanges(columnGap, fontFamily, fontSize, lineHeight, _columns)'
-    ],
-
-    nextPage: function() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-
-    previousPage: function() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-
-    _currentPageChanged: function(newValue, oldValue) {
-      if (oldValue === undefined) {
-        return;
-      }
-
-      if (newValue === 1) {
+      ready: function() {
+        this._columns = 2;
         this._percentRead = 0;
-      } else {
-        this._percentRead = newValue / this.totalPages;
+        this.async(this.repaginate, 1);
       }
-
-      var fadeOut = this.$.container.animate([
-        {opacity: 1},
-        {opacity: 0}
-      ], {
-        duration: this.animationDuration,
-        fill: 'forwards'
-      });
-
-      fadeOut.finished.then(function() {
-        this.$.container.scrollLeft = (newValue - 1) * (this.$.container.clientWidth + this.columnGap);
-      }.bind(this)).then(function() {
-        fadeOut.reverse();
-      });
-    },
-
-    repaginate: function() {
-      var newTotalPages = Math.ceil(this.$.container.scrollWidth / (this.$.container.clientWidth + this.columnGap));
-      var newCurrentPage = Math.floor(this._percentRead * newTotalPages);
-      if (newCurrentPage < 1) {
-        newCurrentPage = 1;
-      }
-
-      this.totalPages = newTotalPages;
-      this.currentPage = newCurrentPage;
-    },
-
-    _layoutChanges: function(columnGap, fontFamily, fontSize, lineHeight, columns) {
-      this.$.container.setAttribute('style', this._computeStyle(columnGap, fontFamily, fontSize, lineHeight, columns));
-      this.async(this.repaginate, 1);
-    },
-
-    _computeStyle: function(columnGap, fontFamily, fontSize, lineHeight, columns) {
-      return '-webkit-column-gap: ' + columnGap + 'px; -moz-column-gap: ' + columnGap +
-        'px; column-gap: ' + columnGap + 'px; font-family: ' + fontFamily + '; font-size: ' +
-        fontSize + '; line-height: ' + lineHeight + '; -webkit-column-count: ' + columns +
-        '; -moz-column-count: ' + columns + '; column-count: ' + columns + ';';
-    },
-
-    _percentRead: 0,
-    _columns: 1,
-
-    _windowResize: function() {
-      var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-      this._columns = width > 600 ? 2 : 1;
-      this.async(this.repaginate, 1);
-    },
-
-    ready: function() {
-      window.addEventListener('resize', this._windowResize.bind(this));
-      this.async(this._windowResize, 1);
-    }
-  });
-</script>
+    });
+  </script>
+</dom-module>
