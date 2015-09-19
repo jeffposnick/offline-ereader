@@ -20,7 +20,7 @@ function assignHelperMethods() {
     t.async(t.sortBooks);
   };
 
-  t.serializeUrlParams = (params) => {
+  t.serializeUrlParams = params => {
     return Object.keys(params).map(key => {
       return `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
     }).join('&');
@@ -161,7 +161,6 @@ t.sortBooks();
       lastAccessed: Date.now()
     }
   ];
-
 
   template.toggleRemoveDialog = function(e) {
     template.toBeRemoved = e.target.templateInstance.model;

@@ -23,6 +23,7 @@
     "tests"
   ],
   "dependencies": {
+    "CSV-JS": "gkindel/CSV-JS#master",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#~1.0.2",
     "marked-element": "jeffposnick/marked-element#master",
     "pageable-text": "jeffposnick/pageable-text#~2.0.6",
@@ -38,9 +39,5 @@
     "iron-icons": "polymerelements/iron-icons#~1.0.3",
     "paper-slider": "polymerelements/paper-slider#~1.0.2",
     "platinum-sw": "polymerelements/platinum-sw#~1.0.1"
-  },
-  "resolutions": {
-    "polymer": "^1.0.0",
-    "marked-element": "master"
   }
 }

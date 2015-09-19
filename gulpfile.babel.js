@@ -39,8 +39,6 @@ gulp.task('copy-src-files', () => {
     .pipe(gulp.dest(DEV_DIR));
 });
 
-gulp.task('default', ['serve:dev']);
-
 gulp.task('gh-pages', ['build'], callback => {
   ghPages.publish(path.join(__dirname, DEV_DIR), callback);
 });
@@ -55,6 +53,15 @@ gulp.task('serve:dev', ['watch'], callback => {
 
 gulp.task('watch', ['build'], () => {
   gulp.watch('bower.json', ['bower']);
-  gulp.watch(JS_FILES_GLOB, ['babel']);
+  gulp.watch(JS_FILES_GLOB, ['babel', 'lint']);
   gulp.watch(SRC_FILES_GLOBS, ['copy-src-files']);
 });
+
+gulp.task('lint', () => {
+  return gulp.src(JS_FILES_GLOB)
+    .pipe($.eslint())
+    .pipe($.eslint.format())
+    .pipe($.eslint.failOnError());
+});
+
+gulp.task('default', ['serve:dev']);

@@ -1,5 +1,5 @@
 const t = document.querySelector('#pageTemplate');
-const EDGE_FRACTION = 0.15;
+// const EDGE_FRACTION = 0.15;
 
 function assignHelperMethods() {
   t.keyPress = e => {
@@ -7,12 +7,12 @@ function assignHelperMethods() {
       switch (e.detail.combo) {
         case 'left':
           t.previousPage();
-        break;
+          break;
 
         case 'right':
         case 'space':
           t.nextPage();
-        break;
+          break;
       }
     }
   };
@@ -45,7 +45,7 @@ function assignHelperMethods() {
     return `${theme}`;
   };
 
-  /*t.handleClick = event => {
+  /* t.handleClick = event => {
     if (t.$.pageableText.clientWidth > 0) {
       const percentOfWidth = event.clientX / t.$.pageableText.clientWidth;
       if (percentOfWidth <= EDGE_FRACTION) {
@@ -80,7 +80,7 @@ function assignProperties() {
 assignHelperMethods();
 assignProperties();
 
-/*(function() {
+/* (function() {
   "use strict";
 
   var template = document.querySelector('#page-template');

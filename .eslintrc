@@ -1,0 +1,12 @@
+{
+  "extends": "xo-space",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "default-case": 0
+  },
+  "globals": {
+    "Polymer": false
+  }
+}
