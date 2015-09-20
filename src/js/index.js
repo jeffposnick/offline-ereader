@@ -42,8 +42,8 @@
 
   t.selectBook = event => {
     window.location.href = 'read.html?' + serializeUrlParams({
-      bookUrl: event.target.url,
-      title: event.target.title
+      bookUrl: event.currentTarget.url,
+      title: event.currentTarget.title
     });
   };
 

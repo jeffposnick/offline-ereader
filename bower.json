@@ -28,7 +28,7 @@
     "iron-ajax": "polymerelements/iron-ajax#~1.0.2",
     "iron-icons": "polymerelements/iron-icons#~1.0.3",
     "marked-element": "jeffposnick/marked-element#master",
-    "pageable-text": "jeffposnick/pageable-text#~2.0.6",
+    "pageable-text": "jeffposnick/pageable-text#master",
     "paper-dialog": "polymerelements/paper-dialog#~1.0.0",
     "paper-dialog-scrollable": "polymerelements/paper-dialog-scrollable#~1.0.1",
     "paper-header-panel": "polymerelements/paper-header-panel#~1.0.2",
