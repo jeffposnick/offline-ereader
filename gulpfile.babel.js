@@ -53,7 +53,7 @@ gulp.task('serve:dev', ['watch'], callback => {
 
 gulp.task('watch', ['build'], () => {
   gulp.watch('bower.json', ['bower']);
-  gulp.watch(JS_FILES_GLOB, ['babel', 'lint']);
+  gulp.watch(JS_FILES_GLOB, ['babel']);
   gulp.watch(SRC_FILES_GLOBS, ['copy-src-files']);
 });
 

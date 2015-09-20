@@ -19,12 +19,11 @@
   </head>
 
   <body class="fullbleed fit layout vertical" unresolved>
-    <platinum-sw-register skip-waiting
+    <!--<platinum-sw-register skip-waiting
                           clients-claim
-                          reload-on-install
                           auto-register>
       <platinum-sw-cache></platinum-sw-cache>
-    </platinum-sw-register>
+    </platinum-sw-register>-->
 
     <template is="dom-bind" id="pageTemplate">
       <paper-header-panel class="flex">
@@ -48,6 +47,7 @@
             <book-cover author="[[item.author]]"
                         title="[[item.title]]"
                         url="[[item.url]]"
+                        cover="[[item.cover]]"
                         on-tap="selectBook"></book-cover>
           </template>
         </div>

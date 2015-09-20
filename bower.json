@@ -23,21 +23,22 @@
     "tests"
   ],
   "dependencies": {
-    "CSV-JS": "gkindel/CSV-JS#master",
+    "csvjson.js": "aaronsnoswell/csvjson.js#master",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#~1.0.2",
-    "marked-element": "jeffposnick/marked-element#master",
-    "pageable-text": "jeffposnick/pageable-text#~2.0.6",
-    "paper-styles": "polymerelements/paper-styles#~1.0.6",
-    "paper-header-panel": "polymerelements/paper-header-panel#~1.0.2",
-    "paper-toolbar": "polymerelements/paper-toolbar#~1.0.2",
-    "paper-icon-button": "polymerelements/paper-icon-button#~1.0.2",
-    "paper-dialog": "polymerelements/paper-dialog#~1.0.0",
-    "paper-dialog-scrollable": "polymerelements/paper-dialog-scrollable#~1.0.1",
-    "paper-radio-group": "polymerelements/paper-radio-group#~1.0.3",
-    "paper-radio-button": "polymerelements/paper-radio-button#~1.0.3",
     "iron-ajax": "polymerelements/iron-ajax#~1.0.2",
     "iron-icons": "polymerelements/iron-icons#~1.0.3",
+    "marked-element": "jeffposnick/marked-element#master",
+    "pageable-text": "jeffposnick/pageable-text#~2.0.6",
+    "paper-dialog": "polymerelements/paper-dialog#~1.0.0",
+    "paper-dialog-scrollable": "polymerelements/paper-dialog-scrollable#~1.0.1",
+    "paper-header-panel": "polymerelements/paper-header-panel#~1.0.2",
+    "paper-icon-button": "polymerelements/paper-icon-button#~1.0.2",
+    "paper-radio-button": "polymerelements/paper-radio-button#~1.0.3",
+    "paper-radio-group": "polymerelements/paper-radio-group#~1.0.3",
     "paper-slider": "polymerelements/paper-slider#~1.0.2",
-    "platinum-sw": "polymerelements/platinum-sw#~1.0.1"
+    "paper-styles": "polymerelements/paper-styles#~1.0.6",
+    "paper-toolbar": "polymerelements/paper-toolbar#~1.0.2",
+    "platinum-sw": "polymerelements/platinum-sw#~1.0.1",
+    "iron-image": "polymerelements/iron-image#~1.0.2"
   }
 }

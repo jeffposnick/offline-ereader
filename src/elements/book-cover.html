@@ -7,12 +7,18 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 
 <dom-module id="book-cover">
   <style>
+    :host {
+      position: relative;
+    }
+
     #title {
       @apply(--book-cover-title-theme);
+      white-space: normal !important;
+      max-height: 200px;
     }
 
     #author {
@@ -23,7 +29,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <div id="title">[[title]]</div>
     <div id="author">[[author]]</div>
+    <template is="dom-if" if="[[cover]]">
+      <iron-image id="cover"
+                  sizing="cover"
+                  src="[[cover]]"
+                  class="fit">
+      </iron-image>
+    </template>
   </template>
-</dom-module>
 
-<script src="../js/elements/book-cover.js"></script>
+  <script src="../js/elements/book-cover.js"></script>
+</dom-module>

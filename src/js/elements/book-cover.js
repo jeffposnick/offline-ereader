@@ -4,6 +4,7 @@ Polymer({
   is: 'book-cover',
   properties: {
     author: String,
+    cover: String,
     title: String,
     url: String
   }
