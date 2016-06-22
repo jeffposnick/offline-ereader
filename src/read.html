@@ -18,6 +18,10 @@
 
   <body>
     <template is="dom-bind" id="pageTemplate">
+      <iron-media-query query="(max-width: 360px)"
+                        queryMatches="{{narrow}}">
+      </iron-media-query>
+
       <iron-a11y-keys target="[[t.$.pageableText]]"
                       keys="left right space"
                       on-keys-pressed="keyPress">
@@ -30,11 +34,16 @@
       </iron-ajax>
 
       <paper-toolbar>
-        <paper-icon-button icon="arrow-back" on-tap="navigateToIndex"></paper-icon-button>
+        <paper-icon-button icon="arrow-back"
+                           on-tap="navigateToIndex">
+        </paper-icon-button>
 
         <div id="title">[[title]]</div>
 
-        <paper-icon-button icon="text-format" on-click="openFormatDialog"></paper-icon-button>
+        <paper-icon-button icon="text-format"
+                           on-click="openFormatDialog">
+        </paper-icon-button>
+
         <paper-dialog id="formatDialog">
           <div>
             <h3>Theme</h3>
@@ -74,14 +83,15 @@
       </paper-toolbar>
 
       <pageable-text id="pageableText"
-                     class$="[[calculatePageableTextClass(theme)]]"
+                     class$="[[theme]]"
                      margin="40"
                      font-family="[[fontFamily]]"
-                     font-size="[[calculateFontSize(fontSizePercent)]]"
+                     font-size="[[fontSizePercent]]%"
                      line-height="[[lineHeight]]"
                      current-page="{{currentPage}}"
                      total-pages="{{totalPages}}"
-                     on-marked-render-complete="repaginate">
+                     on-marked-render-complete="repaginate"
+                     on-click="handleClick">
           <marked-element markdown="[[bookText]]"></marked-element>
       </pageable-text>
 

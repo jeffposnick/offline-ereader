@@ -1,5 +1,5 @@
 const t = document.querySelector('#pageTemplate');
-// const EDGE_FRACTION = 0.15;
+const EDGE_FRACTION = 0.15;
 
 function assignHelperMethods() {
   t.keyPress = e => {
@@ -30,7 +30,7 @@ function assignHelperMethods() {
   };
 
   t.navigateToIndex = () => {
-    window.location.href = 'index.html';
+    window.location.href = './';
   };
 
   t.openFormatDialog = () => {
@@ -41,11 +41,8 @@ function assignHelperMethods() {
     return `${fontSizePercent}%`;
   };
 
-  t.calculatePageableTextClass = theme => {
-    return `${theme}`;
-  };
-
-  /* t.handleClick = event => {
+  t.handleClick = event => {
+    console.log(event);
     if (t.$.pageableText.clientWidth > 0) {
       const percentOfWidth = event.clientX / t.$.pageableText.clientWidth;
       if (percentOfWidth <= EDGE_FRACTION) {
@@ -56,10 +53,10 @@ function assignHelperMethods() {
         //template.toggleToolbars();
       }
     }
-  };*/
+  };
 
-  t.immediateChanged = event => {
-    t.currentPage = event.target.immediateValue;
+  t.handleWindowResize = event => {
+    t.debounce(event.type, t.repaginate, 500);
   };
 }
 
@@ -74,11 +71,13 @@ function assignProperties() {
   }));
 
   t.bookUrl = urlParams.get('bookUrl');
-  t.title = document.title = urlParams.get('title');
+  t.title = document.title = urlParams.get('bookTitle');
 }
 
 assignHelperMethods();
 assignProperties();
+
+window.addEventListener('resize', t.handleWindowResize);
 
 /* (function() {
   "use strict";
