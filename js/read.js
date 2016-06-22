@@ -38,8 +38,8 @@ function assignHelperMethods() {
     t.$.formatDialog.open();
   };
 
-  t.calculateFontSize = function (fontSizePercent) {
-    return fontSizePercent + '%';
+  t.calculateColumns = function (narrow) {
+    return narrow ? 1 : 2;
   };
 
   t.handleClick = function (event) {
@@ -50,10 +50,6 @@ function assignHelperMethods() {
         t.$.pageableText.nextPage();
       }
     }
-  };
-
-  t.handleResize = function (event) {
-    t.debounce(event.type, t.repaginate, 500);
   };
 }
 
@@ -75,7 +71,6 @@ assignHelperMethods();
 assignProperties();
 
 window.addEventListener('click', t.handleClick);
-window.addEventListener('resize', t.handleResize);
 
 /* (function() {
   "use strict";

@@ -16,7 +16,7 @@ The text is specified as child elements, and any standard HTML markup should be 
 ##### Example
 
     <pageable-text selectable
-                   margin="30"
+                   columnGap="30px"
                    font-family="Helvetica"
                    font-size="1.2em"
                    current-page="{{currentPage}}"
@@ -71,11 +71,19 @@ The text is specified as child elements, and any standard HTML markup should be 
 
       properties: {
         transition: {
+          observer: '_transitionChanged',
           type: String,
           value: 'transform 0.5s cubic-bezier(0, 0, 0.21, 1)'
         },
 
-        margin: {
+        columns: {
+          observer: '_columnsChanged',
+          type: Number,
+          value: 2
+        },
+
+        columnGap: {
+          observer: '_columnGapChanged',
           type: Number,
           value: 40
         },
@@ -88,16 +96,19 @@ The text is specified as child elements, and any standard HTML markup should be 
         },
 
         fontFamily: {
+          observer: '_fontFamilyChanged',
           type: String,
           value: 'serif'
         },
 
         fontSize: {
+          observer: '_fontSizeChanged',
           type: String,
           value: '100%'
         },
 
         lineHeight: {
+          observer: '_lineHeightChanged',
           type: Number,
           value: 1.2
         },
@@ -108,10 +119,6 @@ The text is specified as child elements, and any standard HTML markup should be 
           value: 1
         }
       },
-
-      observers: [
-        '_layoutChanges(transition, margin, fontFamily, fontSize, lineHeight, _columns)'
-      ],
 
       nextPage: function() {
         if (this.currentPage < this.totalPages) {
@@ -126,23 +133,57 @@ The text is specified as child elements, and any standard HTML markup should be 
       },
 
       _currentPageChanged: function(newValue, oldValue) {
-        if (oldValue === undefined) {
-          return;
-        }
+        if (oldValue !== undefined) {
+          if (newValue === 1) {
+            this._percentRead = 0;
+          } else {
+            this._percentRead = newValue / this.totalPages;
+          }
 
-        if (newValue === 1) {
-          this._percentRead = 0;
-        } else {
-          this._percentRead = newValue / this.totalPages;
+          var dX = (newValue - 1) * (this.$.text.clientWidth + this.columnGap);
+          this.$.text.style.transform = 'translateX(-' + dX +'px)';
         }
+      },
 
-        var dX = (newValue - 1) * (this.$.text.clientWidth + this.margin);
-        this.$.text.style.transform = 'translateX(-' + dX +'px)';
-        this.$.text.style['-webkit-transform'] = 'translateX(-' + dX +'px)';
+      _transitionChanged: function(newValue) {
+        this._updateStyle('transition', newValue, true);
+      },
+
+      _columnsChanged: function(newValue) {
+        this._updateStyle('columnCount', newValue);
+        this._updateStyle('MozColumnCount', newValue);
+      },
+
+      _columnGapChanged: function(newValue) {
+        this._updateStyle('columnGap', newValue + 'px');
+        this._updateStyle('MozColumnGap', newValue + 'px');
+      },
+
+      _fontFamilyChanged: function(newValue) {
+        this._updateStyle('fontFamily', newValue);
+      },
+
+      _fontSizeChanged: function(newValue) {
+        this._updateStyle('fontSize', newValue);
+      },
+
+      _lineHeightChanged: function(newValue) {
+        this._updateStyle('lineHeight', newValue);
+      },
+
+      _updateStyle: function(property, value, skipRepagination) {
+        this.$.text.style[property] = value;
+        if (!skipRepagination) {
+          this.async(this.repaginate, 1);
+        }
       },
 
       repaginate: function() {
-        var newTotalPages = Math.ceil(this.$.text.scrollWidth / (this.$.text.clientWidth + this.margin));
+        this.debounce('repaginate', this._repaginate, 300);
+      },
+
+      _repaginate: function() {
+        var newTotalPages = Math.ceil(this.$.text.scrollWidth / (this.$.text.clientWidth + this.columnGap));
         var newCurrentPage = Math.floor(this._percentRead * newTotalPages);
         if (newCurrentPage < 1) {
           newCurrentPage = 1;
@@ -152,23 +193,9 @@ The text is specified as child elements, and any standard HTML markup should be 
         this.currentPage = newCurrentPage;
       },
 
-      _layoutChanges: function(transition, margin, fontFamily, fontSize, lineHeight, columns) {
-        this.$.text.setAttribute('style', this._computeStyle(transition, margin, fontFamily, fontSize, lineHeight, columns));
-        this.async(this.repaginate, 1);
-      },
-
-      _computeStyle: function(transition, margin, fontFamily, fontSize, lineHeight, columns) {
-        return '-webkit-column-gap: ' + margin + 'px; -moz-column-gap: ' + margin +
-          'px; column-gap: ' + margin + 'px; font-family: ' + fontFamily + '; font-size: ' +
-          fontSize + '; line-height: ' + lineHeight + '; -webkit-column-count: ' + columns +
-          '; -moz-column-count: ' + columns + '; column-count: ' + columns +
-          '; transition: ' + transition + '; -webkit-transition: -webkit-' + transition;
-      },
-
       ready: function() {
-        this._columns = 2;
         this._percentRead = 0;
-        this.async(this.repaginate, 1);
+        window.addEventListener('resize', this.repaginate.bind(this));
       }
     });
   </script>
