@@ -44,11 +44,13 @@
 
         <div class="fit layout horizontal wrap center-justified">
           <template is="dom-repeat" id="bookRepeat" items="[[books]]">
-            <book-cover author="[[item.author]]"
-                        title="[[item.title]]"
+            <book-cover book-title="[[item.title]]"
+                        author="[[item.author]]"
+                        title="[[item.title]], by [[item.author]]"
                         url="[[item.url]]"
                         cover="[[item.cover]]"
-                        on-tap="selectBook"></book-cover>
+                        on-tap="selectBook">
+            </book-cover>
           </template>
         </div>
       </paper-header-panel>

@@ -6,7 +6,6 @@ import ghPages from 'gh-pages';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import path from 'path';
-import sequence from 'run-sequence';
 import serveStatic from 'serve-static';
 import {exec} from 'child_process';
 

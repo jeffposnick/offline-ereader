@@ -5,7 +5,7 @@ Polymer({
   properties: {
     author: String,
     cover: String,
-    title: String,
+    bookTitle: String,
     url: String
   }
 });
