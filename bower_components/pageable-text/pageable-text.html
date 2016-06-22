@@ -174,7 +174,7 @@ The text is specified as child elements, and any standard HTML markup should be 
       _updateStyle: function(property, value, skipRepagination) {
         this.$.text.style[property] = value;
         if (!skipRepagination) {
-          this.async(this.repaginate, 1);
+          this.repaginate();
         }
       },
 
@@ -195,7 +195,6 @@ The text is specified as child elements, and any standard HTML markup should be 
 
       ready: function() {
         this._percentRead = 0;
-        window.addEventListener('resize', this.repaginate.bind(this));
       }
     });
   </script>

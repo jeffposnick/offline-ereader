@@ -71,6 +71,7 @@ assignHelperMethods();
 assignProperties();
 
 window.addEventListener('click', t.handleClick);
+window.addEventListener('resize', t.repaginate);
 
 /* (function() {
   "use strict";
