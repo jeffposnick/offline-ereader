@@ -1,5 +1,4 @@
 const t = document.querySelector('#pageTemplate');
-const EDGE_FRACTION = 0.15;
 
 function assignHelperMethods() {
   t.keyPress = e => {
@@ -42,20 +41,16 @@ function assignHelperMethods() {
   };
 
   t.handleClick = event => {
-    console.log(event);
-    if (t.$.pageableText.clientWidth > 0) {
-      const percentOfWidth = event.clientX / t.$.pageableText.clientWidth;
-      if (percentOfWidth <= EDGE_FRACTION) {
+    if (event.target === document.body) {
+      if (event.clientX < (window.innerWidth / 2)) {
         t.$.pageableText.previousPage();
-      } else if (percentOfWidth >= (1 - EDGE_FRACTION)){
-        t.$.pageableText.nextPage();
       } else {
-        //template.toggleToolbars();
+        t.$.pageableText.nextPage();
       }
     }
   };
 
-  t.handleWindowResize = event => {
+  t.handleResize = event => {
     t.debounce(event.type, t.repaginate, 500);
   };
 }
@@ -77,7 +72,8 @@ function assignProperties() {
 assignHelperMethods();
 assignProperties();
 
-window.addEventListener('resize', t.handleWindowResize);
+window.addEventListener('click', t.handleClick);
+window.addEventListener('resize', t.handleResize);
 
 /* (function() {
   "use strict";

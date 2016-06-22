@@ -12,8 +12,7 @@
   };
 
   var resized = (url, id='fuhb', width=342, height=510, format='webp') => {
-    return `https://${id}.lite.imgeng.in/` +
-      `w_${width}/h_${height}/f_${format}/${url}`
+    return `https://${id}.lite.imgeng.in/w_${width}/h_${height}/f_${format}/${url}`;
   };
 
   t.sortBooks = () => {
