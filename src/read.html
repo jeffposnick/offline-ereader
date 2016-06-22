@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#eeeeff">
 
     <title>Loading book...</title>
@@ -12,13 +11,12 @@
     <link rel="icon" href="images/icon.png">
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-
     <link rel="import" href="elements/elements.html">
-
+    <link rel="import" href="styles/common.html">
     <link rel="import" href="styles/read.html">
   </head>
 
-  <body class="fullbleed fit" unresolved>
+  <body>
     <template is="dom-bind" id="pageTemplate">
       <iron-a11y-keys target="{{}}" keys="left right space" on-keys-pressed="keyPress"></iron-a11y-keys>
 
@@ -31,7 +29,7 @@
       <paper-toolbar>
         <paper-icon-button icon="arrow-back" on-tap="navigateToIndex"></paper-icon-button>
 
-        <div class="flex paper-font-title">[[title]]</div>
+        <div id="title">[[title]]</div>
 
         <paper-icon-button icon="text-format" on-click="openFormatDialog"></paper-icon-button>
         <paper-dialog id="formatDialog">
@@ -85,8 +83,8 @@
       </pageable-text>
 
       <template is="dom-if" if="[[totalPages]]">
-        <div id="bottomBar" class="layout horizontal center">
-          <paper-slider class="flex"
+        <div id="bottomBar">
+          <paper-slider id="pageSlider"
                         pin
                         min="1"
                         max="[[totalPages]]"

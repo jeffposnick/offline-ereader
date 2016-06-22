@@ -1,8 +1,9 @@
 <style is="custom-style">
-  * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-tap-highlight-color: transparent;
-    outline: 0;
+  .book-container {
+    @apply(--layout-center-justified);
+    @apply(--layout-fit);
+    @apply(--layout-horizontal);
+    @apply(--layout-wrap);
   }
 
   book-cover {
@@ -23,7 +24,11 @@
     };
   }
 
-  book-cover:hover {
+  book-cover {
     @apply(--shadow-elevation-2dp);
+  }
+
+  book-cover:hover {
+    @apply(--shadow-elevation-4dp);
   }
 </style>

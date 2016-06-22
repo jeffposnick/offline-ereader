@@ -8,11 +8,12 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="book-cover">
   <style>
     :host {
-      position: relative;
+      @apply(--layout-relative);
     }
 
     #title {
@@ -24,6 +25,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     #author {
       @apply(--book-cover-author-theme);
     }
+
+    iron-image {
+      @apply(--layout-fit);
+    }
   </style>
 
   <template>
@@ -32,8 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="[[cover]]">
       <iron-image id="cover"
                   sizing="cover"
-                  src="[[cover]]"
-                  class="fit">
+                  src="[[cover]]">
       </iron-image>
     </template>
   </template>
