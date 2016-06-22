@@ -1,10 +1,13 @@
 'use strict';
 
+/* eslint-disable new-cap */
 Polymer({
+  /* eslint-enable new-cap */
   is: 'book-cover',
   properties: {
     author: String,
-    title: String,
+    cover: String,
+    bookTitle: String,
     url: String
   }
 });

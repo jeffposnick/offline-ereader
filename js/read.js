@@ -1,7 +1,6 @@
 'use strict';
 
 var t = document.querySelector('#pageTemplate');
-var EDGE_FRACTION = 0.15;
 
 function assignHelperMethods() {
   t.keyPress = function (e) {
@@ -32,7 +31,7 @@ function assignHelperMethods() {
   };
 
   t.navigateToIndex = function () {
-    window.location.href = 'index.html';
+    window.location.href = './';
   };
 
   t.openFormatDialog = function () {
@@ -43,25 +42,18 @@ function assignHelperMethods() {
     return fontSizePercent + '%';
   };
 
-  t.calculatePageableTextClass = function (theme) {
-    return '' + theme;
-  };
-
-  /*t.handleClick = event => {
-    if (t.$.pageableText.clientWidth > 0) {
-      const percentOfWidth = event.clientX / t.$.pageableText.clientWidth;
-      if (percentOfWidth <= EDGE_FRACTION) {
+  t.handleClick = function (event) {
+    if (event.target === document.body) {
+      if (event.clientX < window.innerWidth / 2) {
         t.$.pageableText.previousPage();
-      } else if (percentOfWidth >= (1 - EDGE_FRACTION)){
-        t.$.pageableText.nextPage();
       } else {
-        //template.toggleToolbars();
+        t.$.pageableText.nextPage();
       }
     }
-  };*/
+  };
 
-  t.immediateChanged = function (event) {
-    t.currentPage = event.target.immediateValue;
+  t.handleResize = function (event) {
+    t.debounce(event.type, t.repaginate, 500);
   };
 }
 
@@ -76,13 +68,16 @@ function assignProperties() {
   }));
 
   t.bookUrl = urlParams.get('bookUrl');
-  t.title = document.title = urlParams.get('title');
+  t.title = document.title = urlParams.get('bookTitle');
 }
 
 assignHelperMethods();
 assignProperties();
 
-/*(function() {
+window.addEventListener('click', t.handleClick);
+window.addEventListener('resize', t.handleResize);
+
+/* (function() {
   "use strict";
 
   var template = document.querySelector('#page-template');

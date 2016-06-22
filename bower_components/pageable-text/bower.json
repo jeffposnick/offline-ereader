@@ -1,6 +1,6 @@
 {
   "name": "pageable-text",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "authors": [
     "Jeff Posnick <jeffy@google.com>"
   ],
@@ -25,9 +25,9 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1.0.5"
+    "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#~1.0.5"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   }
 }

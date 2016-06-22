@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#eeeeff">
 
     <title>My Library</title>
@@ -12,24 +11,16 @@
     <link rel="icon" href="images/icon.png">
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-
     <link rel="import" href="elements/elements.html">
-
+    <link rel="import" href="styles/common.html">
     <link rel="import" href="styles/index.html">
   </head>
 
-  <body class="fullbleed fit layout vertical" unresolved>
-    <platinum-sw-register skip-waiting
-                          clients-claim
-                          reload-on-install
-                          auto-register>
-      <platinum-sw-cache></platinum-sw-cache>
-    </platinum-sw-register>
-
+  <body>
     <template is="dom-bind" id="pageTemplate">
-      <paper-header-panel class="flex">
+      <paper-header-panel>
         <paper-toolbar>
-          <div class="flex paper-font-title">My Library</div>
+          <div id="title">My Library</div>
 
           <paper-icon-button icon="sort" on-click="openSortDialog"></paper-icon-button>
           <paper-dialog id="sortDialog">
@@ -43,111 +34,19 @@
           </paper-dialog>
         </paper-toolbar>
 
-        <div class="fit layout horizontal wrap center-justified">
+        <div class="book-container">
           <template is="dom-repeat" id="bookRepeat" items="[[books]]">
-            <book-cover author="[[item.author]]"
-                        title="[[item.title]]"
+            <book-cover book-title="[[item.title]]"
+                        author="[[item.author]]"
+                        title="[[item.title]], by [[item.author]]"
                         url="[[item.url]]"
-                        on-tap="selectBook"></book-cover>
+                        cover="[[item.cover]]"
+                        on-tap="selectBook">
+            </book-cover>
           </template>
         </div>
       </paper-header-panel>
     </template>
-
-
-    <!--<template is="auto-binding" id="page-template">
-      <core-header-panel flex>
-        <core-toolbar>
-          <div id="page-title" flex>My Library</div>
-
-          <core-icon-button icon="sort"
-                            on-tap="{{toggleSortDialog}}">
-          </core-icon-button>
-
-          <paper-dialog id="sort-dialog"
-                        heading="Sort by"
-                        transition="paper-dialog-transition-center">
-            <paper-radio-group selected="{{sortOrder}}"
-                               on-change="{{toggleSortDialog}}">
-              <paper-radio-button name="lastAccessed"
-                                  label="Recent">
-              </paper-radio-button>
-              <paper-radio-button name="title"
-                                  label="Title">
-              </paper-radio-button>
-              <paper-radio-button name="author"
-                                  label="Author">
-              </paper-radio-button>
-            </paper-radio-group>
-          </paper-dialog>
-
-          <core-icon-button icon="add"
-                            on-tap="{{toggleAddDialog}}">
-          </core-icon-button>
-
-          <paper-dialog id="add-dialog"
-                        heading="Add to library"
-                        transition="paper-dialog-transition-center">
-            <paper-input label="Title"
-                         value="{{toBeAddedTitle}}"
-                         autofocus
-                         required>
-            </paper-input>
-            <paper-input label="Author"
-                         value="{{toBeAddedAuthor}}">
-            </paper-input>
-            <paper-input label="Text URL"
-                         value="{{toBeAddedUrl}}"
-                         type="url"
-                         required>
-            </paper-input>
-            <paper-input label="Cover URL"
-                         value="{{toBeAddedCover}}"
-                         type="url">
-            </paper-input>
-            <paper-button dismissive autofocus>Cancel</paper-button>
-            <paper-button affirmative on-tap="{{addBook}}">Add</paper-button>
-          </paper-dialog>
-        </core-toolbar>
-
-        <div id="book-list" fit layout horizontal wrap center-justified>
-          <template repeat="{{book, i in books}}">
-            <div class="book">
-              <paper-ripple fit on-click="{{readBook}}"></paper-ripple>
-
-              <core-image class="cover"
-                          src="{{book.cover}}"
-                          preload
-                          fade
-                          sizing="crop">
-              </core-image>
-
-              <div class="book-bottom">
-                <div class="text" layout vertical>
-                  <div class="title">{{book.title}}</div>
-                  <div class="author">{{book.author}}</div>
-                </div>
-
-                <paper-menu-button icon="more-vert">
-                  <paper-item>Download</paper-item>
-                  <paper-item on-tap="{{toggleRemoveDialog}}">Delete from library</paper-item>
-                  <paper-item>Edit info</paper-item>
-                </paper-menu-button>
-              </div>
-            </div>
-          </template>
-
-          <paper-dialog id="remove-dialog"
-                        heading="Delete from library?"
-                        transition="paper-dialog-transition-center">
-            <p class="title">{{toBeRemoved.book.title}}</p>
-            <p>This book will be removed from the list of available books.</p>
-            <paper-button dismissive autofocus>Cancel</paper-button>
-            <paper-button affirmative on-tap="{{removeBook}}">Delete</paper-button>
-          </paper-dialog>
-        </div>
-      </core-header-panel>
-    </template>-->
 
     <script src="js/index.js"></script>
   </body>

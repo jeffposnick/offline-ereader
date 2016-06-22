@@ -1,18 +1,19 @@
 <style is="custom-style">
-  * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-tap-highlight-color: transparent;
-    outline: 0;
+  .book-container {
+    @apply(--layout-center-justified);
+    @apply(--layout-fit);
+    @apply(--layout-horizontal);
+    @apply(--layout-wrap);
   }
 
   book-cover {
     background-color: var(--light-primary-color);
     border-radius: 2px;
     cursor: pointer;
-    height: 280px;
+    height: 255px;
     margin: 16px;
     padding: 8px;
-    width: 200px;
+    width: 171px;
 
     --book-cover-title-theme: {
       @apply(--paper-font-title);
@@ -23,7 +24,11 @@
     };
   }
 
-  book-cover:hover {
+  book-cover {
     @apply(--shadow-elevation-2dp);
+  }
+
+  book-cover:hover {
+    @apply(--shadow-elevation-4dp);
   }
 </style>

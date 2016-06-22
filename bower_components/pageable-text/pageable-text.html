@@ -138,6 +138,7 @@ The text is specified as child elements, and any standard HTML markup should be 
 
         var dX = (newValue - 1) * (this.$.text.clientWidth + this.margin);
         this.$.text.style.transform = 'translateX(-' + dX +'px)';
+        this.$.text.style['-webkit-transform'] = 'translateX(-' + dX +'px)';
       },
 
       repaginate: function() {
@@ -160,7 +161,8 @@ The text is specified as child elements, and any standard HTML markup should be 
         return '-webkit-column-gap: ' + margin + 'px; -moz-column-gap: ' + margin +
           'px; column-gap: ' + margin + 'px; font-family: ' + fontFamily + '; font-size: ' +
           fontSize + '; line-height: ' + lineHeight + '; -webkit-column-count: ' + columns +
-          '; -moz-column-count: ' + columns + '; column-count: ' + columns + '; transition: ' + transition;
+          '; -moz-column-count: ' + columns + '; column-count: ' + columns +
+          '; transition: ' + transition + '; -webkit-transition: -webkit-' + transition;
       },
 
       ready: function() {
