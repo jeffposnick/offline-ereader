@@ -18,8 +18,8 @@
 
   <body>
     <template is="dom-bind" id="pageTemplate">
-      <iron-media-query query="(max-width: 360px)"
-                        queryMatches="{{narrow}}">
+      <iron-media-query query="(max-width: 600px)"
+                        query-matches="{{narrow}}">
       </iron-media-query>
 
       <iron-a11y-keys target="[[t.$.pageableText]]"
@@ -84,7 +84,8 @@
 
       <pageable-text id="pageableText"
                      class$="[[theme]]"
-                     margin="40"
+                     column-gap="40"
+                     columns="[[calculateColumns(narrow)]]"
                      font-family="[[fontFamily]]"
                      font-size="[[fontSizePercent]]%"
                      line-height="[[lineHeight]]"
@@ -112,144 +113,6 @@
         </div>
       </template>
     </template>
-
-    <!--<template is="auto-binding" id="page-template">
-      <core-media-query query="max-width: 360px" queryMatches="{{narrow}}"></core-media-query>
-
-      <core-a11y-keys target="{{parentElement}}"
-                      keys="left right space esc"
-                      on-keys-pressed="{{handleKeyPress}}">
-      </core-a11y-keys>
-
-      <core-toolbar id="topBar"
-                    hidden?="{{!showToolbars}}">
-        <a class="icon-button" href="index.html">
-          <core-icon-button icon="arrow-back"></core-icon-button>
-        </a>
-
-        <div id="page-title" flex>{{title}}</div>
-
-        <core-icon-button icon="text-format"
-                          on-tap="{{toggleFormatDialog}}">
-        </core-icon-button>
-
-        <paper-dialog id="format-dialog"
-                      heading="Format"
-                      transition="paper-dialog-transition-center">
-          <div>
-            <label>Theme</label>
-            <paper-dropdown-menu label="Theme"
-                                 selected="{{theme}}"
-                                 valueattr="label">
-              <paper-item label="Light"></paper-item>
-              <paper-item label="Dark"></paper-item>
-            </paper-dropdown-menu>
-          </div>
-
-          <div>
-            <label>Font</label>
-            <paper-dropdown-menu label="Font"
-                                 selected="{{fontFamily}}"
-                                 valueattr="label"
-                                 valign="bottom">
-              <paper-item label="Georgia"></paper-item>
-              <paper-item label="Arial"></paper-item>
-              <paper-item label="RobotoDraft"></paper-item>
-            </paper-dropdown-menu>
-          </div>
-
-          <div>
-            <label>Line Height</label>
-            <paper-dropdown-menu label="Line Height"
-                                 selected="{{lineHeight}}"
-                                 valueattr="value"
-                                 valign="bottom">
-              <paper-item label="Tight" value="1.0"></paper-item>
-              <paper-item label="Normal" value="1.2"></paper-item>
-              <paper-item label="Loose" value="1.5"></paper-item>
-            </paper-dropdown-menu>
-          </div>
-
-          <div>
-            <label>Size (%)</label>
-              <paper-slider id="font-size"
-                            pin
-                            value="{{fontSizePercent}}"
-                            min="50"
-                            max="300"
-                            step="10">
-              </paper-slider>
-          </div>
-
-          <paper-button affirmative autofocus>Close</paper-button>
-        </paper-dialog>
-      </core-toolbar>
-
-      <template if="{{bookUrl}}">
-        <core-ajax auto
-                   url="{{bookUrl}}"
-                   handleAs="text"
-                   response="{{markdown}}">
-        </core-ajax>
-      </template>
-
-      <pageable-text id="text"
-                     class="{{ {narrow: narrow, light: theme == 'Light', dark: theme == 'Dark'} | tokenList }}"
-                     fit
-                     columnGap="40"
-                     savedProgressId="{{bookUrl}}"
-                     fontFamily="{{fontFamily}}"
-                     fontSize="{{fontSizePercent}}%"
-                     lineHeight="{{lineHeight}}"
-                     currentPage="{{currentPage}}"
-                     totalPages="{{totalPages}}"
-                     on-click="{{handleClick}}">
-        <pageable-text-source-markdown chapterElements="{{chapterElements}}"
-                                       markdownText="{{markdown}}">
-        </pageable-text-source-markdown>
-      </pageable-text>
-
-      <core-toolbar id="bottomBar"
-                    layout horizontal
-                    hidden?="{{!showToolbars || totalPages <= 1}}">
-        <paper-menu-button id="chapters-menu"
-                           hidden?="{{chapterElements.length < 1}}"
-                           icon="list"
-                           noTransition="true"
-                           halign="left"
-                           valign="bottom">
-          <template repeat="{{chapterElement in chapterElements}}">
-            <paper-item on-tap="{{jumpToChapter}}">{{chapterElement.textContent}}</paper-item>
-          </template>
-        </paper-menu-button>
-
-        <!-- TODO: There are some bugs here that lead to the currentPage being reset if either min="1"
-             or immediateValue="{{currentPage}}" are set. --
-        <paper-slider id="page-slider"
-                      flex
-                      pin="true"
-                      max="{{totalPages}}"
-                      value="{{currentPage}}">
-        </paper-slider>
-
-        <div id="page-display"
-             class="{{ {hidden: currentPage < 1 || totalPages < 1} | tokenList }}">
-          {{currentPage}}/{{totalPages}}
-        </div>
-      </core-toolbar>
-
-      <core-animation id="toolbar-animation"
-                      duration="150"
-                      fill="both"
-                      on-core-animation-finish="{{finishToolbarAnimation}}">
-        <core-animation-keyframe>
-          <core-animation-prop name="opacity" value="0.95"></core-animation-prop>
-        </core-animation-keyframe>
-        <core-animation-keyframe>
-          <core-animation-prop name="opacity" value="0"></core-animation-prop>
-        </core-animation-keyframe>
-      </core-animation>
-    </template>-->
 
     <script src="js/read.js"></script>
   </body>

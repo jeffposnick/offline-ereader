@@ -36,8 +36,8 @@ function assignHelperMethods() {
     t.$.formatDialog.open();
   };
 
-  t.calculateFontSize = fontSizePercent => {
-    return `${fontSizePercent}%`;
+  t.calculateColumns = narrow => {
+    return narrow ? 1 : 2;
   };
 
   t.handleClick = event => {
@@ -48,10 +48,6 @@ function assignHelperMethods() {
         t.$.pageableText.nextPage();
       }
     }
-  };
-
-  t.handleResize = event => {
-    t.debounce(event.type, t.repaginate, 500);
   };
 }
 
@@ -73,7 +69,6 @@ assignHelperMethods();
 assignProperties();
 
 window.addEventListener('click', t.handleClick);
-window.addEventListener('resize', t.handleResize);
 
 /* (function() {
   "use strict";
