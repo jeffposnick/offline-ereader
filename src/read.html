@@ -18,7 +18,10 @@
 
   <body>
     <template is="dom-bind" id="pageTemplate">
-      <iron-a11y-keys target="{{}}" keys="left right space" on-keys-pressed="keyPress"></iron-a11y-keys>
+      <iron-a11y-keys target="[[t.$.pageableText]]"
+                      keys="left right space"
+                      on-keys-pressed="keyPress">
+      </iron-a11y-keys>
 
       <iron-ajax auto
                  url="[[bookUrl]]"
