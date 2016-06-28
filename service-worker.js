@@ -28,7 +28,7 @@ var precacheConfig = [["bower_components/csvjson.js/csvjson.js","06568a4d6b3d057
 var cacheName = 'sw-precache-v2-offline-ereader-' + (self.registration ? self.registration.scope : '');
 
 
-var ignoreUrlParametersMatching = [/^utm_/];
+var ignoreUrlParametersMatching = [/./];
 
 
 
