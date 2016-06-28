@@ -7,13 +7,13 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import path from 'path';
 import serveStatic from 'serve-static';
+import swPrecache from 'sw-precache';
 import {exec} from 'child_process';
 
 const $ = gulpLoadPlugins();
 
 const SRC_DIR = 'src';
 const DEV_DIR = 'dev';
-const DIST_DIR = 'dist';
 const JS_FILES_GLOB = `${SRC_DIR}/js/**/*.js`;
 const SRC_FILES_GLOBS = [`${SRC_DIR}/!(js)/**/*`, `${SRC_DIR}/*.*`];
 
@@ -27,10 +27,10 @@ gulp.task('bower', callback => {
   exec('bower install', callback);
 });
 
-gulp.task('build', ['bower', 'babel', 'copy-src-files']);
+gulp.task('build', ['bower', 'babel', 'copy-src-files', 'generate-service-worker']);
 
 gulp.task('clean', callback => {
-  del([DEV_DIR, DIST_DIR], callback);
+  del([DEV_DIR], callback);
 });
 
 gulp.task('copy-src-files', () => {
@@ -61,6 +61,42 @@ gulp.task('lint', () => {
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failOnError());
+});
+
+gulp.task('generate-service-worker', () => {
+  let serviceWorkerFile = path.join(DEV_DIR, 'service-worker.js');
+
+  return swPrecache.write(serviceWorkerFile, {
+    staticFileGlobs: [`${DEV_DIR}/**/*.{html,js,css,png,jpg}`],
+    runtimeCaching: [{
+      urlPattern: /fonts\.gstatic\.com/,
+      handler: 'cacheFirst'
+    }, {
+      urlPattern: /Gitenberg%20Book%20List\.csv/,
+      handler: 'fastest'
+    }, {
+      urlPattern: /^https:\/\/cdn\.rawgit\.com/,
+      handler: 'cacheFirst',
+      options: {
+        cache: {
+          name: 'book-cache',
+          maxEntries: 10
+        }
+      }
+    }, {
+      urlPattern: /imgeng\.in/,
+      handler: 'cacheFirst',
+      options: {
+        cache: {
+          name: 'book-cover-cache',
+          maxEntries: 50
+        }
+      }
+    }],
+    cacheId: 'offline-ereader',
+    stripPrefix: `${DEV_DIR}/`,
+    ignoreUrlParametersMatching: [/./]
+  });
 });
 
 gulp.task('default', ['serve:dev']);
