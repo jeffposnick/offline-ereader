@@ -1,0 +1,35 @@
+@import 'helpers';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+header {
+  background-color: #3f51b5;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  height: @headerHeight;
+  padding: 16px;
+  font-size: 1.25em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#preact {
+  position: absolute;
+  top: @headerHeight;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+}

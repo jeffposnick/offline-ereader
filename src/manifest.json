@@ -1,9 +1,9 @@
 {
-  "name": "Offline eReader",
-  "short_name": "Offline eReader",
+  "name": "eReader Progressive Web App",
+  "short_name": "eReader PWA",
   "icons": [
     {
-      "src": "images/icon.png",
+      "src": "assets/images/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     }
