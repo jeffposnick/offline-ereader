@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A web-based eReader with offline support.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Offline eReader</title>
+    <script src="//www.polymer-project.org/platform.js"></script>
+    <link rel="import" href="//www.polymer-project.org/components/polymer/polymer.html">
+
+    <link rel="import" href="//www.polymer-project.org/components/core-animated-pages/core-animated-pages.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-animated-pages/transitions/slide-from-right.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-drawer-panel/core-drawer-panel.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-header-panel/core-header-panel.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-dropdown/core-dropdown.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-menu/core-menu.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-item/core-item.html">
+    <link rel="import" href="//www.polymer-project.org/components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="//www.polymer-project.org/components/paper-item/paper-item.html">
+    <link rel="import" href="//www.polymer-project.org/components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="//www.polymer-project.org/components/paper-tabs/paper-tabs.html">
+    <link rel="import" href="//www.polymer-project.org/components/flatiron-director/flatiron-director.html">
+    <link rel="import" href="//www.polymer-project.org/components/font-roboto/roboto.html">
+    <link rel="import" href="//www.polymer-project.org/components/core-a11y-keys/core-a11y-keys.html">
+
+    <style>
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        core-scaffold {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .content {
+            background-color: #fff;
+            height: 5000px;
+            padding: 20px;
+        }
+
+        /* some default styles for mode="cover" on core-scaffold */
+        core-scaffold[mode=cover]::shadow core-header-panel::shadow #mainContainer {
+            left: 120px;
+        }
+
+        core-scaffold[mode=cover] .content {
+            margin: 20px 100px 20px 0;
+        }
+
+        .recent-book {
+            float: left;
+        }
+
+        /* Clearfix */
+        .cf:before,
+        .cf:after {
+            content: " "; /* 1 */
+            display: table; /* 2 */
+        }
+
+        .cf:after {
+            clear: both;
+        }
+
+        .cf {
+            *zoom: 1;
+        }
+
+    </style>
+
+</head>
+
+<body unresolved fullbleed>
+
+<template id="app-template" is="auto-binding">
+
+    <!-- Route controller. -->
+    <flatiron-director route="{{route}}" autoHash></flatiron-director>
+
+    <!-- Keyboard nav controller. -->
+    <core-a11y-keys id="keys" target="{{parentElement}}"
+                    keys="up down left right space space+shift"
+                    on-keys-pressed="{{keyHandler}}"></core-a11y-keys>
+
+    <core-drawer-panel id="drawerPanel">
+
+        <core-header-panel drawer>
+            <core-toolbar>
+                <span>Reader</span>
+            </core-toolbar>
+            <core-menu>
+                <paper-icon-button icon="account-balance"></paper-icon-button>
+                <strong>My Library</strong><br/>
+
+                <strong>Recent Books</strong>
+                <template repeat="{{ book in recents }}">
+                    <div>
+                        <img class="recent-book" src="{{book.cover}}" height="100"/>
+                        {{book.title}}<br/>
+                        {{book.author}}
+                    </div>
+                    <div class="cf"/>
+                </template>
+            </core-menu>
+        </core-header-panel>
+
+        <core-header-panel main>
+            <core-toolbar>
+                <paper-icon-button id="navicon" icon="menu"></paper-icon-button>
+                <span flex>(Book Title)</span>
+                <paper-menu-button icon="search" id="search" halign="right">
+                    <core-menu>
+                        <core-item>Cut</core-item>
+                        <core-item>Copy</core-item>
+                        <core-item>Paste</core-item>
+                    </core-menu>
+                </paper-menu-button>
+                <paper-menu-button icon="book" id="bookmarks" halign="right">
+                    <core-menu>
+                        <core-item>
+
+                            <img src="http://img1.imagesbn.com/p/9780140177398_p0_v1_s260x420.JPG"/>
+
+                        </core-item>
+                        <core-item>
+                            <div flex>
+                                <paper-tabs selected="0" flex>
+                                    <paper-tab flex>Chapters</paper-tab>
+                                    <paper-tab flex>Bookmarks</paper-tab>
+                                    <paper-tab flex>Annotations</paper-tab>
+                                </paper-tabs>
+                            </div><br/>
+                            <div flex>
+                                <core-pages selected="0">
+                                    <div>Chapters</div>
+                                    <div>Bookmarks</div>
+                                    <div>Annotations</div>
+                                </core-pages>
+                            </div>
+                        </core-item>
+                        <core-item>Paste</core-item>
+                    </core-menu>
+                </paper-menu-button>
+
+                <paper-menu-button icon="text-format" id="text-format" halign="right">
+                    <core-menu>
+                        <core-item>Cut</core-item>
+                        <core-item>Copy</core-item>
+                        <core-item>Paste</core-item>
+                    </core-menu>
+                </paper-menu-button>
+            </core-toolbar>
+
+            <div class="content">
+                (Put column/page view here and render as card.)
+            </div>
+        </core-header-panel>
+    </core-drawer-panel>
+</template>
+
+<script>
+    var template = document.querySelector('#app-template');
+    template.books = [
+        {title: 'Of Mice and Men', author: 'John Steinbeck', cover: 'http://img1.imagesbn.com/p/9780140177398_p0_v1_s260x420.JPG'},
+        {title: 'The Picture of Dorian Gray', author: 'Oscar Wilde', cover: 'http://img2.imagesbn.com/p/9781435129757_p0_v1_s260x420.JPG'},
+        {title: 'Adventures of Huckleberry Finn', author: 'Mark Twain', cover: 'http://img1.imagesbn.com/p/9781593081126_p0_v1_s260x420.JPG'},
+        {title: 'Dracula', author: 'Bram Stoker', cover: 'http://img2.imagesbn.com/p/9781435129733_p0_v2_s260x420.JPG'},
+        {title: 'Pride and Prejudice', author: 'Jane Austen', cover: 'http://img2.imagesbn.com/p/9781593082017_p0_v4_s260x420.JPG'},
+        {title: 'Frankenstein', author: 'Mary Shelly', cover: 'http://img2.imagesbn.com/p/9781593081157_p0_v5_s260x420.JPG'},
+        {title: 'A Tale of Two Cities', author: 'Charles Dickens', cover: 'http://img1.imagesbn.com/p/9781593081386_p0_v3_s260x420.JPG'},
+        {title: 'Crime and Punishment', author: 'Fyodor Dostoevsk', cover: 'http://img1.imagesbn.com/p/9781435131828_p0_v1_s260x420.JPG'},
+        {title: 'The Wonderful Wizard of Oz', author: 'L. Frank Baum', cover: 'http://img1.imagesbn.com/p/9781435139732_p0_v2_s260x420.JPG'},
+        {title: 'H.P. Lovecraft: The Complete Fiction', author: 'H. P. Lovecraft', cover: 'http://img2.imagesbn.com/p/9781435122963_p0_v2_s260x420.JPG'},
+        {title: 'The Count of Monte Cristo', author: 'Alexandre Dumas', cover: 'http://img2.imagesbn.com/p/9781593081515_p0_v1_s260x420.JPG'},
+        {title: 'Alice\'s Adventures in Wonderland and Through the Looking-Glass', author: 'Lewis Carroll', cover: 'http://img1.imagesbn.com/p/9781435142886_p0_v5_s260x420.JPG'},
+        {title: 'The Art of War', author: 'Sun Tzu', cover: 'http://img2.imagesbn.com/p/9781599869773_p0_v1_s260x420.jpg'},
+        {title: 'Jules Verne: Seven Novels', author: 'Jules Verne', cover: 'http://img1.imagesbn.com/p/9781435122956_p0_v2_s260x420.JPG'},
+        {title: 'Moby Dick', author: 'Herman Melville', cover: 'http://img2.imagesbn.com/p/9781593080181_p0_v4_s260x420.JPG'},
+    ];
+
+    template.recents = template.books.slice(0,5);
+
+    document.addEventListener('template-bound', function() {
+        var navicon = document.getElementById('navicon');
+        var drawerPanel = document.getElementById('drawerPanel');
+        navicon.addEventListener('click', function() {
+            drawerPanel.togglePanel();
+        });
+    });
+
+    // TODO: Update max-width for drawer to equal window height (so sidebar auto-hides when not in mobile mode)
+
+</script>
+
+</body>
+</html>
