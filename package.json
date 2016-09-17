@@ -53,6 +53,7 @@
     "karma-webpack": "^1.8.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "markdown-it": "^8.0.0",
     "mocha": "^3.0.0",
     "ncp": "^2.0.0",
     "npm": "^3.10.7",

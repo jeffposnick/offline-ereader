@@ -6,13 +6,13 @@ container.removeChild(container.firstElementChild);
 
 let root;
 function init() {
-  const BookList = require('./components/book-list').default;
-  root = render(<BookList/>, container, root);
+  const Read = require('./components/read').default;
+  root = render(<Read/>, container, root);
 }
 init();
 
 if (module.hot) {
-  module.hot.accept('./components/book-list/index.js', () => requestAnimationFrame(() => {
+  module.hot.accept('./components/read/index.js', () => requestAnimationFrame(() => {
     flushLogs();
     init();
   }));

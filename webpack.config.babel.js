@@ -8,20 +8,16 @@ const ENV = process.env.NODE_ENV || 'development';
 const CSS_MAPS = ENV !== 'production';
 
 module.exports = {
-  worker: {
-    output: {
-      filename: 'hash.book-list-worker.js',
-      chunkFilename: '[id].hash.book-list-worker.js'
-    }
-  },
-
   context: path.resolve(__dirname, 'src'),
-  entry: './index.js',
+  entry: {
+    index: './index',
+    read: './read'
+  },
 
   output: {
     path: path.resolve(__dirname, 'build'),
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
 
   resolve: {
@@ -103,11 +99,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './index.html',
+      chunks: ['index'],
       minify: {collapseWhitespace: true}
     }),
     new HtmlWebpackPlugin({
       filename: 'read.html',
       template: './read.html',
+      chunks: ['read'],
       minify: {collapseWhitespace: true}
     })
   ]).concat(ENV === 'production' ? [
