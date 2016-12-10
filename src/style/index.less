@@ -25,11 +25,40 @@ header {
   right: 0;
 }
 
-#preact {
-  position: absolute;
-  top: @headerHeight;
-  left: 0;
-  right: 0;
+main {
   bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  left: 0;
   overflow-y: auto;
+  position: absolute;
+  right: 0;
+  top: @headerHeight;
+}
+
+@height: 180px;
+
+.book {
+  background-color: #c5cae9;
+  border-radius: 4px;
+  color: #000;
+  height: @height;
+  margin: 16px;
+  padding: 8px;
+  text-decoration: none;
+  width: 120px;
+}
+
+.book > .title {
+  max-height: @height * 0.60;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.book > .author {
+  max-height: @height * 0.40;
+  overflow: hidden;
 }

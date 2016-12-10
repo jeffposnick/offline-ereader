@@ -1,32 +1,10 @@
-import {h, render} from 'preact';
 import './style';
+import idbOrWorker from 'idb-or-worker.js';
 
-const container = document.querySelector('#preact');
-container.removeChild(container.firstElementChild);
+const BOOK_LIST_URL = 'https://cdn.rawgit.com/gitenberg-dev/Second-Folio/master/Gitenberg%20Book%20List.csv';
 
-let root;
-function init() {
-  const BookList = require('./components/book-list').default;
-  root = render(<BookList/>, container, root);
-}
-init();
-
-if (module.hot) {
-  module.hot.accept('./components/book-list/index.js', () => requestAnimationFrame(() => {
-    flushLogs();
-    init();
-  }));
-
-  // optional: mute HMR/WDS logs
-  let log = console.log,
-    logs = [];
-  console.log = (t, ...args) => {
-    if (typeof t === 'string' && t.match(/^\[(HMR|WDS)\]/)) {
-      if (t.match(/(up to date|err)/i)) logs.push(t.replace(/^.*?\]\s*/m, ''), ...args);
-    }
-    else {
-      log.call(console, t, ...args);
-    }
-  };
-  let flushLogs = () => console.log(`%c🚀 ${logs.splice(0, logs.length).join(' ')}`, 'color:#888;');
-}
+(async () => {
+  const booksHtml = await idbOrWorker(BOOK_LIST_URL, require('worker!./book-list-worker'));
+  const container = document.querySelector('main');
+  container.innerHTML = booksHtml;
+})();

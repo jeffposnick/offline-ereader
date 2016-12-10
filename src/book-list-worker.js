@@ -1,6 +1,6 @@
-import idbKeyval from 'idb-keyval';
 import parseCsv from 'js-csvparser';
 import registerPromiseWorker from 'promise-worker/register';
+import {html, safeHtml} from 'common-tags';
 
 const rawGitURL = (repo, file, branch='master') => {
   const url = new URL(repo);
@@ -26,9 +26,15 @@ registerPromiseWorker(async url => {
     return book && book.title && book.author && book.url;
   });
 
-  // Don't await, so as not to block returning the response.
-  idbKeyval.set(url, books);
-
-  return books;
+  return html`
+    ${books.map(book => {
+      return safeHtml`
+        <a class="book"
+           title="${book.title} by ${book.author}"
+           href="read.html?${encodeURIComponent(book.url)}">
+          <div class="title">${book.title}</div>
+          <div class="author">${book.author}</div>
+        </a>`;
+    })}
+  `;
 });
-
