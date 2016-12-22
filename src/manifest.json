@@ -3,7 +3,7 @@
   "short_name": "eReader PWA",
   "icons": [
     {
-      "src": "assets/images/icon.png",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
     }

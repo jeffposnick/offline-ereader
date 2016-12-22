@@ -1,28 +1,26 @@
-@import 'helpers';
-
 * {
   box-sizing: border-box;
 }
 
 html, body {
-  font-family: sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   margin: 0;
-  padding: 0;
   overflow: hidden;
+  padding: 0;
 }
 
 header {
+  align-items: center;
   background-color: #3f51b5;
   color: #fff;
   display: flex;
-  align-items: center;
-  height: @headerHeight;
-  padding: 16px;
   font-size: 1.25em;
-  position: absolute;
-  top: 0;
+  height: 64px;
   left: 0;
+  padding: 16px;
+  position: absolute;
   right: 0;
+  top: 0;
 }
 
 main {
@@ -34,16 +32,14 @@ main {
   overflow-y: auto;
   position: absolute;
   right: 0;
-  top: @headerHeight;
+  top: 64px;
 }
-
-@height: 180px;
 
 .book {
   background-color: #c5cae9;
   border-radius: 4px;
   color: #000;
-  height: @height;
+  height: 180px;
   margin: 16px;
   padding: 8px;
   text-decoration: none;
@@ -51,14 +47,14 @@ main {
 }
 
 .book > .title {
-  max-height: @height * 0.60;
+  font-weight: bold;
+  margin-bottom: 8px;
+  max-height: 108px;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 8px;
-  font-weight: bold;
 }
 
 .book > .author {
-  max-height: @height * 0.40;
+  max-height: 72px;
   overflow: hidden;
 }
