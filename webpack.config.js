@@ -2,19 +2,29 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-const BUILD = './build';
+const BUILD_DIR = './build';
+const PAGES = ['index', 'read'];
+const SRC_DIR = './src';
+
+let entries = {};
+let htmlPlugins = [];
+PAGES.forEach(page => {
+  entries[page] = `./${page}.js`;
+  htmlPlugins.push(new HtmlWebpackPlugin({
+    template: `./${page}.html`,
+    chunks: [page],
+    filename: `${page}.html`
+  }));
+});
 
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
+  context: path.resolve(__dirname, SRC_DIR),
 
-  entry: {
-    index: './index.js',
-    read: './read.js'
-  },
+  entry: entries,
 
   output: {
     filename: '[name].js',
-    path: BUILD
+    path: BUILD_DIR
   },
 
   module: {
@@ -38,12 +48,7 @@ module.exports = {
   },
 
   plugins: [
-    new CleanWebpackPlugin([BUILD]),
-  ].concat(['index', 'read'].map(page => {
-    return new HtmlWebpackPlugin({
-      template: `./${page}.html`,
-      chunks: [page],
-      filename: `${page}.html`
-    })
-  }))
+    new CleanWebpackPlugin([BUILD_DIR]),
+    ...htmlPlugins
+  ]
 };
