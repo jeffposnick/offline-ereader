@@ -1,32 +1,13 @@
-import {h, render} from 'preact';
-import './style';
+import './manifest.json';
+import './icon.png';
+import './styles/read.css';
 
-const container = document.querySelector('#preact');
-container.removeChild(container.firstElementChild);
+import idbOrWorker from './lib/idb-or-worker';
+import markdownToHtmlWorker from './lib/workers/markdown-to-html-worker';
 
-let root;
-function init() {
-  const Read = require('./components/read').default;
-  root = render(<Read/>, container, root);
-}
-init();
-
-if (module.hot) {
-  module.hot.accept('./components/read/index.js', () => requestAnimationFrame(() => {
-    flushLogs();
-    init();
-  }));
-
-  // optional: mute HMR/WDS logs
-  let log = console.log,
-    logs = [];
-  console.log = (t, ...args) => {
-    if (typeof t === 'string' && t.match(/^\[(HMR|WDS)\]/)) {
-      if (t.match(/(up to date|err)/i)) logs.push(t.replace(/^.*?\]\s*/m, ''), ...args);
-    }
-    else {
-      log.call(console, t, ...args);
-    }
-  };
-  let flushLogs = () => console.log(`%c🚀 ${logs.splice(0, logs.length).join(' ')}`, 'color:#888;');
-}
+(async () => {
+  const url = decodeURIComponent(location.search.substring(1));
+  const bookHtml = await idbOrWorker(url, markdownToHtmlWorker);
+  const container = document.querySelector('main');
+  container.innerHTML = bookHtml;
+})();

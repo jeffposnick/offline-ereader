@@ -11,13 +11,12 @@
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.14",
     "common-tags": "^1.4.0",
-    "css-loader": "^0.26.1",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.24.1",
     "idb-keyval": "^2.3.0",
     "js-csvparser": "^1.5.0",
+    "markdown-it": "^8.2.2",
     "promise-worker": "^1.1.1",
-    "style-loader": "^0.13.1",
     "webpack": "^2.2.0-rc.2",
     "webpack-dev-server": "^1.16.2",
     "worker-loader": "^0.7.1"

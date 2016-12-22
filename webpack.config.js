@@ -8,7 +8,8 @@ module.exports = {
   context: path.resolve(__dirname, 'src'),
 
   entry: {
-    index: './index.js'
+    index: './index.js',
+    read: './read.js'
   },
 
   output: {
@@ -18,7 +19,7 @@ module.exports = {
 
   module: {
     rules: [{
-      test: /\.json$|\.png/,
+      test: /manifest\.json$|\.png|\.css/,
       use: [{
         loader: 'file-loader',
         options: {
@@ -33,17 +34,16 @@ module.exports = {
           name: '[name].[ext]'
         }
       }]
-    }, {
-      test: /\.css$/,
-      use: [
-        {loader: 'style-loader'},
-        {loader: 'css-loader'}
-      ]
     }]
   },
 
   plugins: [
     new CleanWebpackPlugin([BUILD]),
-    new HtmlWebpackPlugin({template: './index.html'})
-  ]
+  ].concat(['index', 'read'].map(page => {
+    return new HtmlWebpackPlugin({
+      template: `./${page}.html`,
+      chunks: [page],
+      filename: `${page}.html`
+    })
+  }))
 };

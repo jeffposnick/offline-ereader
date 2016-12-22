@@ -1,5 +1,5 @@
 import './manifest.json';
-import './assets/images/icon.png';
+import './icon.png';
 import './styles/index.css';
 
 import bookListWorker from './lib/workers/book-list-worker';
