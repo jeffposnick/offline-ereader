@@ -23,29 +23,17 @@ header {
   top: 0;
 }
 
-main {
+.container {
   bottom: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   left: 0;
-  overflow-y: auto;
+  margin: 16px;
   position: absolute;
   right: 0;
   top: 64px;
 }
 
-.container {
-  bottom: 0;
-  left: 0;
-  margin: 16px;
-  overflow: hidden;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
 .text {
+  -webkit-tap-highlight-color: transparent;
   bottom: 0;
   column-count: 2;
   column-gap: 40px;
