@@ -2,53 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#eeeeff">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="theme-color" content="#c5cae9">
 
     <title>My Library</title>
 
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="images/icon.png">
-
-    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="elements/elements.html">
-    <link rel="import" href="styles/common.html">
-    <link rel="import" href="styles/index.html">
+    <link rel="icon" href="icon.png">
+    <link rel="stylesheet" href="index.css">
   </head>
 
   <body>
-    <template is="dom-bind" id="pageTemplate">
-      <paper-header-panel>
-        <paper-toolbar>
-          <div id="title">My Library</div>
-
-          <paper-icon-button icon="sort" on-click="openSortDialog"></paper-icon-button>
-          <paper-dialog id="sortDialog">
-            <h2>Sort by</h2>
-            <paper-radio-group selected="{{sortOrder}}"
-                               on-change="closeSortDialog">
-              <paper-radio-button name="lastAccessed">Recent</paper-radio-button>
-              <paper-radio-button name="title">Title</paper-radio-button>
-              <paper-radio-button name="author">Author</paper-radio-button>
-            </paper-radio-group>
-          </paper-dialog>
-        </paper-toolbar>
-
-        <div class="book-container">
-          <template is="dom-repeat" id="bookRepeat" items="[[books]]">
-            <book-cover book-title="[[item.title]]"
-                        author="[[item.author]]"
-                        title="[[item.title]], by [[item.author]]"
-                        url="[[item.url]]"
-                        cover="[[item.cover]]"
-                        on-tap="selectBook">
-            </book-cover>
-          </template>
-        </div>
-      </paper-header-panel>
-    </template>
-
-    <script src="js/index.js"></script>
-    <script src="js/sw-registration.js"></script>
-  </body>
+    <header>
+      <span>My Library</span>
+    </header>
+    <main>
+      <span>Loading books...</span>
+    </main>
+  <script type="text/javascript" src="index.js"></script></body>
 </html>
