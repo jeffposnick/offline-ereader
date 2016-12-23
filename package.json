@@ -4,7 +4,8 @@
   "description": "An eReader Progressive Web App.",
   "scripts": {
     "build": "webpack",
-    "serve": "webpack-dev-server --port=3434"
+    "serve": "webpack-dev-server --port=3434",
+    "deploy": "webpack && gh-pages -d build"
   },
   "license": "Apache-2.0",
   "author": "Jeff Posnick <jeffy@google.com>",
@@ -12,6 +13,7 @@
     "clean-webpack-plugin": "^0.1.14",
     "common-tags": "^1.4.0",
     "file-loader": "^0.9.0",
+    "gh-pages": "^0.12.0",
     "html-webpack-plugin": "^2.24.1",
     "idb-keyval": "^2.3.0",
     "js-csvparser": "^1.5.0",
