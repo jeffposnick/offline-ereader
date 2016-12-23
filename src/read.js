@@ -4,25 +4,37 @@ import './styles/read.css';
 
 import idbOrWorker from './lib/idb-or-worker';
 import markdownToHtmlWorker from './lib/workers/markdown-to-html-worker';
+import StateManager from './lib/state-manager';
+import {columnGap} from './lib/constants';
 
-const columnGap = 40;
-
-let currentPage;
+const state = new StateManager();
 let textElement;
-let totalPages;
+
+const initialize = () => {
+  textElement = document.querySelector('.text');
+
+  state.write('title', 'My Book');
+  state.write('currentPage', 1);
+  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)))
+
+  state.listen('currentPage', onCurrentPageChanged);
+};
 
 const nextPage = () => {
+  const currentPage = state.read('currentPage');
+  const totalPages = state.read('totalPages');
+
   if (currentPage < totalPages) {
-    currentPage += 1;
+    state.write('currentPage', currentPage + 1);
   }
-  flipToCurrentPage();
 };
 
 const previousPage = () => {
+  const currentPage = state.read('currentPage');
+
   if (currentPage > 1) {
-    currentPage -= 1;
+    state.write('currentPage', currentPage - 1);
   }
-  flipToCurrentPage();
 };
 
 const clickHandler = event => {
@@ -33,17 +45,7 @@ const clickHandler = event => {
   }
 };
 
-const setupListeners = () => {
-  textElement = document.querySelector('.text');
-  textElement.addEventListener('click', clickHandler);
-};
-
-const updateState = () => {
-  currentPage = 1;
-  totalPages = Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap));
-};
-
-const flipToCurrentPage = () => {
+const onCurrentPageChanged = currentPage => {
   const translateOffset = (currentPage - 1) * (textElement.clientWidth + columnGap);
   textElement.style.transform = `translateX(-${translateOffset}px)`;
 };
@@ -54,7 +56,7 @@ const flipToCurrentPage = () => {
   const container = document.querySelector('main');
   const containerHtml = `<div class="container"><div class="text">${bookHtml}</div></div>`;
   container.innerHTML = containerHtml;
+  container.addEventListener('click', clickHandler);
 
-  setupListeners();
-  updateState();
+  initialize();
 })();

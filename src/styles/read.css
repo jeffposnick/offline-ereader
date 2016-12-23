@@ -25,6 +25,7 @@ header {
 
 .container {
   bottom: 0;
+  cursor: pointer;
   left: 0;
   margin: 16px;
   position: absolute;
@@ -37,7 +38,6 @@ header {
   bottom: 0;
   column-count: 2;
   column-gap: 40px;
-  cursor: pointer;
   left: 0;
   line-height: 1.2;
   position: absolute;
