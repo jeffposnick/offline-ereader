@@ -11,7 +11,7 @@ export default class StateManager {
     const oldValue = this[property]
     this[property] = newValue;
     if (property in this.propertyCallbacks) {
-      this.propertyCallbacks[property].forEach(callback => callback(newValue, oldValue));
+      this.propertyCallbacks[property].forEach(callback => callback(newValue, property, oldValue));
     }
   }
 
