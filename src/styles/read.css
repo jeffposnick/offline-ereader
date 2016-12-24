@@ -23,7 +23,7 @@ header {
   top: 0;
 }
 
-.container {
+#container {
   bottom: 0;
   cursor: pointer;
   left: 0;
@@ -33,7 +33,7 @@ header {
   top: 64px;
 }
 
-.text {
+#text {
   -webkit-tap-highlight-color: transparent;
   bottom: 0;
   column-count: 2;

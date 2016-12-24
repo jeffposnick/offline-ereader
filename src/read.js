@@ -36,9 +36,9 @@ const clickHandler = event => {
 };
 
 const onCurrentPageChanged = currentPage => {
-  const textElement = document.querySelector('.text');
+  const textElement = document.querySelector('#text');
   const translateOffset = (currentPage - 1) * (textElement.clientWidth + columnGap);
-  textElement.style.transform = `translateX(-${translateOffset}px)`;
+  document.querySelector('#text').style.transform = `translateX(-${translateOffset}px)`;
 };
 
 const onTitleChanged = title => {
@@ -46,8 +46,20 @@ const onTitleChanged = title => {
 };
 
 const onStyleChanged = (styleValue, styleName) => {
-  const textElement = document.querySelector('.text');
+  const textElement = document.querySelector('#text');
   textElement.style[styleName] = styleValue;
+  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)));
+};
+
+const onTotalPagesChanged = (newTotalPages, _, oldTotalPages) => {
+  const currentPage = state.read('currentPage');
+  const percentageRead = currentPage / (oldTotalPages || newTotalPages);
+  state.write('currentPage', percentageRead * newTotalPages);
+};
+
+const calculateTotalPages = () => {
+  const textElement = document.querySelector('#text');
+  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)));
 };
 
 (async () => {
@@ -56,20 +68,18 @@ const onStyleChanged = (styleValue, styleName) => {
 
   const bookHtml = await idbOrWorker(url, markdownToHtmlWorker);
 
-  const container = document.querySelector('main');
-  const containerHtml = `<div class="container">
-    <div class="text">${bookHtml}</div>
-  </div>`;
-  container.innerHTML = containerHtml;
-  container.addEventListener('click', clickHandler);
+  const textElement = document.querySelector('#text');
+  textElement.innerHTML = bookHtml;
+
+  document.querySelector('#container').addEventListener('click', clickHandler);
 
   state.listen('currentPage', onCurrentPageChanged);
   state.listen('title', onTitleChanged);
+  state.listen('totalPages', onTotalPagesChanged);
   ['font-family', 'line-height'].forEach(styleName => state.listen(styleName, onStyleChanged));
 
   state.write('title', urlParams.get('title'));
   state.write('currentPage', 1);
 
-  const textElement = document.querySelector('.text');
-  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)))
+  calculateTotalPages();
 })();
