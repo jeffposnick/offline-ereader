@@ -3089,7 +3089,7 @@ __WEBPACK_IMPORTED_MODULE_1_promise_worker_register___default()(async url => {
       return __WEBPACK_IMPORTED_MODULE_2_common_tags__["b" /* safeHtml */]`
         <a class="book"
            title="${book.title} by ${book.author}"
-           href="read.html?${encodeURIComponent(book.url)}">
+           href="read.html?url=${encodeURIComponent(book.url)}&title=${encodeURIComponent(book.title)}">
           <div class="title">${book.title}</div>
           <div class="author">${book.author}</div>
         </a>`;

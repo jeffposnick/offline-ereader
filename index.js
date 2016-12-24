@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,9 +83,22 @@ module.exports = __webpack_require__.p + "manifest.json";
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_promise_worker__ = __webpack_require__(6);
+const columnGap = 40;
+/* harmony export (immutable) */ exports["a"] = columnGap;
+
+const bookListUrl = 'https://cdn.rawgit.com/gitenberg-dev/Second-Folio/master/Gitenberg%20Book%20List.csv';
+/* harmony export (immutable) */ exports["b"] = bookListUrl;
+
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_promise_worker__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_promise_worker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_promise_worker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_idb_keyval__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_idb_keyval__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_idb_keyval___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_idb_keyval__);
 
 
@@ -103,7 +116,7 @@ module.exports = __webpack_require__.p + "manifest.json";
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -200,7 +213,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -274,15 +287,15 @@ function immediate(task) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var immediate = __webpack_require__(4);
+var immediate = __webpack_require__(5);
 
 /* istanbul ignore next */
 function INTERNAL() {}
@@ -537,14 +550,14 @@ function race(iterable) {
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 /* istanbul ignore next */
-var MyPromise = typeof Promise !== 'undefined' ? Promise : __webpack_require__(5);
+var MyPromise = typeof Promise !== 'undefined' ? Promise : __webpack_require__(6);
 
 var messageIds = 0;
 
@@ -621,7 +634,7 @@ PromiseWorker.prototype.postMessage = function (userMessage) {
 module.exports = PromiseWorker;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 var g;
@@ -646,14 +659,15 @@ module.exports = g;
 
 
 /***/ },
-/* 8 */
+/* 9 */,
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "index.css";
 
 /***/ },
-/* 9 */,
-/* 10 */
+/* 11 */,
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = function() {
@@ -661,8 +675,10 @@ module.exports = function() {
 };
 
 /***/ },
-/* 11 */,
-/* 12 */
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -671,11 +687,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__manifest_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__manifest_json__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__icon_png__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__icon_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__icon_png__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__styles_index_css__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__styles_index_css__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__styles_index_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__styles_index_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_idb_or_worker__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_idb_or_worker__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lib_constants__ = __webpack_require__(2);
 
 
 
@@ -683,10 +700,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 
-const BOOK_LIST_URL = 'https://cdn.rawgit.com/gitenberg-dev/Second-Folio/master/Gitenberg%20Book%20List.csv';
 
 (async () => {
-  const booksHtml = await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__lib_idb_or_worker__["a" /* default */])(BOOK_LIST_URL, __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker___default.a);
+  const booksHtml = await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__lib_idb_or_worker__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_5__lib_constants__["b" /* bookListUrl */], __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker___default.a);
   const container = document.querySelector('main');
   container.innerHTML = booksHtml;
 })();

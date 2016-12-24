@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,9 +83,22 @@ module.exports = __webpack_require__.p + "manifest.json";
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_promise_worker__ = __webpack_require__(6);
+const columnGap = 40;
+/* harmony export (immutable) */ exports["a"] = columnGap;
+
+const bookListUrl = 'https://cdn.rawgit.com/gitenberg-dev/Second-Folio/master/Gitenberg%20Book%20List.csv';
+/* harmony export (immutable) */ exports["b"] = bookListUrl;
+
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_promise_worker__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_promise_worker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_promise_worker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_idb_keyval__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_idb_keyval__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_idb_keyval___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_idb_keyval__);
 
 
@@ -103,7 +116,7 @@ module.exports = __webpack_require__.p + "manifest.json";
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -200,7 +213,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -274,15 +287,15 @@ function immediate(task) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var immediate = __webpack_require__(4);
+var immediate = __webpack_require__(5);
 
 /* istanbul ignore next */
 function INTERNAL() {}
@@ -537,14 +550,14 @@ function race(iterable) {
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 /* istanbul ignore next */
-var MyPromise = typeof Promise !== 'undefined' ? Promise : __webpack_require__(5);
+var MyPromise = typeof Promise !== 'undefined' ? Promise : __webpack_require__(6);
 
 var messageIds = 0;
 
@@ -621,7 +634,7 @@ PromiseWorker.prototype.postMessage = function (userMessage) {
 module.exports = PromiseWorker;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 var g;
@@ -646,15 +659,21 @@ module.exports = g;
 
 
 /***/ },
-/* 8 */,
 /* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "ic_font_download_black_48px.svg";
+
+/***/ },
+/* 10 */,
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "read.css";
 
 /***/ },
-/* 10 */,
-/* 11 */
+/* 12 */,
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = function() {
@@ -662,8 +681,57 @@ module.exports = function() {
 };
 
 /***/ },
-/* 12 */,
-/* 13 */
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ exports["a"] = search => {
+  return new Map(search.substring(1).split('&').map(function(keyValuePair) {
+    const splits = keyValuePair.split('=');
+    const key = decodeURIComponent(splits[0]);
+    const value = decodeURIComponent(splits[1]);
+
+    return [key, value];
+  }));
+};
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+class StateManager {
+  constructor() {
+    this.propertyCallbacks = {};
+  }
+
+  read(property) {
+    return this[property];
+  }
+
+  write(property, newValue) {
+    const oldValue = this[property];
+    this[property] = newValue;
+    if (property in this.propertyCallbacks) {
+      this.propertyCallbacks[property].forEach(callback => callback(newValue, property, oldValue));
+    }
+  }
+
+  listen(property, callback) {
+    if (!(property in this.propertyCallbacks)) {
+      this.propertyCallbacks[property] = [];
+    }
+    this.propertyCallbacks[property].push(callback);
+  }
+}
+/* harmony export (immutable) */ exports["a"] = StateManager;
+
+
+
+/***/ },
+/* 16 */,
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -672,11 +740,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__manifest_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__manifest_json__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__icon_png__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__icon_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__icon_png__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__styles_read_css__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__styles_read_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__styles_read_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_idb_or_worker__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_workers_markdown_to_html_worker__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_workers_markdown_to_html_worker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__lib_workers_markdown_to_html_worker__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ic_font_download_black_48px_svg__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ic_font_download_black_48px_svg___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__ic_font_download_black_48px_svg__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_read_css__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_read_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__styles_read_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_deserialize_url_params__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lib_idb_or_worker__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__lib_workers_markdown_to_html_worker__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__lib_workers_markdown_to_html_worker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__lib_workers_markdown_to_html_worker__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__lib_state_manager__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__lib_constants__ = __webpack_require__(2);
 
 
 
@@ -684,24 +757,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 
-const columnGap = 40;
 
-let currentPage;
-let textElement;
-let totalPages;
+
+
+
+const state = new __WEBPACK_IMPORTED_MODULE_7__lib_state_manager__["a" /* default */]();
 
 const nextPage = () => {
+  const currentPage = state.read('currentPage');
+  const totalPages = state.read('totalPages');
+
   if (currentPage < totalPages) {
-    currentPage += 1;
+    state.write('currentPage', currentPage + 1);
   }
-  flipToCurrentPage();
 };
 
 const previousPage = () => {
+  const currentPage = state.read('currentPage');
+
   if (currentPage > 1) {
-    currentPage -= 1;
+    state.write('currentPage', currentPage - 1);
   }
-  flipToCurrentPage();
 };
 
 const clickHandler = event => {
@@ -712,30 +788,59 @@ const clickHandler = event => {
   }
 };
 
-const setupListeners = () => {
-  textElement = document.querySelector('.text');
-  textElement.addEventListener('click', clickHandler);
+const fontHandler = event => {
+  const font = event.target.selectedOptions[0].textContent;
+  state.write('font-family', font);
 };
 
-const updateState = () => {
-  currentPage = 1;
-  totalPages = Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap));
+const onCurrentPageChanged = currentPage => {
+  const textElement = document.querySelector('#text');
+  const translateOffset = (currentPage - 1) * (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* columnGap */]);
+  document.querySelector('#text').style.transform = `translateX(-${translateOffset}px)`;
 };
 
-const flipToCurrentPage = () => {
-  const translateOffset = (currentPage - 1) * (textElement.clientWidth + columnGap);
-  textElement.style.transform = `translateX(-${translateOffset}px)`;
+const onTitleChanged = title => {
+  document.querySelector('#title').textContent = title;
+};
+
+const onStyleChanged = (styleValue, styleName) => {
+  const textElement = document.querySelector('#text');
+  textElement.style[styleName] = styleValue;
+  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* columnGap */])));
+};
+
+const onTotalPagesChanged = (newTotalPages, _, oldTotalPages) => {
+  const currentPage = state.read('currentPage');
+  const percentageRead = currentPage / (oldTotalPages || newTotalPages);
+  state.write('currentPage', percentageRead * newTotalPages);
+};
+
+const calculateTotalPages = () => {
+  const textElement = document.querySelector('#text');
+  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* columnGap */])));
 };
 
 (async () => {
-  const url = decodeURIComponent(location.search.substring(1));
-  const bookHtml = await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__lib_idb_or_worker__["a" /* default */])(url, __WEBPACK_IMPORTED_MODULE_4__lib_workers_markdown_to_html_worker___default.a);
-  const container = document.querySelector('main');
-  const containerHtml = `<div class="container"><div class="text">${bookHtml}</div></div>`;
-  container.innerHTML = containerHtml;
+  const urlParams = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__lib_deserialize_url_params__["a" /* default */])(location.search);
+  const url = urlParams.get('url');
 
-  setupListeners();
-  updateState();
+  const bookHtml = await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__lib_idb_or_worker__["a" /* default */])(url, __WEBPACK_IMPORTED_MODULE_6__lib_workers_markdown_to_html_worker___default.a);
+
+  const textElement = document.querySelector('#text');
+  textElement.innerHTML = bookHtml;
+
+  document.querySelector('#container').addEventListener('click', clickHandler);
+  document.querySelector('#font').addEventListener('change', fontHandler);
+
+  state.listen('currentPage', onCurrentPageChanged);
+  state.listen('title', onTitleChanged);
+  state.listen('totalPages', onTotalPagesChanged);
+  ['font-family', 'line-height'].forEach(styleName => state.listen(styleName, onStyleChanged));
+
+  state.write('title', urlParams.get('title'));
+  state.write('currentPage', 1);
+
+  calculateTotalPages();
 })();
 
 
