@@ -25,6 +25,7 @@ header {
 }
 
 #container {
+  -webkit-tap-highlight-color: transparent;
   bottom: 0;
   cursor: pointer;
   left: 0;
@@ -35,7 +36,6 @@ header {
 }
 
 #text {
-  -webkit-tap-highlight-color: transparent;
   bottom: 0;
   column-count: 2;
   column-gap: 40px;
@@ -47,6 +47,12 @@ header {
   top: 0;
   transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1);
   will-change: transform;
+}
+
+@media screen and (max-device-width: 640px) {
+  #text {
+    column-count: 1;
+  }
 }
 
 select {
