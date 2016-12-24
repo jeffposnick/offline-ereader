@@ -8,7 +8,7 @@ export default class StateManager {
   }
 
   write(property, newValue) {
-    const oldValue = this[property]
+    const oldValue = this[property];
     this[property] = newValue;
     if (property in this.propertyCallbacks) {
       this.propertyCallbacks[property].forEach(callback => callback(newValue, property, oldValue));

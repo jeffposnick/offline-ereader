@@ -1,5 +1,6 @@
 import './manifest.json';
 import './icon.png';
+import './ic_font_download_black_48px.svg';
 import './styles/read.css';
 
 import deserializeUrlParams from './lib/deserialize-url-params';
@@ -33,6 +34,11 @@ const clickHandler = event => {
   } else {
     previousPage();
   }
+};
+
+const fontHandler = event => {
+  const font = event.target.selectedOptions[0].textContent;
+  state.write('font-family', font);
 };
 
 const onCurrentPageChanged = currentPage => {
@@ -72,6 +78,7 @@ const calculateTotalPages = () => {
   textElement.innerHTML = bookHtml;
 
   document.querySelector('#container').addEventListener('click', clickHandler);
+  document.querySelector('#font').addEventListener('change', fontHandler);
 
   state.listen('currentPage', onCurrentPageChanged);
   state.listen('title', onTitleChanged);

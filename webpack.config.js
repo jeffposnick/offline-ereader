@@ -29,7 +29,7 @@ module.exports = {
 
   module: {
     rules: [{
-      test: /manifest\.json$|\.png|\.css/,
+      test: /manifest\.json$|\.png$|\.css$|\.svg$/,
       use: [{
         loader: 'file-loader',
         options: {
