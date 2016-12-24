@@ -10,14 +10,14 @@ import {columnGap} from './lib/constants';
 const state = new StateManager();
 let textElement;
 
-const initialize = () => {
-  textElement = document.querySelector('.text');
+const deserializeUrlParams = search => {
+  return new Map(search.substring(1).split('&').map(function(keyValuePair) {
+    const splits = keyValuePair.split('=');
+    const key = decodeURIComponent(splits[0]);
+    const value = decodeURIComponent(splits[1]);
 
-  state.write('title', 'My Book');
-  state.write('currentPage', 1);
-  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)))
-
-  state.listen('currentPage', onCurrentPageChanged);
+    return [key, value];
+  }));
 };
 
 const nextPage = () => {
@@ -50,13 +50,28 @@ const onCurrentPageChanged = currentPage => {
   textElement.style.transform = `translateX(-${translateOffset}px)`;
 };
 
+const onTitleChanged = title => {
+  document.querySelector('#title').textContent = title;
+};
+
 (async () => {
-  const url = decodeURIComponent(location.search.substring(1));
+  const urlParams = deserializeUrlParams(location.search);
+  const url = urlParams.get('url');
+
   const bookHtml = await idbOrWorker(url, markdownToHtmlWorker);
   const container = document.querySelector('main');
-  const containerHtml = `<div class="container"><div class="text">${bookHtml}</div></div>`;
+  const containerHtml = `<div class="container">
+    <div class="text">${bookHtml}</div>
+  </div>`;
   container.innerHTML = containerHtml;
   container.addEventListener('click', clickHandler);
 
-  initialize();
+  textElement = document.querySelector('.text');
+
+  state.listen('currentPage', onCurrentPageChanged);
+  state.listen('title', onTitleChanged);
+
+  state.write('title', urlParams.get('title'));
+  state.write('currentPage', 1);
+  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)))
 })();

@@ -31,7 +31,7 @@ registerPromiseWorker(async url => {
       return safeHtml`
         <a class="book"
            title="${book.title} by ${book.author}"
-           href="read.html?${encodeURIComponent(book.url)}">
+           href="read.html?url=${encodeURIComponent(book.url)}&title=${encodeURIComponent(book.title)}">
           <div class="title">${book.title}</div>
           <div class="author">${book.author}</div>
         </a>`;
