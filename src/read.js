@@ -49,6 +49,7 @@ const onCurrentPageChanged = currentPage => {
 
 const onTitleChanged = title => {
   document.querySelector('#title').textContent = title;
+  document.title = title;
 };
 
 const onStyleChanged = (styleValue, styleName) => {

@@ -55,7 +55,7 @@ header {
   }
 }
 
-select {
+#font {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
