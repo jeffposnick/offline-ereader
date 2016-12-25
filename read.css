@@ -1,5 +1,7 @@
 * {
+  -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+  outline: 0;
 }
 
 body {
@@ -25,17 +27,20 @@ header {
 }
 
 #container {
-  -webkit-tap-highlight-color: transparent;
   bottom: 0;
   cursor: pointer;
   left: 0;
-  margin: 16px;
+  margin: 40px;
   position: absolute;
   right: 0;
   top: 64px;
 }
 
 #text {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   bottom: 0;
   column-count: 2;
   column-gap: 40px;
@@ -46,26 +51,31 @@ header {
   text-align: justify;
   top: 0;
   transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1);
+  user-select: none;
   will-change: transform;
 }
 
-@media screen and (max-device-width: 640px) {
-  #text {
-    column-count: 1;
-  }
-}
-
-select {
+#font {
   -moz-appearance: none;
   -webkit-appearance: none;
+  -webkit-mask-image: url("ic_font_download_black_48px.svg");
+  -webkit-mask-size: contain;
   appearance: none;
-  background: url("ic_font_download_black_48px.svg") no-repeat;
   background-color: white;
-  background-size: 32px 32px;
   border: none;
+  color: white;
   height: 32px;
   overflow: hidden;
   padding-right: 32px;
   width: 32px;
-  color: white;
+}
+
+@media screen and (max-device-width: 640px) {
+  #container {
+    margin: 20px;
+  }
+
+  #text {
+    column-count: 1;
+  }
 }
