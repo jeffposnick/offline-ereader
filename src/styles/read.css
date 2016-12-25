@@ -1,5 +1,7 @@
 * {
+  -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+  outline: 0;
 }
 
 body {
@@ -25,11 +27,10 @@ header {
 }
 
 #container {
-  -webkit-tap-highlight-color: transparent;
   bottom: 0;
   cursor: pointer;
   left: 0;
-  margin: 16px;
+  margin: 40px;
   position: absolute;
   right: 0;
   top: 64px;
@@ -55,6 +56,10 @@ header {
 }
 
 @media screen and (max-device-width: 640px) {
+  #container {
+    margin: 20px;
+  }
+
   #text {
     column-count: 1;
   }
