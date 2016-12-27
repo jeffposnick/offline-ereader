@@ -1,3 +1,4 @@
+import 'whatwg-fetch';
 import MarkdownIt from 'markdown-it';
 import registerPromiseWorker from 'promise-worker/register';
 

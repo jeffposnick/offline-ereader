@@ -1,3 +1,4 @@
+import 'whatwg-fetch';
 import parseCsv from 'js-csvparser';
 import registerPromiseWorker from 'promise-worker/register';
 import {html, safeHtml} from 'common-tags';
