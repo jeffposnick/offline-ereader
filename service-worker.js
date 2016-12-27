@@ -37,7 +37,7 @@
 /* eslint-disable indent, no-unused-vars, no-multiple-empty-lines, max-nested-callbacks, space-before-function-paren, quotes, comma-spacing */
 'use strict';
 
-var precacheConfig = [["book-list-worker.js","8f88943dc1e5e0538512993a6ea87656"],["ic_font_download_black_48px.svg","a0a5b7387a7f204b1bca0575793beb65"],["icon.png","e99926061710598d8386abe569a5d27c"],["index.css","e91c5d630bd4c06c6ecc6439b1c77d4b"],["index.html","67135380e83dd5d7096bd07378d26b0d"],["index.js","e6907b1030db8122869ea3e2745f9000"],["manifest.json","2c4ea91dccbcb8e23355cf11762e559b"],["markdown-to-html-worker.js","c169398526008bb1dfce848f622dcd63"],["read.css","263b149582ca8e613d57db3194c1cb95"],["read.html","ab2535c37a205e143eddfb3190819f6f"],["read.js","6b6ca8d595d6e222e338e4bd7dc8c214"]];
+var precacheConfig = [["book-list-worker.js","8f88943dc1e5e0538512993a6ea87656"],["ic_font_download_black_48px.svg","a0a5b7387a7f204b1bca0575793beb65"],["icon.png","e99926061710598d8386abe569a5d27c"],["index.css","e91c5d630bd4c06c6ecc6439b1c77d4b"],["index.html","67135380e83dd5d7096bd07378d26b0d"],["index.js","e6907b1030db8122869ea3e2745f9000"],["manifest.json","2c4ea91dccbcb8e23355cf11762e559b"],["markdown-to-html-worker.js","c169398526008bb1dfce848f622dcd63"],["read.css","f6fda47c341444fc8cf6d74a4529b2a3"],["read.html","ab2535c37a205e143eddfb3190819f6f"],["read.js","6b6ca8d595d6e222e338e4bd7dc8c214"]];
 var cacheName = 'sw-precache-v2-sw-precache-webpack-plugin-' + (self.registration ? self.registration.scope : '');
 
 
