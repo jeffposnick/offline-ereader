@@ -43,6 +43,14 @@ const fontHandler = event => {
   globalState.write('font-family', font);
 };
 
+const keydownHandler = event => {
+  if (event.key === 'ArrowLeft') {
+    previousPage();
+  } else if (event.key === 'ArrowRight') {
+    nextPage();
+  }
+};
+
 const onCurrentPageChanged = currentPage => {
   const textElement = document.querySelector('#text');
   const translateOffset = (currentPage - 1) * (textElement.clientWidth + columnGap);
@@ -84,6 +92,7 @@ const calculateTotalPages = () => {
 
   document.querySelector('#container').addEventListener('click', clickHandler);
   document.querySelector('#font').addEventListener('change', fontHandler);
+  window.addEventListener('keydown', keydownHandler);
 
   bookState.listen('currentPage', onCurrentPageChanged);
   bookState.listen('title', onTitleChanged);
