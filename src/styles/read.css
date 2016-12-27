@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
   outline: 0;
-  tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
