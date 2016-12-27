@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+  outline: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  user-select: none;
+}
+
+header {
+  align-items: center;
+  background-color: #3f51b5;
+  color: #fff;
+  display: flex;
+  font-size: 1.25em;
+  justify-content: space-between;
+  height: 64px;
+  left: 0;
+  padding: 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+#container {
+  bottom: 16px;
+  cursor: pointer;
+  left: 0;
+  margin: 40px;
+  position: absolute;
+  right: 0;
+  top: 64px;
+}
+
+#text {
+  -webkit-touch-callout: none;
+  bottom: 0;
+  column-count: 2;
+  column-gap: 40px;
+  left: 0;
+  line-height: 1.2;
+  position: absolute;
+  right: 0;
+  text-align: justify;
+  top: 0;
+  transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1);
+  user-select: none;
+  will-change: transform;
+}
+
+@media screen and (max-width: 640px) {
+  #container {
+    margin: 20px;
+  }
+
+  #text {
+    column-count: 1;
+  }
+
+  footer {
+    bottom: -8px;
+  }
+}
+
+#font {
+  appearance: none;
+  background-color: white;
+  border: none;
+  color: white;
+  height: 32px;
+  mask-image: url("ic_font_download_black_48px.svg");
+  overflow: hidden;
+  padding-right: 32px;
+  width: 32px;
+}
+
+footer {
+  text-align: center;
+  bottom: 8px;
+  height: 16px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+}
+
+#controls {
+  display: none;
+}
