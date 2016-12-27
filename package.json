@@ -14,6 +14,7 @@
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
+    "babili": "^0.0.9",
     "clean-webpack-plugin": "^0.1.14",
     "common-tags": "^1.4.0",
     "file-loader": "^0.9.0",

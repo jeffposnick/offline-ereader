@@ -47,11 +47,11 @@ module.exports = {
       }]
     }, {
       test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
       use: [{
         loader: 'babel-loader',
         options: {
-          plugins: ['transform-async-to-generator']
+          plugins: ['transform-async-to-generator'],
+          presets: ['babili']
         }
       }]
     }, {
