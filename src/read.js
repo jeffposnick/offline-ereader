@@ -7,24 +7,25 @@ import deserializeUrlParams from './lib/deserialize-url-params';
 import idbOrWorker from './lib/idb-or-worker';
 import markdownToHtmlWorker from './lib/workers/markdown-to-html-worker';
 import StateManager from './lib/state-manager';
-import {columnGap} from './lib/constants';
+import {columnGap, globalStateKey} from './lib/constants';
 
-const state = new StateManager();
+const bookState = new StateManager(location.href);
+const globalState = new StateManager(globalStateKey);
 
 const nextPage = () => {
-  const currentPage = state.read('currentPage');
-  const totalPages = state.read('totalPages');
+  const currentPage = bookState.read('currentPage');
+  const totalPages = bookState.read('totalPages');
 
   if (currentPage < totalPages) {
-    state.write('currentPage', currentPage + 1);
+    bookState.write('currentPage', currentPage + 1);
   }
 };
 
 const previousPage = () => {
-  const currentPage = state.read('currentPage');
+  const currentPage = bookState.read('currentPage');
 
   if (currentPage > 1) {
-    state.write('currentPage', currentPage - 1);
+    bookState.write('currentPage', currentPage - 1);
   }
 };
 
@@ -38,7 +39,7 @@ const clickHandler = event => {
 
 const fontHandler = event => {
   const font = event.target.selectedOptions[0].textContent;
-  state.write('font-family', font);
+  globalState.write('font-family', font);
 };
 
 const onCurrentPageChanged = currentPage => {
@@ -55,18 +56,18 @@ const onTitleChanged = title => {
 const onStyleChanged = (styleValue, styleName) => {
   const textElement = document.querySelector('#text');
   textElement.style[styleName] = styleValue;
-  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)));
+  bookState.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)));
 };
 
 const onTotalPagesChanged = (newTotalPages, _, oldTotalPages) => {
-  const currentPage = state.read('currentPage');
+  const currentPage = bookState.read('currentPage');
   const percentageRead = currentPage / (oldTotalPages || newTotalPages);
-  state.write('currentPage', percentageRead * newTotalPages);
+  bookState.write('currentPage', Math.floor(percentageRead * newTotalPages));
 };
 
 const calculateTotalPages = () => {
   const textElement = document.querySelector('#text');
-  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)));
+  bookState.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + columnGap)));
 };
 
 (async () => {
@@ -81,13 +82,15 @@ const calculateTotalPages = () => {
   document.querySelector('#container').addEventListener('click', clickHandler);
   document.querySelector('#font').addEventListener('change', fontHandler);
 
-  state.listen('currentPage', onCurrentPageChanged);
-  state.listen('title', onTitleChanged);
-  state.listen('totalPages', onTotalPagesChanged);
-  ['font-family', 'line-height'].forEach(styleName => state.listen(styleName, onStyleChanged));
+  bookState.listen('currentPage', onCurrentPageChanged);
+  bookState.listen('title', onTitleChanged);
+  bookState.listen('totalPages', onTotalPagesChanged);
+  ['font-family'].forEach(styleName => globalState.listen(styleName, onStyleChanged));
 
-  state.write('title', urlParams.get('title'));
-  state.write('currentPage', 1);
+  await bookState.bootstrap({
+    title: urlParams.get('title'),
+    currentPage: 1
+  });
 
   calculateTotalPages();
 })();
