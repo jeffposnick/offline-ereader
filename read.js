@@ -83,11 +83,14 @@ module.exports = __webpack_require__.p + "manifest.json";
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-const columnGap = 40;
-/* harmony export (immutable) */ exports["a"] = columnGap;
-
 const bookListUrl = 'https://cdn.rawgit.com/gitenberg-dev/Second-Folio/master/Gitenberg%20Book%20List.csv';
-/* harmony export (immutable) */ exports["b"] = bookListUrl;
+/* harmony export (immutable) */ exports["c"] = bookListUrl;
+
+const columnGap = 40;
+/* harmony export (immutable) */ exports["b"] = columnGap;
+
+const globalStateKey = 'global';
+/* harmony export (immutable) */ exports["a"] = globalStateKey;
 
 
 
@@ -701,18 +704,34 @@ module.exports = function() {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_idb_keyval__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_idb_keyval___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_idb_keyval__);
+
+
 class StateManager {
-  constructor() {
+  constructor(key = location.href) {
     this.propertyCallbacks = {};
+    this.state = {};
+    this.key = `state-${key}`;
+  }
+  
+  async bootstrap(defaultState = {}) {
+    const savedState = await __WEBPACK_IMPORTED_MODULE_0_idb_keyval___default.a.get(this.key);
+    const computedState = Object.assign({}, defaultState, savedState);
+
+    Object.keys(computedState).forEach(async property => {
+      await this.write(property, computedState[property]);
+    });
   }
 
   read(property) {
-    return this[property];
+    return this.state[property];
   }
 
-  write(property, newValue) {
-    const oldValue = this[property];
-    this[property] = newValue;
+  async write(property, newValue) {
+    const oldValue = this.state[property];
+    this.state[property] = newValue;
+    await __WEBPACK_IMPORTED_MODULE_0_idb_keyval___default.a.set(this.key, this.state);
     if (property in this.propertyCallbacks) {
       this.propertyCallbacks[property].forEach(callback => callback(newValue, property, oldValue));
     }
@@ -761,22 +780,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 
-const state = new __WEBPACK_IMPORTED_MODULE_7__lib_state_manager__["a" /* default */]();
+const bookState = new __WEBPACK_IMPORTED_MODULE_7__lib_state_manager__["a" /* default */](location.href);
+const globalState = new __WEBPACK_IMPORTED_MODULE_7__lib_state_manager__["a" /* default */](__WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* globalStateKey */]);
 
 const nextPage = () => {
-  const currentPage = state.read('currentPage');
-  const totalPages = state.read('totalPages');
+  const currentPage = bookState.read('currentPage');
+  const totalPages = bookState.read('totalPages');
 
   if (currentPage < totalPages) {
-    state.write('currentPage', currentPage + 1);
+    bookState.write('currentPage', currentPage + 1);
   }
 };
 
 const previousPage = () => {
-  const currentPage = state.read('currentPage');
+  const currentPage = bookState.read('currentPage');
 
   if (currentPage > 1) {
-    state.write('currentPage', currentPage - 1);
+    bookState.write('currentPage', currentPage - 1);
   }
 };
 
@@ -790,13 +810,14 @@ const clickHandler = event => {
 
 const fontHandler = event => {
   const font = event.target.selectedOptions[0].textContent;
-  state.write('font-family', font);
+  globalState.write('font-family', font);
 };
 
 const onCurrentPageChanged = currentPage => {
   const textElement = document.querySelector('#text');
-  const translateOffset = (currentPage - 1) * (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* columnGap */]);
+  const translateOffset = (currentPage - 1) * (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["b" /* columnGap */]);
   document.querySelector('#text').style.transform = `translateX(-${translateOffset}px)`;
+  document.querySelector('#currentPage').textContent = currentPage;
 };
 
 const onTitleChanged = title => {
@@ -807,18 +828,19 @@ const onTitleChanged = title => {
 const onStyleChanged = (styleValue, styleName) => {
   const textElement = document.querySelector('#text');
   textElement.style[styleName] = styleValue;
-  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* columnGap */])));
+  bookState.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["b" /* columnGap */])));
 };
 
 const onTotalPagesChanged = (newTotalPages, _, oldTotalPages) => {
-  const currentPage = state.read('currentPage');
+  const currentPage = bookState.read('currentPage');
   const percentageRead = currentPage / (oldTotalPages || newTotalPages);
-  state.write('currentPage', percentageRead * newTotalPages);
+  bookState.write('currentPage', Math.floor(percentageRead * newTotalPages));
+  document.querySelector('#totalPages').textContent = newTotalPages;
 };
 
 const calculateTotalPages = () => {
   const textElement = document.querySelector('#text');
-  state.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["a" /* columnGap */])));
+  bookState.write('totalPages', Math.ceil(textElement.scrollWidth / (textElement.clientWidth + __WEBPACK_IMPORTED_MODULE_8__lib_constants__["b" /* columnGap */])));
 };
 
 (async () => {
@@ -833,13 +855,15 @@ const calculateTotalPages = () => {
   document.querySelector('#container').addEventListener('click', clickHandler);
   document.querySelector('#font').addEventListener('change', fontHandler);
 
-  state.listen('currentPage', onCurrentPageChanged);
-  state.listen('title', onTitleChanged);
-  state.listen('totalPages', onTotalPagesChanged);
-  ['font-family', 'line-height'].forEach(styleName => state.listen(styleName, onStyleChanged));
+  bookState.listen('currentPage', onCurrentPageChanged);
+  bookState.listen('title', onTitleChanged);
+  bookState.listen('totalPages', onTotalPagesChanged);
+  ['font-family'].forEach(styleName => globalState.listen(styleName, onStyleChanged));
 
-  state.write('title', urlParams.get('title'));
-  state.write('currentPage', 1);
+  await bookState.bootstrap({
+    title: urlParams.get('title'),
+    currentPage: 1
+  });
 
   calculateTotalPages();
 })();

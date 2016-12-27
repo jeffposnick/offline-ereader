@@ -9,6 +9,7 @@ body {
   margin: 0;
   overflow: hidden;
   padding: 0;
+  user-select: none;
 }
 
 header {
@@ -27,7 +28,7 @@ header {
 }
 
 #container {
-  bottom: 0;
+  bottom: 16px;
   cursor: pointer;
   left: 0;
   margin: 40px;
@@ -51,8 +52,17 @@ header {
   text-align: justify;
   top: 0;
   transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1);
-  user-select: none;
   will-change: transform;
+}
+
+@media screen and (max-device-width: 640px) {
+  #container {
+    margin: 20px;
+  }
+
+  #text {
+    column-count: 1;
+  }
 }
 
 #font {
@@ -70,12 +80,13 @@ header {
   width: 32px;
 }
 
-@media screen and (max-device-width: 640px) {
-  #container {
-    margin: 20px;
-  }
-
-  #text {
-    column-count: 1;
-  }
+footer {
+  text-align: center;
+  bottom: 0;
+  height: 16px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+  margin-bottom: 8px;
 }

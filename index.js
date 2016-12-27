@@ -83,11 +83,14 @@ module.exports = __webpack_require__.p + "manifest.json";
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-const columnGap = 40;
-/* harmony export (immutable) */ exports["a"] = columnGap;
-
 const bookListUrl = 'https://cdn.rawgit.com/gitenberg-dev/Second-Folio/master/Gitenberg%20Book%20List.csv';
-/* harmony export (immutable) */ exports["b"] = bookListUrl;
+/* harmony export (immutable) */ exports["c"] = bookListUrl;
+
+const columnGap = 40;
+/* harmony export (immutable) */ exports["b"] = columnGap;
+
+const globalStateKey = 'global';
+/* harmony export (immutable) */ exports["a"] = globalStateKey;
 
 
 
@@ -702,7 +705,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 (async () => {
-  const booksHtml = await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__lib_idb_or_worker__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_5__lib_constants__["b" /* bookListUrl */], __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker___default.a);
+  const booksHtml = await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__lib_idb_or_worker__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_5__lib_constants__["c" /* bookListUrl */], __WEBPACK_IMPORTED_MODULE_3__lib_workers_book_list_worker___default.a);
   const container = document.querySelector('main');
   container.innerHTML = booksHtml;
 })();
