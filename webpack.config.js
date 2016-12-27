@@ -1,5 +1,6 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const path = require('path');
 
 const BUILD_DIR = './build';
@@ -49,6 +50,13 @@ module.exports = {
 
   plugins: [
     new CleanWebpackPlugin([BUILD_DIR]),
-    ...htmlPlugins
+    ...htmlPlugins,
+    new SWPrecacheWebpackPlugin({
+      filename: 'service-worker.js',
+      stripPrefix: 'build/',
+      runtimeCaching: [{
+        default: 'networkFirst'
+      }],
+    })
   ]
 };
