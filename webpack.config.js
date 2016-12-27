@@ -7,70 +7,71 @@ const BUILD_DIR = './build';
 const PAGES = ['index', 'read'];
 const SRC_DIR = './src';
 
+const isDevServer = process.argv.some(v => v.includes('webpack-dev-server'));
+
 let entries = {};
-let htmlPlugins = [];
+let plugins = [];
 PAGES.forEach(page => {
   entries[page] = `./${page}.js`;
-  htmlPlugins.push(new HtmlWebpackPlugin({
+  plugins.push(new HtmlWebpackPlugin({
     template: `./${page}.html`,
     chunks: [page],
     filename: `${page}.html`
   }));
 });
 
+let rules = [{
+  test: /manifest\.json$|\.png$|\.css$|\.svg$/,
+  use: [{
+    loader: 'file-loader',
+    options: {
+      name: '[name].[ext]'
+    }
+  }]
+}, {
+  test: /workers\/.+\.js$/,
+  use: [{
+    loader: 'worker-loader',
+    options: {
+      name: '[name].[ext]'
+    }
+  }]
+}, {
+  test: /\.css$/,
+  use: [{
+    loader: 'postcss-loader'
+  }]
+}];
+
+if (!isDevServer) {
+  rules.push({
+    test: /\.js$/,
+    use: [{
+      loader: 'babel-loader',
+      options: {
+        plugins: ['transform-async-to-generator'],
+        presets: ['babili']
+      }
+    }]
+  });
+
+  plugins.unshift(new CleanWebpackPlugin([BUILD_DIR]));
+  plugins.push(new SWPrecacheWebpackPlugin({
+    filename: 'service-worker.js',
+    stripPrefix: 'build/',
+    runtimeCaching: [{
+      default: 'networkFirst'
+    }],
+  }));
+}
+
 module.exports = {
   context: path.resolve(__dirname, SRC_DIR),
-
   entry: entries,
-
   output: {
     filename: '[name].js',
     path: BUILD_DIR
   },
-
-  module: {
-    rules: [{
-      test: /manifest\.json$|\.png$|\.css$|\.svg$/,
-      use: [{
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]'
-        }
-      }]
-    }, {
-      test: /workers\/.+\.js$/,
-      use: [{
-        loader: 'worker-loader',
-        options: {
-          name: '[name].[ext]'
-        }
-      }]
-    }, {
-      test: /\.js$/,
-      use: [{
-        loader: 'babel-loader',
-        options: {
-          plugins: ['transform-async-to-generator'],
-          presets: ['babili']
-        }
-      }]
-    }, {
-      test: /\.css$/,
-      use: [{
-        loader: 'postcss-loader'
-      }]
-    }]
-  },
-
-  plugins: [
-    new CleanWebpackPlugin([BUILD_DIR]),
-    ...htmlPlugins,
-    new SWPrecacheWebpackPlugin({
-      filename: 'service-worker.js',
-      stripPrefix: 'build/',
-      runtimeCaching: [{
-        default: 'networkFirst'
-      }],
-    })
-  ]
+  module: {rules},
+  plugins
 };
