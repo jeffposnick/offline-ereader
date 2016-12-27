@@ -10,6 +10,9 @@
   "license": "Apache-2.0",
   "author": "Jeff Posnick <jeffy@google.com>",
   "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
     "clean-webpack-plugin": "^0.1.14",
     "common-tags": "^1.4.0",
     "file-loader": "^0.9.0",

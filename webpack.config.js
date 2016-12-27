@@ -45,6 +45,13 @@ module.exports = {
           name: '[name].[ext]'
         }
       }]
+    }, {
+      test: /\.js$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'babel-loader',
+      options: {
+        plugins: ['transform-async-to-generator']
+      }
     }]
   },
 
