@@ -4,6 +4,7 @@ import './styles/index.css';
 
 import bookListWorker from './lib/workers/book-list-worker';
 import idbOrWorker from './lib/idb-or-worker';
+import registerServiceWorker from './lib/register-service-worker';
 import {bookListUrl} from './lib/constants';
 
 (async () => {
@@ -11,3 +12,5 @@ import {bookListUrl} from './lib/constants';
   const container = document.querySelector('main');
   container.innerHTML = booksHtml;
 })();
+
+registerServiceWorker();

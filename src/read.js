@@ -6,6 +6,7 @@ import './styles/read.css';
 import deserializeUrlParams from './lib/deserialize-url-params';
 import idbOrWorker from './lib/idb-or-worker';
 import markdownToHtmlWorker from './lib/workers/markdown-to-html-worker';
+import registerServiceWorker from './lib/register-service-worker';
 import StateManager from './lib/state-manager';
 import {columnGap, globalStateKey} from './lib/constants';
 
@@ -96,3 +97,5 @@ const calculateTotalPages = () => {
 
   calculateTotalPages();
 })();
+
+registerServiceWorker();
