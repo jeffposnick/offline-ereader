@@ -53,13 +53,17 @@ header {
   will-change: transform;
 }
 
-@media screen and (max-device-width: 640px) {
+@media screen and (max-width: 640px) {
   #container {
     margin: 20px;
   }
 
   #text {
     column-count: 1;
+  }
+
+  footer {
+    bottom: 4px;
   }
 }
 
@@ -77,13 +81,12 @@ header {
 
 footer {
   text-align: center;
-  bottom: 0;
+  bottom: 8px;
   height: 16px;
   left: 0;
   position: absolute;
   right: 0;
   font-size: 12px;
-  margin-bottom: 4px;
 }
 
 #controls {
