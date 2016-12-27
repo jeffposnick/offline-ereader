@@ -1,7 +1,7 @@
 * {
-  -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
   outline: 0;
+  tap-highlight-color: transparent;
 }
 
 body {
@@ -9,16 +9,25 @@ body {
   margin: 0;
   overflow: hidden;
   padding: 0;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 header {
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   background-color: #3f51b5;
   color: #fff;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   font-size: 1.25em;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   height: 64px;
   left: 0;
   padding: 16px;
@@ -38,43 +47,57 @@ header {
 }
 
 #text {
-  -moz-user-select: none;
-  -ms-user-select: none;
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
   bottom: 0;
-  column-count: 2;
-  column-gap: 40px;
+  -webkit-column-count: 2;
+     -moz-column-count: 2;
+          column-count: 2;
+  -webkit-column-gap: 40px;
+     -moz-column-gap: 40px;
+          column-gap: 40px;
   left: 0;
   line-height: 1.2;
   position: absolute;
   right: 0;
   text-align: justify;
   top: 0;
+  -webkit-transition: -webkit-transform 0.5s cubic-bezier(0, 0, 0.21, 1);
+  transition: -webkit-transform 0.5s cubic-bezier(0, 0, 0.21, 1);
   transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1);
+  transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1), -webkit-transform 0.5s cubic-bezier(0, 0, 0.21, 1);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   will-change: transform;
 }
 
-@media screen and (max-device-width: 640px) {
+@media screen and (max-width: 640px) {
   #container {
     margin: 20px;
   }
 
   #text {
-    column-count: 1;
+    -webkit-column-count: 1;
+       -moz-column-count: 1;
+            column-count: 1;
+  }
+
+  footer {
+    bottom: 4px;
   }
 }
 
 #font {
-  -moz-appearance: none;
   -webkit-appearance: none;
-  -webkit-mask-image: url("ic_font_download_black_48px.svg");
-  -webkit-mask-size: contain;
-  appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   background-color: white;
   border: none;
   color: white;
   height: 32px;
+  -webkit-mask-image: url("ic_font_download_black_48px.svg");
+          mask-image: url("ic_font_download_black_48px.svg");
   overflow: hidden;
   padding-right: 32px;
   width: 32px;
@@ -82,11 +105,14 @@ header {
 
 footer {
   text-align: center;
-  bottom: 0;
+  bottom: 8px;
   height: 16px;
   left: 0;
   position: absolute;
   right: 0;
   font-size: 12px;
-  margin-bottom: 8px;
+}
+
+#controls {
+  display: none;
 }

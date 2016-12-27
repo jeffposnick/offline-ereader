@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 71);
+/******/ 	return __webpack_require__(__webpack_require__.s = 73);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,280 +73,43 @@
 "use strict";
 // Utilities
 //
-
-
-
-function _class(obj) { return Object.prototype.toString.call(obj); }
-
-function isString(obj) { return _class(obj) === '[object String]'; }
-
-var _hasOwnProperty = Object.prototype.hasOwnProperty;
-
-function has(object, key) {
-  return _hasOwnProperty.call(object, key);
-}
-
-// Merge objects
+function _class(a){return Object.prototype.toString.call(a)}function isString(a){return'[object String]'===_class(a)}var _hasOwnProperty=Object.prototype.hasOwnProperty;function has(a,b){return _hasOwnProperty.call(a,b)}// Merge objects
 //
-function assign(obj /*from1, from2, from3, ...*/) {
-  var sources = Array.prototype.slice.call(arguments, 1);
-
-  sources.forEach(function (source) {
-    if (!source) { return; }
-
-    if (typeof source !== 'object') {
-      throw new TypeError(source + 'must be object');
-    }
-
-    Object.keys(source).forEach(function (key) {
-      obj[key] = source[key];
-    });
-  });
-
-  return obj;
-}
-
-// Remove element from array and put another array at those position.
+function assign(a/*from1, from2, from3, ...*/){var b=Array.prototype.slice.call(arguments,1);return b.forEach(function(d){if(d){if('object'!=typeof d)throw new TypeError(d+'must be object');Object.keys(d).forEach(function(e){a[e]=d[e]})}}),a}// Remove element from array and put another array at those position.
 // Useful for some operations with tokens
-function arrayReplaceAt(src, pos, newElements) {
-  return [].concat(src.slice(0, pos), newElements, src.slice(pos + 1));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-function isValidEntityCode(c) {
-  /*eslint no-bitwise:0*/
-  // broken sequence
-  if (c >= 0xD800 && c <= 0xDFFF) { return false; }
-  // never used
-  if (c >= 0xFDD0 && c <= 0xFDEF) { return false; }
-  if ((c & 0xFFFF) === 0xFFFF || (c & 0xFFFF) === 0xFFFE) { return false; }
-  // control codes
-  if (c >= 0x00 && c <= 0x08) { return false; }
-  if (c === 0x0B) { return false; }
-  if (c >= 0x0E && c <= 0x1F) { return false; }
-  if (c >= 0x7F && c <= 0x9F) { return false; }
-  // out of range
-  if (c > 0x10FFFF) { return false; }
-  return true;
-}
-
-function fromCodePoint(c) {
-  /*eslint no-bitwise:0*/
-  if (c > 0xffff) {
-    c -= 0x10000;
-    var surrogate1 = 0xd800 + (c >> 10),
-        surrogate2 = 0xdc00 + (c & 0x3ff);
-
-    return String.fromCharCode(surrogate1, surrogate2);
-  }
-  return String.fromCharCode(c);
-}
-
-
-var UNESCAPE_MD_RE  = /\\([!"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])/g;
-var ENTITY_RE       = /&([a-z#][a-z0-9]{1,31});/gi;
-var UNESCAPE_ALL_RE = new RegExp(UNESCAPE_MD_RE.source + '|' + ENTITY_RE.source, 'gi');
-
-var DIGITAL_ENTITY_TEST_RE = /^#((?:x[a-f0-9]{1,8}|[0-9]{1,8}))/i;
-
-var entities = __webpack_require__(4);
-
-function replaceEntityPattern(match, name) {
-  var code = 0;
-
-  if (has(entities, name)) {
-    return entities[name];
-  }
-
-  if (name.charCodeAt(0) === 0x23/* # */ && DIGITAL_ENTITY_TEST_RE.test(name)) {
-    code = name[1].toLowerCase() === 'x' ?
-      parseInt(name.slice(2), 16)
-    :
-      parseInt(name.slice(1), 10);
-    if (isValidEntityCode(code)) {
-      return fromCodePoint(code);
-    }
-  }
-
-  return match;
-}
-
-/*function replaceEntities(str) {
+function arrayReplaceAt(a,b,d){return[].concat(a.slice(0,b),d,a.slice(b+1))}////////////////////////////////////////////////////////////////////////////////
+function isValidEntityCode(a){/*eslint no-bitwise:0*/// broken sequence
+return 55296<=a&&57343>=a?!1:64976<=a&&65007>=a?!1:65535==(65535&a)||65534==(65535&a)?!1:0<=a&&8>=a?!1:11!==a&&(14<=a&&31>=a?!1:127<=a&&159>=a?!1:!(1114111<a));// never used
+// control codes
+// out of range
+}function fromCodePoint(a){/*eslint no-bitwise:0*/if(65535<a){a-=65536;var b=55296+(a>>10),d=56320+(1023&a);return String.fromCharCode(b,d)}return String.fromCharCode(a)}var UNESCAPE_MD_RE=/\\([!"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])/g,ENTITY_RE=/&([a-z#][a-z0-9]{1,31});/gi,UNESCAPE_ALL_RE=new RegExp(UNESCAPE_MD_RE.source+'|'+ENTITY_RE.source,'gi'),DIGITAL_ENTITY_TEST_RE=/^#((?:x[a-f0-9]{1,8}|[0-9]{1,8}))/i,entities=__webpack_require__(4);function replaceEntityPattern(a,b){var d=0;return has(entities,b)?entities[b]:35===b.charCodeAt(0)/* # */&&DIGITAL_ENTITY_TEST_RE.test(b)&&(d='x'===b[1].toLowerCase()?parseInt(b.slice(2),16):parseInt(b.slice(1),10),isValidEntityCode(d))?fromCodePoint(d):a}/*function replaceEntities(str) {
   if (str.indexOf('&') < 0) { return str; }
 
   return str.replace(ENTITY_RE, replaceEntityPattern);
-}*/
-
-function unescapeMd(str) {
-  if (str.indexOf('\\') < 0) { return str; }
-  return str.replace(UNESCAPE_MD_RE, '$1');
-}
-
-function unescapeAll(str) {
-  if (str.indexOf('\\') < 0 && str.indexOf('&') < 0) { return str; }
-
-  return str.replace(UNESCAPE_ALL_RE, function (match, escaped, entity) {
-    if (escaped) { return escaped; }
-    return replaceEntityPattern(match, entity);
-  });
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-var HTML_ESCAPE_TEST_RE = /[&<>"]/;
-var HTML_ESCAPE_REPLACE_RE = /[&<>"]/g;
-var HTML_REPLACEMENTS = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;'
-};
-
-function replaceUnsafeChar(ch) {
-  return HTML_REPLACEMENTS[ch];
-}
-
-function escapeHtml(str) {
-  if (HTML_ESCAPE_TEST_RE.test(str)) {
-    return str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
-  }
-  return str;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-var REGEXP_ESCAPE_RE = /[.?*+^$[\]\\(){}|-]/g;
-
-function escapeRE(str) {
-  return str.replace(REGEXP_ESCAPE_RE, '\\$&');
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-function isSpace(code) {
-  switch (code) {
-    case 0x09:
-    case 0x20:
-      return true;
-  }
-  return false;
-}
-
-// Zs (unicode class) || [\t\f\v\r\n]
-function isWhiteSpace(code) {
-  if (code >= 0x2000 && code <= 0x200A) { return true; }
-  switch (code) {
-    case 0x09: // \t
-    case 0x0A: // \n
-    case 0x0B: // \v
-    case 0x0C: // \f
-    case 0x0D: // \r
-    case 0x20:
-    case 0xA0:
-    case 0x1680:
-    case 0x202F:
-    case 0x205F:
-    case 0x3000:
-      return true;
-  }
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-/*eslint-disable max-len*/
-var UNICODE_PUNCT_RE = __webpack_require__(3);
-
-// Currently without astral characters support.
-function isPunctChar(ch) {
-  return UNICODE_PUNCT_RE.test(ch);
-}
-
-
-// Markdown ASCII punctuation characters.
+}*/function unescapeMd(a){return 0>a.indexOf('\\')?a:a.replace(UNESCAPE_MD_RE,'$1')}function unescapeAll(a){return 0>a.indexOf('\\')&&0>a.indexOf('&')?a:a.replace(UNESCAPE_ALL_RE,function(b,d,e){return d?d:replaceEntityPattern(b,e)})}////////////////////////////////////////////////////////////////////////////////
+var HTML_ESCAPE_TEST_RE=/[&<>"]/,HTML_ESCAPE_REPLACE_RE=/[&<>"]/g,HTML_REPLACEMENTS={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'};function replaceUnsafeChar(a){return HTML_REPLACEMENTS[a]}function escapeHtml(a){return HTML_ESCAPE_TEST_RE.test(a)?a.replace(HTML_ESCAPE_REPLACE_RE,replaceUnsafeChar):a}////////////////////////////////////////////////////////////////////////////////
+var REGEXP_ESCAPE_RE=/[.?*+^$[\]\\(){}|-]/g;function escapeRE(a){return a.replace(REGEXP_ESCAPE_RE,'\\$&')}////////////////////////////////////////////////////////////////////////////////
+function isSpace(a){return 9===a||32===a}// Zs (unicode class) || [\t\f\v\r\n]
+function isWhiteSpace(a){if(8192<=a&&8202>=a)return!0;return 9===a||10===a||11===a||12===a||13===a||32===a||160===a||5760===a||8239===a||8287===a||12288===a}////////////////////////////////////////////////////////////////////////////////
+/*eslint-disable max-len*/var UNICODE_PUNCT_RE=__webpack_require__(3);// Currently without astral characters support.
+function isPunctChar(a){return UNICODE_PUNCT_RE.test(a)}// Markdown ASCII punctuation characters.
 //
 // !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
 // http://spec.commonmark.org/0.15/#ascii-punctuation-character
 //
 // Don't confuse with unicode punctuation !!! It lacks some chars in ascii range.
 //
-function isMdAsciiPunct(ch) {
-  switch (ch) {
-    case 0x21/* ! */:
-    case 0x22/* " */:
-    case 0x23/* # */:
-    case 0x24/* $ */:
-    case 0x25/* % */:
-    case 0x26/* & */:
-    case 0x27/* ' */:
-    case 0x28/* ( */:
-    case 0x29/* ) */:
-    case 0x2A/* * */:
-    case 0x2B/* + */:
-    case 0x2C/* , */:
-    case 0x2D/* - */:
-    case 0x2E/* . */:
-    case 0x2F/* / */:
-    case 0x3A/* : */:
-    case 0x3B/* ; */:
-    case 0x3C/* < */:
-    case 0x3D/* = */:
-    case 0x3E/* > */:
-    case 0x3F/* ? */:
-    case 0x40/* @ */:
-    case 0x5B/* [ */:
-    case 0x5C/* \ */:
-    case 0x5D/* ] */:
-    case 0x5E/* ^ */:
-    case 0x5F/* _ */:
-    case 0x60/* ` */:
-    case 0x7B/* { */:
-    case 0x7C/* | */:
-    case 0x7D/* } */:
-    case 0x7E/* ~ */:
-      return true;
-    default:
-      return false;
-  }
-}
-
-// Hepler to unify [reference labels].
+function isMdAsciiPunct(a){return 33/* ! */===a||34/* " */===a||35/* # */===a||36/* $ */===a||37/* % */===a||38/* & */===a||39/* ' */===a||40/* ( */===a||41/* ) */===a||42/* * */===a||43/* + */===a||44/* , */===a||45/* - */===a||46/* . */===a||47/* / */===a||58/* : */===a||59/* ; */===a||60/* < */===a||61/* = */===a||62/* > */===a||63/* ? */===a||64/* @ */===a||91/* [ */===a||92/* \ */===a||93/* ] */===a||94/* ^ */===a||95/* _ */===a||96/* ` */===a||123/* { */===a||124/* | */===a||125/* } */===a||126/* ~ */===a}// Hepler to unify [reference labels].
 //
-function normalizeReference(str) {
-  // use .toUpperCase() instead of .toLowerCase()
-  // here to avoid a conflict with Object.prototype
-  // members (most notably, `__proto__`)
-  return str.trim().replace(/\s+/g, ' ').toUpperCase();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
+function normalizeReference(a){// use .toUpperCase() instead of .toLowerCase()
+// here to avoid a conflict with Object.prototype
+// members (most notably, `__proto__`)
+return a.trim().replace(/\s+/g,' ').toUpperCase()}////////////////////////////////////////////////////////////////////////////////
 // Re-export libraries commonly used in both markdown-it and its plugins,
 // so plugins won't have to depend on them explicitly, which reduces their
 // bundled size (e.g. a browser build).
 //
-exports.lib                 = {};
-exports.lib.mdurl           = __webpack_require__(8);
-exports.lib.ucmicro         = __webpack_require__(68);
-
-exports.assign              = assign;
-exports.isString            = isString;
-exports.has                 = has;
-exports.unescapeMd          = unescapeMd;
-exports.unescapeAll         = unescapeAll;
-exports.isValidEntityCode   = isValidEntityCode;
-exports.fromCodePoint       = fromCodePoint;
-// exports.replaceEntities     = replaceEntities;
-exports.escapeHtml          = escapeHtml;
-exports.arrayReplaceAt      = arrayReplaceAt;
-exports.isSpace             = isSpace;
-exports.isWhiteSpace        = isWhiteSpace;
-exports.isMdAsciiPunct      = isMdAsciiPunct;
-exports.isPunctChar         = isPunctChar;
-exports.escapeRE            = escapeRE;
-exports.normalizeReference  = normalizeReference;
-
+exports.lib={},exports.lib.mdurl=__webpack_require__(8),exports.lib.ucmicro=__webpack_require__(69),exports.assign=assign,exports.isString=isString,exports.has=has,exports.unescapeMd=unescapeMd,exports.unescapeAll=unescapeAll,exports.isValidEntityCode=isValidEntityCode,exports.fromCodePoint=fromCodePoint,exports.escapeHtml=escapeHtml,exports.arrayReplaceAt=arrayReplaceAt,exports.isSpace=isSpace,exports.isWhiteSpace=isWhiteSpace,exports.isMdAsciiPunct=isMdAsciiPunct,exports.isPunctChar=isPunctChar,exports.escapeRE=escapeRE,exports.normalizeReference=normalizeReference;
 
 /***/ },
 /* 1 */
@@ -369,343 +132,17 @@ exports.normalizeReference  = normalizeReference;
  * You will not need use this class directly until write plugins. For simple
  * rules control use [[MarkdownIt.disable]], [[MarkdownIt.enable]] and
  * [[MarkdownIt.use]].
- **/
-
-
-
-/**
+ **//**
  * new Ruler()
- **/
-function Ruler() {
-  // List of added rules. Each element is:
-  //
-  // {
-  //   name: XXX,
-  //   enabled: Boolean,
-  //   fn: Function(),
-  //   alt: [ name2, name3 ]
-  // }
-  //
-  this.__rules__ = [];
-
-  // Cached rule chains.
-  //
-  // First level - chain name, '' for default.
-  // Second level - diginal anchor for fast filtering by charcodes.
-  //
-  this.__cache__ = null;
-}
-
-////////////////////////////////////////////////////////////////////////////////
+ **/function Ruler(){this.__rules__=[],this.__cache__=null}////////////////////////////////////////////////////////////////////////////////
 // Helper methods, should not be used directly
-
-
 // Find rule index by name
 //
-Ruler.prototype.__find__ = function (name) {
-  for (var i = 0; i < this.__rules__.length; i++) {
-    if (this.__rules__[i].name === name) {
-      return i;
-    }
-  }
-  return -1;
-};
-
-
-// Build rules lookup cache
-//
-Ruler.prototype.__compile__ = function () {
-  var self = this;
-  var chains = [ '' ];
-
-  // collect unique names
-  self.__rules__.forEach(function (rule) {
-    if (!rule.enabled) { return; }
-
-    rule.alt.forEach(function (altName) {
-      if (chains.indexOf(altName) < 0) {
-        chains.push(altName);
-      }
-    });
-  });
-
-  self.__cache__ = {};
-
-  chains.forEach(function (chain) {
-    self.__cache__[chain] = [];
-    self.__rules__.forEach(function (rule) {
-      if (!rule.enabled) { return; }
-
-      if (chain && rule.alt.indexOf(chain) < 0) { return; }
-
-      self.__cache__[chain].push(rule.fn);
-    });
-  });
-};
-
-
-/**
- * Ruler.at(name, fn [, options])
- * - name (String): rule name to replace.
- * - fn (Function): new rule function.
- * - options (Object): new rule options (not mandatory).
- *
- * Replace rule by name with new function & options. Throws error if name not
- * found.
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * Replace existing typorgapher replacement rule with new one:
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.core.ruler.at('replacements', function replace(state) {
- *   //...
- * });
- * ```
- **/
-Ruler.prototype.at = function (name, fn, options) {
-  var index = this.__find__(name);
-  var opt = options || {};
-
-  if (index === -1) { throw new Error('Parser rule not found: ' + name); }
-
-  this.__rules__[index].fn = fn;
-  this.__rules__[index].alt = opt.alt || [];
-  this.__cache__ = null;
-};
-
-
-/**
- * Ruler.before(beforeName, ruleName, fn [, options])
- * - beforeName (String): new rule will be added before this one.
- * - ruleName (String): name of added rule.
- * - fn (Function): rule function.
- * - options (Object): rule options (not mandatory).
- *
- * Add new rule to chain before one with given name. See also
- * [[Ruler.after]], [[Ruler.push]].
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.block.ruler.before('paragraph', 'my_rule', function replace(state) {
- *   //...
- * });
- * ```
- **/
-Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
-  var index = this.__find__(beforeName);
-  var opt = options || {};
-
-  if (index === -1) { throw new Error('Parser rule not found: ' + beforeName); }
-
-  this.__rules__.splice(index, 0, {
-    name: ruleName,
-    enabled: true,
-    fn: fn,
-    alt: opt.alt || []
-  });
-
-  this.__cache__ = null;
-};
-
-
-/**
- * Ruler.after(afterName, ruleName, fn [, options])
- * - afterName (String): new rule will be added after this one.
- * - ruleName (String): name of added rule.
- * - fn (Function): rule function.
- * - options (Object): rule options (not mandatory).
- *
- * Add new rule to chain after one with given name. See also
- * [[Ruler.before]], [[Ruler.push]].
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.inline.ruler.after('text', 'my_rule', function replace(state) {
- *   //...
- * });
- * ```
- **/
-Ruler.prototype.after = function (afterName, ruleName, fn, options) {
-  var index = this.__find__(afterName);
-  var opt = options || {};
-
-  if (index === -1) { throw new Error('Parser rule not found: ' + afterName); }
-
-  this.__rules__.splice(index + 1, 0, {
-    name: ruleName,
-    enabled: true,
-    fn: fn,
-    alt: opt.alt || []
-  });
-
-  this.__cache__ = null;
-};
-
-/**
- * Ruler.push(ruleName, fn [, options])
- * - ruleName (String): name of added rule.
- * - fn (Function): rule function.
- * - options (Object): rule options (not mandatory).
- *
- * Push new rule to the end of chain. See also
- * [[Ruler.before]], [[Ruler.after]].
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.core.ruler.push('my_rule', function replace(state) {
- *   //...
- * });
- * ```
- **/
-Ruler.prototype.push = function (ruleName, fn, options) {
-  var opt = options || {};
-
-  this.__rules__.push({
-    name: ruleName,
-    enabled: true,
-    fn: fn,
-    alt: opt.alt || []
-  });
-
-  this.__cache__ = null;
-};
-
-
-/**
- * Ruler.enable(list [, ignoreInvalid]) -> Array
- * - list (String|Array): list of rule names to enable.
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Enable rules with given names. If any rule name not found - throw Error.
- * Errors can be disabled by second param.
- *
- * Returns list of found rule names (if no exception happened).
- *
- * See also [[Ruler.disable]], [[Ruler.enableOnly]].
- **/
-Ruler.prototype.enable = function (list, ignoreInvalid) {
-  if (!Array.isArray(list)) { list = [ list ]; }
-
-  var result = [];
-
-  // Search by name and enable
-  list.forEach(function (name) {
-    var idx = this.__find__(name);
-
-    if (idx < 0) {
-      if (ignoreInvalid) { return; }
-      throw new Error('Rules manager: invalid rule name ' + name);
-    }
-    this.__rules__[idx].enabled = true;
-    result.push(name);
-  }, this);
-
-  this.__cache__ = null;
-  return result;
-};
-
-
-/**
- * Ruler.enableOnly(list [, ignoreInvalid])
- * - list (String|Array): list of rule names to enable (whitelist).
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Enable rules with given names, and disable everything else. If any rule name
- * not found - throw Error. Errors can be disabled by second param.
- *
- * See also [[Ruler.disable]], [[Ruler.enable]].
- **/
-Ruler.prototype.enableOnly = function (list, ignoreInvalid) {
-  if (!Array.isArray(list)) { list = [ list ]; }
-
-  this.__rules__.forEach(function (rule) { rule.enabled = false; });
-
-  this.enable(list, ignoreInvalid);
-};
-
-
-/**
- * Ruler.disable(list [, ignoreInvalid]) -> Array
- * - list (String|Array): list of rule names to disable.
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Disable rules with given names. If any rule name not found - throw Error.
- * Errors can be disabled by second param.
- *
- * Returns list of found rule names (if no exception happened).
- *
- * See also [[Ruler.enable]], [[Ruler.enableOnly]].
- **/
-Ruler.prototype.disable = function (list, ignoreInvalid) {
-  if (!Array.isArray(list)) { list = [ list ]; }
-
-  var result = [];
-
-  // Search by name and disable
-  list.forEach(function (name) {
-    var idx = this.__find__(name);
-
-    if (idx < 0) {
-      if (ignoreInvalid) { return; }
-      throw new Error('Rules manager: invalid rule name ' + name);
-    }
-    this.__rules__[idx].enabled = false;
-    result.push(name);
-  }, this);
-
-  this.__cache__ = null;
-  return result;
-};
-
-
-/**
- * Ruler.getRules(chainName) -> Array
- *
- * Return array of active functions (rules) for given chain name. It analyzes
- * rules configuration, compiles caches if not exists and returns result.
- *
- * Default chain name is `''` (empty string). It can't be skipped. That's
- * done intentionally, to keep signature monomorphic for high speed.
- **/
-Ruler.prototype.getRules = function (chainName) {
-  if (this.__cache__ === null) {
-    this.__compile__();
-  }
-
-  // Chain can be empty, if rules disabled. But we still have to return Array.
-  return this.__cache__[chainName] || [];
-};
-
-module.exports = Ruler;
-
+Ruler.prototype.__find__=function(a){for(var b=0;b<this.__rules__.length;b++)if(this.__rules__[b].name===a)return b;return-1},Ruler.prototype.__compile__=function(){var a=this,b=[''];// collect unique names
+a.__rules__.forEach(function(c){c.enabled&&c.alt.forEach(function(d){0>b.indexOf(d)&&b.push(d)})}),a.__cache__={},b.forEach(function(c){a.__cache__[c]=[],a.__rules__.forEach(function(d){!d.enabled||c&&0>d.alt.indexOf(c)||a.__cache__[c].push(d.fn)})})},Ruler.prototype.at=function(a,b,c){var d=this.__find__(a);if(-1===d)throw new Error('Parser rule not found: '+a);this.__rules__[d].fn=b,this.__rules__[d].alt=(c||{}).alt||[],this.__cache__=null},Ruler.prototype.before=function(a,b,c,d){var e=this.__find__(a);if(-1===e)throw new Error('Parser rule not found: '+a);this.__rules__.splice(e,0,{name:b,enabled:!0,fn:c,alt:(d||{}).alt||[]}),this.__cache__=null},Ruler.prototype.after=function(a,b,c,d){var e=this.__find__(a);if(-1===e)throw new Error('Parser rule not found: '+a);this.__rules__.splice(e+1,0,{name:b,enabled:!0,fn:c,alt:(d||{}).alt||[]}),this.__cache__=null},Ruler.prototype.push=function(a,b,c){this.__rules__.push({name:a,enabled:!0,fn:b,alt:(c||{}).alt||[]}),this.__cache__=null},Ruler.prototype.enable=function(a,b){Array.isArray(a)||(a=[a]);var c=[];// Search by name and enable
+return a.forEach(function(d){var e=this.__find__(d);if(0>e){if(b)return;throw new Error('Rules manager: invalid rule name '+d)}this.__rules__[e].enabled=!0,c.push(d)},this),this.__cache__=null,c},Ruler.prototype.enableOnly=function(a,b){Array.isArray(a)||(a=[a]),this.__rules__.forEach(function(c){c.enabled=!1}),this.enable(a,b)},Ruler.prototype.disable=function(a,b){Array.isArray(a)||(a=[a]);var c=[];// Search by name and disable
+return a.forEach(function(d){var e=this.__find__(d);if(0>e){if(b)return;throw new Error('Rules manager: invalid rule name '+d)}this.__rules__[e].enabled=!1,c.push(d)},this),this.__cache__=null,c},Ruler.prototype.getRules=function(a){// Chain can be empty, if rules disabled. But we still have to return Array.
+return null===this.__cache__&&this.__compile__(),this.__cache__[a]||[]},module.exports=Ruler;
 
 /***/ },
 /* 2 */
@@ -713,209 +150,23 @@ module.exports = Ruler;
 
 "use strict";
 // Token class
-
-
-
-
 /**
  * class Token
- **/
-
-/**
+ **//**
  * new Token(type, tag, nesting)
  *
  * Create new token and fill passed properties.
- **/
-function Token(type, tag, nesting) {
-  /**
-   * Token#type -> String
-   *
-   * Type of the token (string, e.g. "paragraph_open")
-   **/
-  this.type     = type;
-
-  /**
-   * Token#tag -> String
-   *
-   * html tag name, e.g. "p"
-   **/
-  this.tag      = tag;
-
-  /**
-   * Token#attrs -> Array
-   *
-   * Html attributes. Format: `[ [ name1, value1 ], [ name2, value2 ] ]`
-   **/
-  this.attrs    = null;
-
-  /**
-   * Token#map -> Array
-   *
-   * Source map info. Format: `[ line_begin, line_end ]`
-   **/
-  this.map      = null;
-
-  /**
-   * Token#nesting -> Number
-   *
-   * Level change (number in {-1, 0, 1} set), where:
-   *
-   * -  `1` means the tag is opening
-   * -  `0` means the tag is self-closing
-   * - `-1` means the tag is closing
-   **/
-  this.nesting  = nesting;
-
-  /**
-   * Token#level -> Number
-   *
-   * nesting level, the same as `state.level`
-   **/
-  this.level    = 0;
-
-  /**
-   * Token#children -> Array
-   *
-   * An array of child nodes (inline and img tokens)
-   **/
-  this.children = null;
-
-  /**
-   * Token#content -> String
-   *
-   * In a case of self-closing tag (code, html, fence, etc.),
-   * it has contents of this tag.
-   **/
-  this.content  = '';
-
-  /**
-   * Token#markup -> String
-   *
-   * '*' or '_' for emphasis, fence string for fence, etc.
-   **/
-  this.markup   = '';
-
-  /**
-   * Token#info -> String
-   *
-   * fence infostring
-   **/
-  this.info     = '';
-
-  /**
-   * Token#meta -> Object
-   *
-   * A place for plugins to store an arbitrary data
-   **/
-  this.meta     = null;
-
-  /**
-   * Token#block -> Boolean
-   *
-   * True for block-level tokens, false for inline tokens.
-   * Used in renderer to calculate line breaks
-   **/
-  this.block    = false;
-
-  /**
-   * Token#hidden -> Boolean
-   *
-   * If it's true, ignore this element when rendering. Used for tight lists
-   * to hide paragraphs.
-   **/
-  this.hidden   = false;
-}
-
-
-/**
+ **/function Token(a,b,c){this.type=a,this.tag=b,this.attrs=null,this.map=null,this.nesting=c,this.level=0,this.children=null,this.content='',this.markup='',this.info='',this.meta=null,this.block=!1,this.hidden=!1}/**
  * Token.attrIndex(name) -> Number
  *
  * Search attribute index by name.
- **/
-Token.prototype.attrIndex = function attrIndex(name) {
-  var attrs, i, len;
-
-  if (!this.attrs) { return -1; }
-
-  attrs = this.attrs;
-
-  for (i = 0, len = attrs.length; i < len; i++) {
-    if (attrs[i][0] === name) { return i; }
-  }
-  return -1;
-};
-
-
-/**
- * Token.attrPush(attrData)
- *
- * Add `[ name, value ]` attribute to list. Init attrs if necessary
- **/
-Token.prototype.attrPush = function attrPush(attrData) {
-  if (this.attrs) {
-    this.attrs.push(attrData);
-  } else {
-    this.attrs = [ attrData ];
-  }
-};
-
-
-/**
- * Token.attrSet(name, value)
- *
- * Set `name` attribute to `value`. Override old value if exists.
- **/
-Token.prototype.attrSet = function attrSet(name, value) {
-  var idx = this.attrIndex(name),
-      attrData = [ name, value ];
-
-  if (idx < 0) {
-    this.attrPush(attrData);
-  } else {
-    this.attrs[idx] = attrData;
-  }
-};
-
-
-/**
- * Token.attrGet(name)
- *
- * Get the value of attribute `name`, or null if it does not exist.
- **/
-Token.prototype.attrGet = function attrGet(name) {
-  var idx = this.attrIndex(name), value = null;
-  if (idx >= 0) {
-    value = this.attrs[idx][1];
-  }
-  return value;
-};
-
-
-/**
- * Token.attrJoin(name, value)
- *
- * Join value to existing attribute via space. Or create new attribute if not
- * exists. Useful to operate with token classes.
- **/
-Token.prototype.attrJoin = function attrJoin(name, value) {
-  var idx = this.attrIndex(name);
-
-  if (idx < 0) {
-    this.attrPush([ name, value ]);
-  } else {
-    this.attrs[idx][1] = this.attrs[idx][1] + ' ' + value;
-  }
-};
-
-
-module.exports = Token;
-
+ **/Token.prototype.attrIndex=function(b){var c,d,e;if(!this.attrs)return-1;for(c=this.attrs,d=0,e=c.length;d<e;d++)if(c[d][0]===b)return d;return-1},Token.prototype.attrPush=function(b){this.attrs?this.attrs.push(b):this.attrs=[b]},Token.prototype.attrSet=function(b,c){var d=this.attrIndex(b),e=[b,c];0>d?this.attrPush(e):this.attrs[d]=e},Token.prototype.attrGet=function(b){var c=this.attrIndex(b),d=null;return 0<=c&&(d=this.attrs[c][1]),d},Token.prototype.attrJoin=function(b,c){var d=this.attrIndex(b);0>d?this.attrPush([b,c]):this.attrs[d][1]=this.attrs[d][1]+' '+c},module.exports=Token;
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-module.exports=/[!-#%-\*,-/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E44\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC9\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD807[\uDC41-\uDC45\uDC70\uDC71]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/
+module.exports=/[!-#%-\*,-/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E44\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC9\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD807[\uDC41-\uDC45\uDC70\uDC71]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/;
 
 /***/ },
 /* 4 */
@@ -924,11 +175,7 @@ module.exports=/[!-#%-\*,-/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u03
 "use strict";
 // HTML5 entities map: { name -> utf16string }
 //
-
-
-/*eslint quotes:0*/
-module.exports = __webpack_require__(14);
-
+/*eslint quotes:0*/module.exports=__webpack_require__(72);
 
 /***/ },
 /* 5 */
@@ -936,34 +183,7 @@ module.exports = __webpack_require__(14);
 
 "use strict";
 // Regexps to match html elements
-
-
-
-var attr_name     = '[a-zA-Z_:][a-zA-Z0-9:._-]*';
-
-var unquoted      = '[^"\'=<>`\\x00-\\x20]+';
-var single_quoted = "'[^']*'";
-var double_quoted = '"[^"]*"';
-
-var attr_value  = '(?:' + unquoted + '|' + single_quoted + '|' + double_quoted + ')';
-
-var attribute   = '(?:\\s+' + attr_name + '(?:\\s*=\\s*' + attr_value + ')?)';
-
-var open_tag    = '<[A-Za-z][A-Za-z0-9\\-]*' + attribute + '*\\s*\\/?>';
-
-var close_tag   = '<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>';
-var comment     = '<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->';
-var processing  = '<[?].*?[?]>';
-var declaration = '<![A-Z]+\\s+[^>]*>';
-var cdata       = '<!\\[CDATA\\[[\\s\\S]*?\\]\\]>';
-
-var HTML_TAG_RE = new RegExp('^(?:' + open_tag + '|' + close_tag + '|' + comment +
-                        '|' + processing + '|' + declaration + '|' + cdata + ')');
-var HTML_OPEN_CLOSE_TAG_RE = new RegExp('^(?:' + open_tag + '|' + close_tag + ')');
-
-module.exports.HTML_TAG_RE = HTML_TAG_RE;
-module.exports.HTML_OPEN_CLOSE_TAG_RE = HTML_OPEN_CLOSE_TAG_RE;
-
+var attr_name='[a-zA-Z_:][a-zA-Z0-9:._-]*',unquoted='[^"\'=<>`\\x00-\\x20]+',single_quoted='\'[^\']*\'',double_quoted='"[^"]*"',attr_value='(?:'+unquoted+'|'+single_quoted+'|'+double_quoted+')',attribute='(?:\\s+'+attr_name+'(?:\\s*=\\s*'+attr_value+')?)',open_tag='<[A-Za-z][A-Za-z0-9\\-]*'+attribute+'*\\s*\\/?>',close_tag='<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>',comment='<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->',processing='<[?].*?[?]>',declaration='<![A-Z]+\\s+[^>]*>',cdata='<!\\[CDATA\\[[\\s\\S]*?\\]\\]>',HTML_TAG_RE=/^(?:<[A-Za-z][A-Za-z0-9\-]*(?:\s+[a-zA-Z_:][a-zA-Z0-9:._-]*(?:\s*=\s*(?:[^"'=<>`\x00-\x20]+|'[^']*'|"[^"]*"))?)*\s*\/?>|<\/[A-Za-z][A-Za-z0-9\-]*\s*>|<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->|<[?].*?[?]>|<![A-Z]+\s+[^>]*>|<!\[CDATA\[[\s\S]*?\]\]>)/,HTML_OPEN_CLOSE_TAG_RE=/^(?:<[A-Za-z][A-Za-z0-9\-]*(?:\s+[a-zA-Z_:][a-zA-Z0-9:._-]*(?:\s*=\s*(?:[^"'=<>`\x00-\x20]+|'[^']*'|"[^"]*"))?)*\s*\/?>|<\/[A-Za-z][A-Za-z0-9\-]*\s*>)/;module.exports.HTML_TAG_RE=HTML_TAG_RE,module.exports.HTML_OPEN_CLOSE_TAG_RE=HTML_OPEN_CLOSE_TAG_RE;
 
 /***/ },
 /* 6 */
@@ -972,132 +192,31 @@ module.exports.HTML_OPEN_CLOSE_TAG_RE = HTML_OPEN_CLOSE_TAG_RE;
 "use strict";
 // Process *this* and _that_
 //
-
-
-
 // Insert each marker as a separate text token, and add it to delimiter list
 //
-module.exports.tokenize = function emphasis(state, silent) {
-  var i, scanned, token,
-      start = state.pos,
-      marker = state.src.charCodeAt(start);
-
-  if (silent) { return false; }
-
-  if (marker !== 0x5F /* _ */ && marker !== 0x2A /* * */) { return false; }
-
-  scanned = state.scanDelims(state.pos, marker === 0x2A);
-
-  for (i = 0; i < scanned.length; i++) {
-    token         = state.push('text', '', 0);
-    token.content = String.fromCharCode(marker);
-
-    state.delimiters.push({
-      // Char code of the starting marker (number).
-      //
-      marker: marker,
-
-      // Total length of these series of delimiters.
-      //
-      length: scanned.length,
-
-      // An amount of characters before this one that's equivalent to
-      // current one. In plain English: if this delimiter does not open
-      // an emphasis, neither do previous `jump` characters.
-      //
-      // Used to skip sequences like "*****" in one step, for 1st asterisk
-      // value will be 0, for 2nd it's 1 and so on.
-      //
-      jump:   i,
-
-      // A position of the token this delimiter corresponds to.
-      //
-      token:  state.tokens.length - 1,
-
-      // Token level.
-      //
-      level:  state.level,
-
-      // If this delimiter is matched as a valid opener, `end` will be
-      // equal to its position, otherwise it's `-1`.
-      //
-      end:    -1,
-
-      // Boolean flags that determine if this delimiter could open or close
-      // an emphasis.
-      //
-      open:   scanned.can_open,
-      close:  scanned.can_close
-    });
-  }
-
-  state.pos += scanned.length;
-
-  return true;
-};
-
-
-// Walk through delimiter list and replace text tokens with tags
+module.exports.tokenize=function(b,c){var d,e,f,g=b.pos,h=b.src.charCodeAt(g);if(c)return!1;if(95!==h/* _ */&&42!==h/* * */)return!1;for(e=b.scanDelims(b.pos,42===h),d=0;d<e.length;d++)f=b.push('text','',0),f.content=String.fromCharCode(h),b.delimiters.push({// Char code of the starting marker (number).
 //
-module.exports.postProcess = function emphasis(state) {
-  var i,
-      startDelim,
-      endDelim,
-      token,
-      ch,
-      isStrong,
-      delimiters = state.delimiters,
-      max = state.delimiters.length;
-
-  for (i = 0; i < max; i++) {
-    startDelim = delimiters[i];
-
-    if (startDelim.marker !== 0x5F/* _ */ && startDelim.marker !== 0x2A/* * */) {
-      continue;
-    }
-
-    // Process only opening markers
-    if (startDelim.end === -1) {
-      continue;
-    }
-
-    endDelim = delimiters[startDelim.end];
-
-    // If the next delimiter has the same marker and is adjacent to this one,
-    // merge those into one strong delimiter.
-    //
-    // `<em><em>whatever</em></em>` -> `<strong>whatever</strong>`
-    //
-    isStrong = i + 1 < max &&
-               delimiters[i + 1].end === startDelim.end - 1 &&
-               delimiters[i + 1].token === startDelim.token + 1 &&
-               delimiters[startDelim.end - 1].token === endDelim.token - 1 &&
-               delimiters[i + 1].marker === startDelim.marker;
-
-    ch = String.fromCharCode(startDelim.marker);
-
-    token         = state.tokens[startDelim.token];
-    token.type    = isStrong ? 'strong_open' : 'em_open';
-    token.tag     = isStrong ? 'strong' : 'em';
-    token.nesting = 1;
-    token.markup  = isStrong ? ch + ch : ch;
-    token.content = '';
-
-    token         = state.tokens[endDelim.token];
-    token.type    = isStrong ? 'strong_close' : 'em_close';
-    token.tag     = isStrong ? 'strong' : 'em';
-    token.nesting = -1;
-    token.markup  = isStrong ? ch + ch : ch;
-    token.content = '';
-
-    if (isStrong) {
-      state.tokens[delimiters[i + 1].token].content = '';
-      state.tokens[delimiters[startDelim.end - 1].token].content = '';
-      i++;
-    }
-  }
+marker:h,// Total length of these series of delimiters.
+//
+length:e.length,// An amount of characters before this one that's equivalent to
+// current one. In plain English: if this delimiter does not open
+// an emphasis, neither do previous `jump` characters.
+//
+// Used to skip sequences like "*****" in one step, for 1st asterisk
+// value will be 0, for 2nd it's 1 and so on.
+//
+jump:d,// A position of the token this delimiter corresponds to.
+//
+token:b.tokens.length-1,// Token level.
+//
+level:b.level,// If this delimiter is matched as a valid opener, `end` will be
+// equal to its position, otherwise it's `-1`.
+//
+end:-1,// Boolean flags that determine if this delimiter could open or close
+// an emphasis.
+//
+open:e.can_open,close:e.can_close});return b.pos+=e.length,!0},module.exports.postProcess=function(b){var c,d,e,f,g,h,j=b.delimiters,k=b.delimiters.length;for(c=0;c<k;c++)(d=j[c],95===d.marker/* _ */||42===d.marker/* * */)&&-1!==d.end&&(e=j[d.end],h=c+1<k&&j[c+1].end===d.end-1&&j[c+1].token===d.token+1&&j[d.end-1].token===e.token-1&&j[c+1].marker===d.marker,g=String.fromCharCode(d.marker),f=b.tokens[d.token],f.type=h?'strong_open':'em_open',f.tag=h?'strong':'em',f.nesting=1,f.markup=h?g+g:g,f.content='',f=b.tokens[e.token],f.type=h?'strong_close':'em_close',f.tag=h?'strong':'em',f.nesting=-1,f.markup=h?g+g:g,f.content='',h&&(b.tokens[j[c+1].token].content='',b.tokens[j[d.end-1].token].content='',c++));// Process only opening markers
 };
-
 
 /***/ },
 /* 7 */
@@ -1106,259 +225,1315 @@ module.exports.postProcess = function emphasis(state) {
 "use strict";
 // ~~strike through~~
 //
-
-
-
 // Insert each marker as a separate text token, and add it to delimiter list
 //
-module.exports.tokenize = function strikethrough(state, silent) {
-  var i, scanned, token, len, ch,
-      start = state.pos,
-      marker = state.src.charCodeAt(start);
-
-  if (silent) { return false; }
-
-  if (marker !== 0x7E/* ~ */) { return false; }
-
-  scanned = state.scanDelims(state.pos, true);
-  len = scanned.length;
-  ch = String.fromCharCode(marker);
-
-  if (len < 2) { return false; }
-
-  if (len % 2) {
-    token         = state.push('text', '', 0);
-    token.content = ch;
-    len--;
-  }
-
-  for (i = 0; i < len; i += 2) {
-    token         = state.push('text', '', 0);
-    token.content = ch + ch;
-
-    state.delimiters.push({
-      marker: marker,
-      jump:   i,
-      token:  state.tokens.length - 1,
-      level:  state.level,
-      end:    -1,
-      open:   scanned.can_open,
-      close:  scanned.can_close
-    });
-  }
-
-  state.pos += scanned.length;
-
-  return true;
-};
-
-
-// Walk through delimiter list and replace text tokens with tags
+module.exports.tokenize=function(b,c){var d,e,f,g,h,k=b.pos,l=b.src.charCodeAt(k);if(c)return!1;if(126!==l/* ~ */)return!1;if(e=b.scanDelims(b.pos,!0),g=e.length,h=String.fromCharCode(l),2>g)return!1;for(g%2&&(f=b.push('text','',0),f.content=h,g--),d=0;d<g;d+=2)f=b.push('text','',0),f.content=h+h,b.delimiters.push({marker:l,jump:d,token:b.tokens.length-1,level:b.level,end:-1,open:e.can_open,close:e.can_close});return b.pos+=e.length,!0},module.exports.postProcess=function(b){var c,d,e,f,g,h=[],k=b.delimiters,l=b.delimiters.length;for(c=0;c<l;c++)(e=k[c],126===e.marker/* ~ */)&&-1!==e.end&&(f=k[e.end],g=b.tokens[e.token],g.type='s_open',g.tag='s',g.nesting=1,g.markup='~~',g.content='',g=b.tokens[f.token],g.type='s_close',g.tag='s',g.nesting=-1,g.markup='~~',g.content='','text'===b.tokens[f.token-1].type&&'~'===b.tokens[f.token-1].content&&h.push(f.token-1));// If a marker sequence has an odd number of characters, it's splitted
+// like this: `~~~~~` -> `~` + `~~` + `~~`, leaving one marker at the
+// start of the sequence.
 //
-module.exports.postProcess = function strikethrough(state) {
-  var i, j,
-      startDelim,
-      endDelim,
-      token,
-      loneMarkers = [],
-      delimiters = state.delimiters,
-      max = state.delimiters.length;
-
-  for (i = 0; i < max; i++) {
-    startDelim = delimiters[i];
-
-    if (startDelim.marker !== 0x7E/* ~ */) {
-      continue;
-    }
-
-    if (startDelim.end === -1) {
-      continue;
-    }
-
-    endDelim = delimiters[startDelim.end];
-
-    token         = state.tokens[startDelim.token];
-    token.type    = 's_open';
-    token.tag     = 's';
-    token.nesting = 1;
-    token.markup  = '~~';
-    token.content = '';
-
-    token         = state.tokens[endDelim.token];
-    token.type    = 's_close';
-    token.tag     = 's';
-    token.nesting = -1;
-    token.markup  = '~~';
-    token.content = '';
-
-    if (state.tokens[endDelim.token - 1].type === 'text' &&
-        state.tokens[endDelim.token - 1].content === '~') {
-
-      loneMarkers.push(endDelim.token - 1);
-    }
-  }
-
-  // If a marker sequence has an odd number of characters, it's splitted
-  // like this: `~~~~~` -> `~` + `~~` + `~~`, leaving one marker at the
-  // start of the sequence.
-  //
-  // So, we have to move all those markers after subsequent s_close tags.
-  //
-  while (loneMarkers.length) {
-    i = loneMarkers.pop();
-    j = i + 1;
-
-    while (j < state.tokens.length && state.tokens[j].type === 's_close') {
-      j++;
-    }
-
-    j--;
-
-    if (i !== j) {
-      token = state.tokens[j];
-      state.tokens[j] = state.tokens[i];
-      state.tokens[i] = token;
-    }
-  }
-};
-
+// So, we have to move all those markers after subsequent s_close tags.
+//
+for(;h.length;){for(c=h.pop(),d=c+1;d<b.tokens.length&&'s_close'===b.tokens[d].type;)d++;d--,c!==d&&(g=b.tokens[d],b.tokens[d]=b.tokens[c],b.tokens[c]=g)}};
 
 /***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-
-
-
-module.exports.encode = __webpack_require__(63);
-module.exports.decode = __webpack_require__(62);
-module.exports.format = __webpack_require__(64);
-module.exports.parse  = __webpack_require__(65);
-
+module.exports.encode=__webpack_require__(64),module.exports.decode=__webpack_require__(63),module.exports.format=__webpack_require__(65),module.exports.parse=__webpack_require__(66);
 
 /***/ },
 /* 9 */
 /***/ function(module, exports) {
 
-module.exports=/[\0-\x1F\x7F-\x9F]/
+module.exports=/[\0-\x1F\x7F-\x9F]/;
 
 /***/ },
 /* 10 */
 /***/ function(module, exports) {
 
-module.exports=/[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]/
+module.exports=/[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]/;
 
 /***/ },
 /* 11 */
 /***/ function(module, exports) {
 
-module.exports=/[\0-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/
+module.exports=/[\0-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/;
 
 /***/ },
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-"use strict";
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
 
-
-
-module.exports = __webpack_require__(23);
-
+/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-
-
-var isPromise = __webpack_require__(15);
-
-function parseJsonSafely(str) {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-}
-
-function registerPromiseWorker(callback) {
-
-  function postOutgoingMessage(e, messageId, error, result) {
-    function postMessage(msg) {
-      /* istanbul ignore if */
-      if (typeof self.postMessage !== 'function') { // service worker
-        e.ports[0].postMessage(msg);
-      } else { // web worker
-        self.postMessage(msg);
-      }
-    }
-    if (error) {
-      /* istanbul ignore else */
-      if (typeof console !== 'undefined' && 'error' in console) {
-        // This is to make errors easier to debug. I think it's important
-        // enough to just leave here without giving the user an option
-        // to silence it.
-        console.error('Worker caught an error:', error);
-      }
-      postMessage(JSON.stringify([messageId, {
-        message: error.message
-      }]));
-    } else {
-      postMessage(JSON.stringify([messageId, null, result]));
-    }
-  }
-
-  function tryCatchFunc(callback, message) {
-    try {
-      return {res: callback(message)};
-    } catch (e) {
-      return {err: e};
-    }
-  }
-
-  function handleIncomingMessage(e, callback, messageId, message) {
-
-    var result = tryCatchFunc(callback, message);
-
-    if (result.err) {
-      postOutgoingMessage(e, messageId, result.err);
-    } else if (!isPromise(result.res)) {
-      postOutgoingMessage(e, messageId, null, result.res);
-    } else {
-      result.res.then(function (finalResult) {
-        postOutgoingMessage(e, messageId, null, finalResult);
-      }, function (finalError) {
-        postOutgoingMessage(e, messageId, finalError);
-      });
-    }
-  }
-
-  function onIncomingMessage(e) {
-    var payload = parseJsonSafely(e.data);
-    if (!payload) {
-      // message isn't stringified json; ignore
-      return;
-    }
-    var messageId = payload[0];
-    var message = payload[1];
-
-    if (typeof callback !== 'function') {
-      postOutgoingMessage(e, messageId, new Error(
-        'Please pass a function into register().'));
-    } else {
-      handleIncomingMessage(e, callback, messageId, message);
-    }
-  }
-
-  self.addEventListener('message', onIncomingMessage);
-}
-
-module.exports = registerPromiseWorker;
+module.exports=__webpack_require__(24);
 
 /***/ },
 /* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+var isPromise=__webpack_require__(16);function parseJsonSafely(a){try{return JSON.parse(a)}catch(b){return!1}}function registerPromiseWorker(a){function b(f,g,h,i){function j(k){'function'==typeof self.postMessage?self.postMessage(k):f.ports[0].postMessage(k)}h?('undefined'!=typeof console&&'error'in console&&console.error('Worker caught an error:',h),j(JSON.stringify([g,{message:h.message}]))):j(JSON.stringify([g,null,i]))}function c(f,g){try{return{res:f(g)}}catch(h){return{err:h}}}function d(f,g,h,i){var j=c(g,i);j.err?b(f,h,j.err):isPromise(j.res)?j.res.then(function(k){b(f,h,null,k)},function(k){b(f,h,k)}):b(f,h,null,j.res)}self.addEventListener('message',function(g){var h=parseJsonSafely(g.data);if(h){var i=h[0],j=h[1];'function'==typeof a?d(g,a,i,j):b(g,i,new Error('Please pass a function into register().'))}})}module.exports=registerPromiseWorker;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+(function(a){'use strict';function b(z){if('string'!=typeof z&&(z=z+''),/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(z))throw new TypeError('Invalid character in header field name');return z.toLowerCase()}function c(z){return'string'!=typeof z&&(z=z+''),z}// Build a destructive iterator for the value list
+function d(z){var A={next:function(){var B=z.shift();return{done:void 0===B,value:B}}};return t.iterable&&(A[Symbol.iterator]=function(){return A}),A}function f(z){this.map={},z instanceof f?z.forEach(function(A,B){this.append(B,A)},this):z&&Object.getOwnPropertyNames(z).forEach(function(A){this.append(A,z[A])},this)}function g(z){return z.bodyUsed?Promise.reject(new TypeError('Already read')):void(z.bodyUsed=!0)}function h(z){return new Promise(function(A,B){z.onload=function(){A(z.result)},z.onerror=function(){B(z.error)}})}function j(z){var A=new FileReader,B=h(A);return A.readAsArrayBuffer(z),B}function k(z){var A=new FileReader,B=h(A);return A.readAsText(z),B}function l(z){var A=new Uint8Array(z),B=Array(A.length);for(var C=0;C<A.length;C++)B[C]=String.fromCharCode(A[C]);return B.join('')}function m(z){if(z.slice)return z.slice(0);var A=new Uint8Array(z.byteLength);return A.set(new Uint8Array(z)),A.buffer}function n(){return this.bodyUsed=!1,this._initBody=function(z){if(this._bodyInit=z,!z)this._bodyText='';else if('string'==typeof z)this._bodyText=z;else if(t.blob&&Blob.prototype.isPrototypeOf(z))this._bodyBlob=z;else if(t.formData&&FormData.prototype.isPrototypeOf(z))this._bodyFormData=z;else if(t.searchParams&&URLSearchParams.prototype.isPrototypeOf(z))this._bodyText=z.toString();else if(t.arrayBuffer&&t.blob&&v(z))this._bodyArrayBuffer=m(z.buffer),this._bodyInit=new Blob([this._bodyArrayBuffer]);else if(t.arrayBuffer&&(ArrayBuffer.prototype.isPrototypeOf(z)||w(z)))this._bodyArrayBuffer=m(z);else throw new Error('unsupported BodyInit type');this.headers.get('content-type')||('string'==typeof z?this.headers.set('content-type','text/plain;charset=UTF-8'):this._bodyBlob&&this._bodyBlob.type?this.headers.set('content-type',this._bodyBlob.type):t.searchParams&&URLSearchParams.prototype.isPrototypeOf(z)&&this.headers.set('content-type','application/x-www-form-urlencoded;charset=UTF-8'))},t.blob&&(this.blob=function(){var z=g(this);if(z)return z;if(this._bodyBlob)return Promise.resolve(this._bodyBlob);if(this._bodyArrayBuffer)return Promise.resolve(new Blob([this._bodyArrayBuffer]));if(this._bodyFormData)throw new Error('could not read FormData body as blob');else return Promise.resolve(new Blob([this._bodyText]))},this.arrayBuffer=function(){return this._bodyArrayBuffer?g(this)||Promise.resolve(this._bodyArrayBuffer):this.blob().then(j)}),this.text=function(){var z=g(this);if(z)return z;if(this._bodyBlob)return k(this._bodyBlob);if(this._bodyArrayBuffer)return Promise.resolve(l(this._bodyArrayBuffer));if(this._bodyFormData)throw new Error('could not read FormData body as text');else return Promise.resolve(this._bodyText)},t.formData&&(this.formData=function(){return this.text().then(q)}),this.json=function(){return this.text().then(JSON.parse)},this}// HTTP methods whose capitalization should be normalized
+function o(z){var A=z.toUpperCase();return-1<x.indexOf(A)?A:z}function p(z,A){A=A||{};var B=A.body;if('string'==typeof z)this.url=z;else{if(z.bodyUsed)throw new TypeError('Already read');this.url=z.url,this.credentials=z.credentials,A.headers||(this.headers=new f(z.headers)),this.method=z.method,this.mode=z.mode,B||null==z._bodyInit||(B=z._bodyInit,z.bodyUsed=!0)}if(this.credentials=A.credentials||this.credentials||'omit',(A.headers||!this.headers)&&(this.headers=new f(A.headers)),this.method=o(A.method||this.method||'GET'),this.mode=A.mode||this.mode||null,this.referrer=null,('GET'===this.method||'HEAD'===this.method)&&B)throw new TypeError('Body not allowed for GET or HEAD requests');this._initBody(B)}function q(z){var A=new FormData;return z.trim().split('&').forEach(function(B){if(B){var C=B.split('='),D=C.shift().replace(/\+/g,' '),E=C.join('=').replace(/\+/g,' ');A.append(decodeURIComponent(D),decodeURIComponent(E))}}),A}function r(z){var A=new f;return z.split('\r\n').forEach(function(B){var C=B.split(':'),D=C.shift().trim();if(D){var E=C.join(':').trim();A.append(D,E)}}),A}function s(z,A){A||(A={}),this.type='default',this.status='status'in A?A.status:200,this.ok=200<=this.status&&300>this.status,this.statusText='statusText'in A?A.statusText:'OK',this.headers=new f(A.headers),this.url=A.url||'',this._initBody(z)}if(!a.fetch){var t={searchParams:'URLSearchParams'in a,iterable:'Symbol'in a&&'iterator'in Symbol,blob:'FileReader'in a&&'Blob'in a&&function(){try{return new Blob,!0}catch(z){return!1}}(),formData:'FormData'in a,arrayBuffer:'ArrayBuffer'in a};if(t.arrayBuffer)var u=['[object Int8Array]','[object Uint8Array]','[object Uint8ClampedArray]','[object Int16Array]','[object Uint16Array]','[object Int32Array]','[object Uint32Array]','[object Float32Array]','[object Float64Array]'],v=function(z){return z&&DataView.prototype.isPrototypeOf(z)},w=ArrayBuffer.isView||function(z){return z&&-1<u.indexOf(Object.prototype.toString.call(z))};f.prototype.append=function(z,A){z=b(z),A=c(A);var B=this.map[z];this.map[z]=B?B+','+A:A},f.prototype['delete']=function(z){delete this.map[b(z)]},f.prototype.get=function(z){return z=b(z),this.has(z)?this.map[z]:null},f.prototype.has=function(z){return this.map.hasOwnProperty(b(z))},f.prototype.set=function(z,A){this.map[b(z)]=c(A)},f.prototype.forEach=function(z,A){for(var B in this.map)this.map.hasOwnProperty(B)&&z.call(A,this.map[B],B,this)},f.prototype.keys=function(){var z=[];return this.forEach(function(A,B){z.push(B)}),d(z)},f.prototype.values=function(){var z=[];return this.forEach(function(A){z.push(A)}),d(z)},f.prototype.entries=function(){var z=[];return this.forEach(function(A,B){z.push([B,A])}),d(z)},t.iterable&&(f.prototype[Symbol.iterator]=f.prototype.entries);var x=['DELETE','GET','HEAD','OPTIONS','POST','PUT'];p.prototype.clone=function(){return new p(this,{body:this._bodyInit})},n.call(p.prototype),n.call(s.prototype),s.prototype.clone=function(){return new s(this._bodyInit,{status:this.status,statusText:this.statusText,headers:new f(this.headers),url:this.url})},s.error=function(){var z=new s(null,{status:0,statusText:''});return z.type='error',z};var y=[301,302,303,307,308];s.redirect=function(z,A){if(-1===y.indexOf(A))throw new RangeError('Invalid status code');return new s(null,{status:A,headers:{location:z}})},a.Headers=f,a.Request=p,a.Response=s,a.fetch=function(z,A){return new Promise(function(B,C){var D=new p(z,A),E=new XMLHttpRequest;E.onload=function(){var F={status:E.status,statusText:E.statusText,headers:r(E.getAllResponseHeaders()||'')};F.url='responseURL'in E?E.responseURL:F.headers.get('X-Request-URL');var G='response'in E?E.response:E.responseText;B(new s(G,F))},E.onerror=function(){C(new TypeError('Network request failed'))},E.ontimeout=function(){C(new TypeError('Network request failed'))},E.open(D.method,D.url,!0),'include'===D.credentials&&(E.withCredentials=!0),'responseType'in E&&t.blob&&(E.responseType='blob'),D.headers.forEach(function(F,G){E.setRequestHeader(G,F)}),E.send('undefined'==typeof D._bodyInit?null:D._bodyInit)})},a.fetch.polyfill=!0}})('undefined'==typeof self?this:self);
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+module.exports=isPromise;function isPromise(a){return!!a&&('object'==typeof a||'function'==typeof a)&&'function'==typeof a.then}
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+////////////////////////////////////////////////////////////////////////////////
+// Helpers
+// Merge objects
+//
+function assign(a/*from1, from2, from3, ...*/){var b=Array.prototype.slice.call(arguments,1);return b.forEach(function(c){c&&Object.keys(c).forEach(function(d){a[d]=c[d]})}),a}function _class(a){return Object.prototype.toString.call(a)}function isString(a){return'[object String]'===_class(a)}function isObject(a){return'[object Object]'===_class(a)}function isRegExp(a){return'[object RegExp]'===_class(a)}function isFunction(a){return'[object Function]'===_class(a)}function escapeRE(a){return a.replace(/[.?*+^$[\]\\(){}|-]/g,'\\$&')}////////////////////////////////////////////////////////////////////////////////
+var defaultOptions={fuzzyLink:!0,fuzzyEmail:!0,fuzzyIP:!1};function isOptionsObj(a){return Object.keys(a||{}).reduce(function(b,c){return b||defaultOptions.hasOwnProperty(c)},!1)}var defaultSchemas={'http:':{validate:function(a,b,c){var d=a.slice(b);return c.re.http||(c.re.http=new RegExp('^\\/\\/'+c.re.src_auth+c.re.src_host_port_strict+c.re.src_path,'i')),c.re.http.test(d)?d.match(c.re.http)[0].length:0}},'https:':'http:','ftp:':'http:','//':{validate:function(a,b,c){var d=a.slice(b);return c.re.no_http||(c.re.no_http=new RegExp('^'+c.re.src_auth+// Don't allow single-level domains, because of false positives like '//test'
+// with code comments
+'(?:localhost|(?:(?:'+c.re.src_domain+')\\.)+'+c.re.src_domain_root+')'+c.re.src_port+c.re.src_host_terminator+c.re.src_path,'i')),c.re.no_http.test(d)?3<=b&&':'===a[b-3]?0:3<=b&&'/'===a[b-3]?0:d.match(c.re.no_http)[0].length:0}},'mailto:':{validate:function(a,b,c){var d=a.slice(b);return c.re.mailto||(c.re.mailto=new RegExp('^'+c.re.src_email_name+'@'+c.re.src_host_strict,'i')),c.re.mailto.test(d)?d.match(c.re.mailto)[0].length:0}}},tlds_2ch_src_re='a[cdefgilmnoqrstuwxz]|b[abdefghijmnorstvwyz]|c[acdfghiklmnoruvwxyz]|d[ejkmoz]|e[cegrstu]|f[ijkmor]|g[abdefghilmnpqrstuwy]|h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|m[acdeghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eosuw]|s[abcdeghijklmnortuvxyz]|t[cdfghjklmnortvwz]|u[agksyz]|v[aceginu]|w[fs]|y[et]|z[amw]',tlds_default='biz|com|edu|gov|net|org|pro|web|xxx|aero|asia|coop|info|museum|name|shop|\u0440\u0444'.split('|');/*eslint-disable max-len*/// RE pattern for 2-character tlds (autogenerated by ./support/tlds_2char_gen.js)
+// DON'T try to make PRs with changes. Extend TLDs with LinkifyIt.tlds() instead
+/*eslint-enable max-len*/////////////////////////////////////////////////////////////////////////////////
+function resetScanCache(a){a.__index__=-1,a.__text_cache__=''}function createValidator(a){return function(b,c){var d=b.slice(c);return a.test(d)?d.match(a)[0].length:0}}function createNormalizer(){return function(a,b){b.normalize(a)}}// Schemas compiler. Build regexps.
+//
+function compile(a){function b(h){return h.replace('%TLDS%',d.src_tlds)}// Reset compiled data
+function c(h,i){throw new Error('(LinkifyIt) Invalid schema "'+h+'": '+i)}// Load & clone RE patterns.
+var d=a.re=__webpack_require__(18)(a.__opts__),e=a.__tlds__.slice();// Define dynamic patterns
+a.onCompile(),a.__tlds_replaced__||e.push(tlds_2ch_src_re),e.push(d.src_xn),d.src_tlds=e.join('|'),d.email_fuzzy=RegExp(b(d.tpl_email_fuzzy),'i'),d.link_fuzzy=RegExp(b(d.tpl_link_fuzzy),'i'),d.link_no_ip_fuzzy=RegExp(b(d.tpl_link_no_ip_fuzzy),'i'),d.host_fuzzy_test=RegExp(b(d.tpl_host_fuzzy_test),'i');//
+// Compile each schema
+//
+var f=[];a.__compiled__={},Object.keys(a.__schemas__).forEach(function(h){var i=a.__schemas__[h];// skip disabled methods
+if(null!==i){var j={validate:null,link:null};return a.__compiled__[h]=j,isObject(i)?(isRegExp(i.validate)?j.validate=createValidator(i.validate):isFunction(i.validate)?j.validate=i.validate:c(h,i),void(isFunction(i.normalize)?j.normalize=i.normalize:i.normalize?c(h,i):j.normalize=createNormalizer())):isString(i)?void f.push(h):void c(h,i)}}),f.forEach(function(h){a.__compiled__[a.__schemas__[h]]&&(a.__compiled__[h].validate=a.__compiled__[a.__schemas__[h]].validate,a.__compiled__[h].normalize=a.__compiled__[a.__schemas__[h]].normalize)}),a.__compiled__['']={validate:null,normalize:createNormalizer()};//
+// Build schema condition
+//
+var g=Object.keys(a.__compiled__).filter(function(h){// Filter disabled & fake schemas
+return 0<h.length&&a.__compiled__[h]}).map(escapeRE).join('|');// (?!_) cause 1.5x slowdown
+a.re.schema_test=RegExp('(^|(?!_)(?:[><]|'+d.src_ZPCc+'))('+g+')','i'),a.re.schema_search=RegExp('(^|(?!_)(?:[><]|'+d.src_ZPCc+'))('+g+')','ig'),a.re.pretest=RegExp('('+a.re.schema_test.source+')|('+a.re.host_fuzzy_test.source+')|@','i'),resetScanCache(a)}/**
+ * class Match
+ *
+ * Match result. Single element of array, returned by [[LinkifyIt#match]]
+ **/function Match(a,b){var c=a.__index__,d=a.__last_index__,e=a.__text_cache__.slice(c,d);/**
+   * Match#schema -> String
+   *
+   * Prefix (protocol) for matched string.
+   **/this.schema=a.__schema__.toLowerCase(),this.index=c+b,this.lastIndex=d+b,this.raw=e,this.text=e,this.url=e}function createMatch(a,b){var c=new Match(a,b);return a.__compiled__[c.schema].normalize(c,a),c}/**
+ * class LinkifyIt
+ **//**
+ * new LinkifyIt(schemas, options)
+ * - schemas (Object): Optional. Additional schemas to validate (prefix/validator)
+ * - options (Object): { fuzzyLink|fuzzyEmail|fuzzyIP: true|false }
+ *
+ * Creates new linkifier instance with optional additional schemas.
+ * Can be called without `new` keyword for convenience.
+ *
+ * By default understands:
+ *
+ * - `http(s)://...` , `ftp://...`, `mailto:...` & `//...` links
+ * - "fuzzy" links and emails (example.com, foo@bar.com).
+ *
+ * `schemas` is an object, where each key/value describes protocol/rule:
+ *
+ * - __key__ - link prefix (usually, protocol name with `:` at the end, `skype:`
+ *   for example). `linkify-it` makes shure that prefix is not preceeded with
+ *   alphanumeric char and symbols. Only whitespaces and punctuation allowed.
+ * - __value__ - rule to check tail after link prefix
+ *   - _String_ - just alias to existing rule
+ *   - _Object_
+ *     - _validate_ - validator function (should return matched length on success),
+ *       or `RegExp`.
+ *     - _normalize_ - optional function to normalize text & url of matched result
+ *       (for example, for @twitter mentions).
+ *
+ * `options`:
+ *
+ * - __fuzzyLink__ - recognige URL-s without `http(s):` prefix. Default `true`.
+ * - __fuzzyIP__ - allow IPs in fuzzy links above. Can conflict with some texts
+ *   like version numbers. Default `false`.
+ * - __fuzzyEmail__ - recognize emails without `mailto:` prefix.
+ *
+ **/function LinkifyIt(a,b){return this instanceof LinkifyIt?void(!b&&isOptionsObj(a)&&(b=a,a={}),this.__opts__=assign({},defaultOptions,b),this.__index__=-1,this.__last_index__=-1,this.__schema__='',this.__text_cache__='',this.__schemas__=assign({},defaultSchemas,a),this.__compiled__={},this.__tlds__=tlds_default,this.__tlds_replaced__=!1,this.re={},compile(this)):new LinkifyIt(a,b)}/** chainable
+ * LinkifyIt#add(schema, definition)
+ * - schema (String): rule name (fixed pattern prefix)
+ * - definition (String|RegExp|Object): schema definition
+ *
+ * Add new rule definition. See constructor description for details.
+ **/LinkifyIt.prototype.add=function(b,c){return this.__schemas__[b]=c,compile(this),this},LinkifyIt.prototype.set=function(b){return this.__opts__=assign(this.__opts__,b),this},LinkifyIt.prototype.test=function(b){if(this.__text_cache__=b,this.__index__=-1,!b.length)return!1;var c,d,e,f,g,h,i,j,l;// try to scan for link with schema - that's the most simple rule
+if(this.re.schema_test.test(b))for(i=this.re.schema_search,i.lastIndex=0;null!==(c=i.exec(b));)if(f=this.testSchemaAt(b,c[2],i.lastIndex),f){this.__schema__=c[2],this.__index__=c.index+c[1].length,this.__last_index__=c.index+c[0].length+f;break}return this.__opts__.fuzzyLink&&this.__compiled__['http:']&&(j=b.search(this.re.host_fuzzy_test),0<=j&&(0>this.__index__||j<this.__index__)&&null!==(d=b.match(this.__opts__.fuzzyIP?this.re.link_fuzzy:this.re.link_no_ip_fuzzy))&&(g=d.index+d[1].length,(0>this.__index__||g<this.__index__)&&(this.__schema__='',this.__index__=g,this.__last_index__=d.index+d[0].length))),this.__opts__.fuzzyEmail&&this.__compiled__['mailto:']&&(l=b.indexOf('@'),0<=l&&null!==(e=b.match(this.re.email_fuzzy))&&(g=e.index+e[1].length,h=e.index+e[0].length,(0>this.__index__||g<this.__index__||g===this.__index__&&h>this.__last_index__)&&(this.__schema__='mailto:',this.__index__=g,this.__last_index__=h))),0<=this.__index__},LinkifyIt.prototype.pretest=function(b){return this.re.pretest.test(b)},LinkifyIt.prototype.testSchemaAt=function(b,c,d){// If not supported schema check requested - terminate
+return this.__compiled__[c.toLowerCase()]?this.__compiled__[c.toLowerCase()].validate(b,d,this):0},LinkifyIt.prototype.match=function(b){var c=0,d=[];// Try to take previous element from cache, if .test() called before
+0<=this.__index__&&this.__text_cache__===b&&(d.push(createMatch(this,c)),c=this.__last_index__);// Cut head if cache was used
+// Scan string until end reached
+for(var e=c?b.slice(c):b;this.test(e);)d.push(createMatch(this,c)),e=e.slice(this.__last_index__),c+=this.__last_index__;return d.length?d:null},LinkifyIt.prototype.tlds=function(b,c){return(b=Array.isArray(b)?b:[b],!c)?(this.__tlds__=b.slice(),this.__tlds_replaced__=!0,compile(this),this):(this.__tlds__=this.__tlds__.concat(b).sort().filter(function(d,e,f){return d!==f[e-1]}).reverse(),compile(this),this)},LinkifyIt.prototype.normalize=function(b){b.schema||(b.url='http://'+b.url),'mailto:'!==b.schema||/^mailto:/i.test(b.url)||(b.url='mailto:'+b.url)},LinkifyIt.prototype.onCompile=function(){},module.exports=LinkifyIt;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+module.exports=function(a){var b={};// Use direct extract instead of `regenerate` to reduse browserified size
+return b.src_Any=__webpack_require__(11).source,b.src_Cc=__webpack_require__(9).source,b.src_Z=__webpack_require__(10).source,b.src_P=__webpack_require__(3).source,b.src_ZPCc=[b.src_Z,b.src_P,b.src_Cc].join('|'),b.src_ZCc=[b.src_Z,b.src_Cc].join('|'),b.src_pseudo_letter='(?:(?!>|<|'+b.src_ZPCc+')'+b.src_Any+')',b.src_ip4='(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)',b.src_auth='(?:(?:(?!'+b.src_ZCc+'|[@/\\[\\]()]).)+@)?',b.src_port='(?::(?:6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5])))|[1-5]?\\d{1,4}))?',b.src_host_terminator='(?=$|>|<|'+b.src_ZPCc+')(?!-|_|:\\d|\\.-|\\.(?!$|'+b.src_ZPCc+'))',b.src_path='(?:[/?#](?:(?!'+b.src_ZCc+'|[()[\\]{}.,"\'?!\\-<>]).|\\[(?:(?!'+b.src_ZCc+'|\\]).)*\\]|\\((?:(?!'+b.src_ZCc+'|[)]).)*\\)|\\{(?:(?!'+b.src_ZCc+'|[}]).)*\\}|\\"(?:(?!'+b.src_ZCc+'|["]).)+\\"|\\\'(?:(?!'+b.src_ZCc+'|[\']).)+\\\'|\\\'(?='+b.src_pseudo_letter+'|[-]).|\\.{2,3}[a-zA-Z0-9%/]|\\.(?!'+b.src_ZCc+'|[.]).|'+(a&&a['---']?'\\-(?!--(?:[^-]|$))(?:-*)|'// `---` => long dash, terminate
+:'\\-+|')+'\\,(?!'+b.src_ZCc+').|\\!(?!'+b.src_ZCc+'|[!]).|\\?(?!'+b.src_ZCc+'|[?]).)+|\\/)?',b.src_email_name='[\\-;:&=\\+\\$,\\"\\.a-zA-Z0-9_]+',b.src_xn='xn--[a-z0-9\\-]{1,59}',b.src_domain_root=// Allow letters & digits (http://test1)
+'(?:'+b.src_xn+'|'+b.src_pseudo_letter+'{1,63})',b.src_domain='(?:'+b.src_xn+'|(?:'+b.src_pseudo_letter+')|(?:'+b.src_pseudo_letter+'(?:-(?!-)|'+b.src_pseudo_letter+'){0,61}'+b.src_pseudo_letter+'))',b.src_host='(?:(?:(?:(?:'+b.src_domain+')\\.)*'+b.src_domain/*_root*/+'))',b.tpl_host_fuzzy='(?:'+b.src_ip4+'|(?:(?:(?:'+b.src_domain+')\\.)+(?:%TLDS%)))',b.tpl_host_no_ip_fuzzy='(?:(?:(?:'+b.src_domain+')\\.)+(?:%TLDS%))',b.src_host_strict=b.src_host+b.src_host_terminator,b.tpl_host_fuzzy_strict=b.tpl_host_fuzzy+b.src_host_terminator,b.src_host_port_strict=b.src_host+b.src_port+b.src_host_terminator,b.tpl_host_port_fuzzy_strict=b.tpl_host_fuzzy+b.src_port+b.src_host_terminator,b.tpl_host_port_no_ip_fuzzy_strict=b.tpl_host_no_ip_fuzzy+b.src_port+b.src_host_terminator,b.tpl_host_fuzzy_test='localhost|www\\.|\\.\\d{1,3}\\.|(?:\\.(?:%TLDS%)(?:'+b.src_ZPCc+'|>|$))',b.tpl_email_fuzzy='(^|<|>|\\(|'+b.src_ZCc+')('+b.src_email_name+'@'+b.tpl_host_fuzzy_strict+')',b.tpl_link_fuzzy=// Fuzzy link can't be prepended with .:/\- and non punctuation.
+// but can start with > (markdown blockquote)
+'(^|(?![.:/\\-_@])(?:[$+<=>^`|]|'+b.src_ZPCc+'))((?![$+<=>^`|])'+b.tpl_host_port_fuzzy_strict+b.src_path+')',b.tpl_link_no_ip_fuzzy=// Fuzzy link can't be prepended with .:/\- and non punctuation.
+// but can start with > (markdown blockquote)
+'(^|(?![.:/\\-_@])(?:[$+<=>^`|]|'+b.src_ZPCc+'))((?![$+<=>^`|])'+b.tpl_host_port_no_ip_fuzzy_strict+b.src_path+')',b};
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// List of valid html blocks names, accorting to commonmark spec
+// http://jgm.github.io/CommonMark/spec.html#html-blocks
+module.exports=['address','article','aside','base','basefont','blockquote','body','caption','center','col','colgroup','dd','details','dialog','dir','div','dl','dt','fieldset','figcaption','figure','footer','form','frame','frameset','h1','h2','h3','h4','h5','h6','head','header','hr','html','iframe','legend','li','link','main','menu','menuitem','meta','nav','noframes','ol','optgroup','option','p','param','pre','section','source','title','summary','table','tbody','td','tfoot','th','thead','title','tr','track','ul'];
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Just a shortcut for bulk export
+exports.parseLinkLabel=__webpack_require__(22),exports.parseLinkDestination=__webpack_require__(21),exports.parseLinkTitle=__webpack_require__(23);
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Parse link destination
+//
+var isSpace=__webpack_require__(0).isSpace,unescapeAll=__webpack_require__(0).unescapeAll;module.exports=function(b,c,d){var e,f,g=c,h={ok:!1,pos:0,lines:0,str:''};if(60===b.charCodeAt(c)/* < */){for(c++;c<d;){if(e=b.charCodeAt(c),10===e/* \n */||isSpace(e))return h;if(62===e/* > */)return h.pos=c+1,h.str=unescapeAll(b.slice(g+1,c)),h.ok=!0,h;if(92===e/* \ */&&c+1<d){c+=2;continue}c++}// no closing '>'
+return h}// this should be ... } else { ... branch
+for(f=0;c<d&&(e=b.charCodeAt(c),32!==e)&&!(32>e||127===e);){if(92===e/* \ */&&c+1<d){c+=2;continue}if(40===e/* ( */&&(f++,1<f))break;if(41===e/* ) */&&(f--,0>f))break;c++}return g===c?h:(h.str=unescapeAll(b.slice(g,c)),h.lines=0,h.pos=c,h.ok=!0,h)};
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Parse link label
+//
+// this function assumes that first character ("[") already matches;
+// returns the end of the label
+//
+module.exports=function(b,c,d){var e,f,g,h,i=-1,j=b.posMax,k=b.pos;for(b.pos=c+1,e=1;b.pos<j;){if(g=b.src.charCodeAt(b.pos),93===g/* ] */&&(e--,0===e)){f=!0;break}if(h=b.pos,b.md.inline.skipToken(b),91===g/* [ */)if(h===b.pos-1)e++;else if(d)return b.pos=k,-1}return f&&(i=b.pos),b.pos=k,i};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Parse link title
+//
+var unescapeAll=__webpack_require__(0).unescapeAll;module.exports=function(b,c,d){var e,f,g=0,h=c,i={ok:!1,pos:0,lines:0,str:''};if(c>=d)return i;if(f=b.charCodeAt(c),34!==f/* " */&&39!==f/* ' */&&40!==f/* ( */)return i;for(c++,40===f&&(f=41);c<d;){if(e=b.charCodeAt(c),e==f)return i.pos=c+1,i.lines=g,i.str=unescapeAll(b.slice(h+1,c)),i.ok=!0,i;10===e?g++:92===e/* \ */&&c+1<d&&(c++,10===b.charCodeAt(c)&&g++),c++}return i};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Main parser class
+var utils=__webpack_require__(0),helpers=__webpack_require__(20),Renderer=__webpack_require__(31),ParserCore=__webpack_require__(26),ParserBlock=__webpack_require__(25),ParserInline=__webpack_require__(27),LinkifyIt=__webpack_require__(17),mdurl=__webpack_require__(8),punycode=__webpack_require__(67),config={'default':__webpack_require__(29),zero:__webpack_require__(30),commonmark:__webpack_require__(28)},BAD_PROTO_RE=/^(vbscript|javascript|file|data):/,GOOD_DATA_RE=/^data:image\/(gif|png|jpeg|webp);/;////////////////////////////////////////////////////////////////////////////////
+//
+// This validator can prohibit more than really needed to prevent XSS. It's a
+// tradeoff to keep code simple and to be secure by default.
+//
+// If you need different setup - override validator method as you wish. Or
+// replace it with dummy function and use external sanitizer.
+//
+function validateLink(a){// url should be normalized at this point, and existing entities are decoded
+var b=a.trim().toLowerCase();return!BAD_PROTO_RE.test(b)||!!GOOD_DATA_RE.test(b)}////////////////////////////////////////////////////////////////////////////////
+var RECODE_HOSTNAME_FOR=['http:','https:','mailto:'];function normalizeLink(a){var b=mdurl.parse(a,!0);if(b.hostname&&(!b.protocol||0<=RECODE_HOSTNAME_FOR.indexOf(b.protocol)))try{b.hostname=punycode.toASCII(b.hostname)}catch(c){/**/}return mdurl.encode(mdurl.format(b))}function normalizeLinkText(a){var b=mdurl.parse(a,!0);if(b.hostname&&(!b.protocol||0<=RECODE_HOSTNAME_FOR.indexOf(b.protocol)))try{b.hostname=punycode.toUnicode(b.hostname)}catch(c){/**/}return mdurl.decode(mdurl.format(b))}/**
+ * class MarkdownIt
+ *
+ * Main parser/renderer class.
+ *
+ * ##### Usage
+ *
+ * ```javascript
+ * // node.js, "classic" way:
+ * var MarkdownIt = require('markdown-it'),
+ *     md = new MarkdownIt();
+ * var result = md.render('# markdown-it rulezz!');
+ *
+ * // node.js, the same, but with sugar:
+ * var md = require('markdown-it')();
+ * var result = md.render('# markdown-it rulezz!');
+ *
+ * // browser without AMD, added to "window" on script load
+ * // Note, there are no dash.
+ * var md = window.markdownit();
+ * var result = md.render('# markdown-it rulezz!');
+ * ```
+ *
+ * Single line rendering, without paragraph wrap:
+ *
+ * ```javascript
+ * var md = require('markdown-it')();
+ * var result = md.renderInline('__markdown-it__ rulezz!');
+ * ```
+ **//**
+ * new MarkdownIt([presetName, options])
+ * - presetName (String): optional, `commonmark` / `zero`
+ * - options (Object)
+ *
+ * Creates parser instanse with given config. Can be called without `new`.
+ *
+ * ##### presetName
+ *
+ * MarkdownIt provides named presets as a convenience to quickly
+ * enable/disable active syntax rules and options for common use cases.
+ *
+ * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.js) -
+ *   configures parser to strict [CommonMark](http://commonmark.org/) mode.
+ * - [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js) -
+ *   similar to GFM, used when no preset name given. Enables all available rules,
+ *   but still without html, typographer & autolinker.
+ * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js) -
+ *   all rules disabled. Useful to quickly setup your config via `.enable()`.
+ *   For example, when you need only `bold` and `italic` markup and nothing else.
+ *
+ * ##### options:
+ *
+ * - __html__ - `false`. Set `true` to enable HTML tags in source. Be careful!
+ *   That's not safe! You may need external sanitizer to protect output from XSS.
+ *   It's better to extend features via plugins, instead of enabling HTML.
+ * - __xhtmlOut__ - `false`. Set `true` to add '/' when closing single tags
+ *   (`<br />`). This is needed only for full CommonMark compatibility. In real
+ *   world you will need HTML output.
+ * - __breaks__ - `false`. Set `true` to convert `\n` in paragraphs into `<br>`.
+ * - __langPrefix__ - `language-`. CSS language class prefix for fenced blocks.
+ *   Can be useful for external highlighters.
+ * - __linkify__ - `false`. Set `true` to autoconvert URL-like text to links.
+ * - __typographer__  - `false`. Set `true` to enable [some language-neutral
+ *   replacement](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js) +
+ *   quotes beautification (smartquotes).
+ * - __quotes__ - `“”‘’`, String or Array. Double + single quotes replacement
+ *   pairs, when typographer enabled and smartquotes on. For example, you can
+ *   use `'«»„“'` for Russian, `'„“‚‘'` for German, and
+ *   `['«\xA0', '\xA0»', '‹\xA0', '\xA0›']` for French (including nbsp).
+ * - __highlight__ - `null`. Highlighter function for fenced code blocks.
+ *   Highlighter `function (str, lang)` should return escaped HTML. It can also
+ *   return empty string if the source was not changed and should be escaped
+ *   externaly. If result starts with <pre... internal wrapper is skipped.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * // commonmark mode
+ * var md = require('markdown-it')('commonmark');
+ *
+ * // default mode
+ * var md = require('markdown-it')();
+ *
+ * // enable everything
+ * var md = require('markdown-it')({
+ *   html: true,
+ *   linkify: true,
+ *   typographer: true
+ * });
+ * ```
+ *
+ * ##### Syntax highlighting
+ *
+ * ```js
+ * var hljs = require('highlight.js') // https://highlightjs.org/
+ *
+ * var md = require('markdown-it')({
+ *   highlight: function (str, lang) {
+ *     if (lang && hljs.getLanguage(lang)) {
+ *       try {
+ *         return hljs.highlight(lang, str, true).value;
+ *       } catch (__) {}
+ *     }
+ *
+ *     return ''; // use external default escaping
+ *   }
+ * });
+ * ```
+ *
+ * Or with full wrapper override (if you need assign class to `<pre>`):
+ *
+ * ```javascript
+ * var hljs = require('highlight.js') // https://highlightjs.org/
+ *
+ * // Actual default values
+ * var md = require('markdown-it')({
+ *   highlight: function (str, lang) {
+ *     if (lang && hljs.getLanguage(lang)) {
+ *       try {
+ *         return '<pre class="hljs"><code>' +
+ *                hljs.highlight(lang, str, true).value +
+ *                '</code></pre>';
+ *       } catch (__) {}
+ *     }
+ *
+ *     return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+ *   }
+ * });
+ * ```
+ *
+ **/function MarkdownIt(a,b){return this instanceof MarkdownIt?void(!b&&!utils.isString(a)&&(b=a||{},a='default'),this.inline=new ParserInline,this.block=new ParserBlock,this.core=new ParserCore,this.renderer=new Renderer,this.linkify=new LinkifyIt,this.validateLink=validateLink,this.normalizeLink=normalizeLink,this.normalizeLinkText=normalizeLinkText,this.utils=utils,this.helpers=utils.assign({},helpers),this.options={},this.configure(a),b&&this.set(b)):new MarkdownIt(a,b)}/** chainable
+ * MarkdownIt.set(options)
+ *
+ * Set parser options (in the same format as in constructor). Probably, you
+ * will never need it, but you can change options after constructor call.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')()
+ *             .set({ html: true, breaks: true })
+ *             .set({ typographer, true });
+ * ```
+ *
+ * __Note:__ To achieve the best possible performance, don't modify a
+ * `markdown-it` instance options on the fly. If you need multiple configurations
+ * it's best to create multiple instances and initialize each with separate
+ * config.
+ **/MarkdownIt.prototype.set=function(a){return utils.assign(this.options,a),this},MarkdownIt.prototype.configure=function(a){var c,b=this;if(utils.isString(a)&&(c=a,a=config[c],!a))throw new Error('Wrong `markdown-it` preset "'+c+'", check name');if(!a)throw new Error('Wrong `markdown-it` preset, can\'t be empty');return a.options&&b.set(a.options),a.components&&Object.keys(a.components).forEach(function(d){a.components[d].rules&&b[d].ruler.enableOnly(a.components[d].rules),a.components[d].rules2&&b[d].ruler2.enableOnly(a.components[d].rules2)}),this},MarkdownIt.prototype.enable=function(a,b){var c=[];Array.isArray(a)||(a=[a]),['core','block','inline'].forEach(function(e){c=c.concat(this[e].ruler.enable(a,!0))},this),c=c.concat(this.inline.ruler2.enable(a,!0));var d=a.filter(function(e){return 0>c.indexOf(e)});if(d.length&&!b)throw new Error('MarkdownIt. Failed to enable unknown rule(s): '+d);return this},MarkdownIt.prototype.disable=function(a,b){var c=[];Array.isArray(a)||(a=[a]),['core','block','inline'].forEach(function(e){c=c.concat(this[e].ruler.disable(a,!0))},this),c=c.concat(this.inline.ruler2.disable(a,!0));var d=a.filter(function(e){return 0>c.indexOf(e)});if(d.length&&!b)throw new Error('MarkdownIt. Failed to disable unknown rule(s): '+d);return this},MarkdownIt.prototype.use=function(a/*, params, ... */){var b=[this].concat(Array.prototype.slice.call(arguments,1));return a.apply(a,b),this},MarkdownIt.prototype.parse=function(a,b){var c=new this.core.State(a,this,b);return this.core.process(c),c.tokens},MarkdownIt.prototype.render=function(a,b){return b=b||{},this.renderer.render(this.parse(a,b),this.options,b)},MarkdownIt.prototype.parseInline=function(a,b){var c=new this.core.State(a,this,b);return c.inlineMode=!0,this.core.process(c),c.tokens},MarkdownIt.prototype.renderInline=function(a,b){return b=b||{},this.renderer.render(this.parseInline(a,b),this.options,b)},module.exports=MarkdownIt;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/** internal
+ * class ParserBlock
+ *
+ * Block-level tokenizer.
+ **/var Ruler=__webpack_require__(1),_rules=[// First 2 params - rule name & source. Secondary array - list of rules,
+// which can be terminated by this one.
+['table',__webpack_require__(43),['paragraph','reference']],['code',__webpack_require__(33)],['fence',__webpack_require__(34),['paragraph','reference','blockquote','list']],['blockquote',__webpack_require__(32),['paragraph','reference','list']],['hr',__webpack_require__(36),['paragraph','reference','blockquote','list']],['list',__webpack_require__(39),['paragraph','reference','blockquote']],['reference',__webpack_require__(41)],['heading',__webpack_require__(35),['paragraph','reference','blockquote']],['lheading',__webpack_require__(38)],['html_block',__webpack_require__(37),['paragraph','reference','blockquote']],['paragraph',__webpack_require__(40)]];/**
+ * new ParserBlock()
+ **/function ParserBlock(){this.ruler=new Ruler;for(var a=0;a<_rules.length;a++)this.ruler.push(_rules[a][0],_rules[a][1],{alt:(_rules[a][2]||[]).slice()})}// Generate tokens for input range
+//
+ParserBlock.prototype.tokenize=function(a,b,c){for(var d,e,f=this.ruler.getRules(''),g=f.length,h=b,j=!1,k=a.md.options.maxNesting;h<c&&(a.line=h=a.skipEmptyLines(h),!(h>=c))&&!(a.sCount[h]<a.blkIndent);){// If nesting level exceeded - skip tail to the end. That's not ordinary
+// situation and we should not care about content.
+if(a.level>=k){a.line=c;break}// Try all possible rules.
+// On success, rule should:
+//
+// - update `state.line`
+// - update `state.tokens`
+// - return true
+for(e=0;e<g&&(d=f[e](a,h,c,!1),!d);e++);// set state.tight iff we had an empty line before current tag
+// i.e. latest empty line should not count
+a.tight=!j,a.isEmpty(a.line-1)&&(j=!0),h=a.line,h<c&&a.isEmpty(h)&&(j=!0,h++,a.line=h)}},ParserBlock.prototype.parse=function(a,b,c,d){var e;a&&(e=new this.State(a,b,c,d),this.tokenize(e,e.line,e.lineMax))},ParserBlock.prototype.State=__webpack_require__(42),module.exports=ParserBlock;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/** internal
+ * class Core
+ *
+ * Top-level rules executor. Glues block/inline parsers and does intermediate
+ * transformations.
+ **/var Ruler=__webpack_require__(1),_rules=[['normalize',__webpack_require__(47)],['block',__webpack_require__(44)],['inline',__webpack_require__(45)],['linkify',__webpack_require__(46)],['replacements',__webpack_require__(48)],['smartquotes',__webpack_require__(49)]];/**
+ * new Core()
+ **/function Core(){this.ruler=new Ruler;for(var a=0;a<_rules.length;a++)this.ruler.push(_rules[a][0],_rules[a][1])}/**
+ * Core.process(state)
+ *
+ * Executes core chain rules.
+ **/Core.prototype.process=function(a){var b,c,d;for(d=this.ruler.getRules(''),b=0,c=d.length;b<c;b++)d[b](a)},Core.prototype.State=__webpack_require__(50),module.exports=Core;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/** internal
+ * class ParserInline
+ *
+ * Tokenizes paragraph content.
+ **/var Ruler=__webpack_require__(1),_rules=[['text',__webpack_require__(61)],['newline',__webpack_require__(59)],['escape',__webpack_require__(55)],['backticks',__webpack_require__(52)],['strikethrough',__webpack_require__(7).tokenize],['emphasis',__webpack_require__(6).tokenize],['link',__webpack_require__(58)],['image',__webpack_require__(57)],['autolink',__webpack_require__(51)],['html_inline',__webpack_require__(56)],['entity',__webpack_require__(54)]],_rules2=[['balance_pairs',__webpack_require__(53)],['strikethrough',__webpack_require__(7).postProcess],['emphasis',__webpack_require__(6).postProcess],['text_collapse',__webpack_require__(62)]];////////////////////////////////////////////////////////////////////////////////
+// Parser rules
+/**
+ * new ParserInline()
+ **/function ParserInline(){var a;/**
+   * ParserInline#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of inline rules.
+   **/for(this.ruler=new Ruler,a=0;a<_rules.length;a++)this.ruler.push(_rules[a][0],_rules[a][1]);/**
+   * ParserInline#ruler2 -> Ruler
+   *
+   * [[Ruler]] instance. Second ruler used for post-processing
+   * (e.g. in emphasis-like rules).
+   **/for(this.ruler2=new Ruler,a=0;a<_rules2.length;a++)this.ruler2.push(_rules2[a][0],_rules2[a][1])}// Skip single token by running all rules in validation mode;
+// returns `true` if any rule reported success
+//
+ParserInline.prototype.skipToken=function(a){var b,c,d=a.pos,e=this.ruler.getRules(''),f=e.length,g=a.md.options.maxNesting,h=a.cache;if('undefined'!=typeof h[d])return void(a.pos=h[d]);if(a.level<g)for(c=0;c<f&&(a.level++,b=e[c](a,!0),a.level--,!b);c++);else a.pos=a.posMax;b||a.pos++,h[d]=a.pos},ParserInline.prototype.tokenize=function(a){for(var b,c,d=this.ruler.getRules(''),e=d.length,f=a.posMax,g=a.md.options.maxNesting;a.pos<f;){// Try all possible rules.
+// On success, rule should:
+//
+// - update `state.pos`
+// - update `state.tokens`
+// - return true
+if(a.level<g)for(c=0;c<e&&(b=d[c](a,!1),!b);c++);if(b){if(a.pos>=f)break;continue}a.pending+=a.src[a.pos++]}a.pending&&a.pushPending()},ParserInline.prototype.parse=function(a,b,c,d){var e,f,g,h=new this.State(a,b,c,d);for(this.tokenize(h),f=this.ruler2.getRules(''),g=f.length,e=0;e<g;e++)f[e](h)},ParserInline.prototype.State=__webpack_require__(60),module.exports=ParserInline;
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Commonmark default options
+module.exports={options:{html:!0,// Enable HTML tags in source
+xhtmlOut:!0,// Use '/' to close single tags (<br />)
+breaks:!1,// Convert '\n' in paragraphs into <br>
+langPrefix:'language-',// CSS language prefix for fenced blocks
+linkify:!1,// autoconvert URL-like texts to links
+// Enable some language-neutral replacements + quotes beautification
+typographer:!1,// Double + single quotes replacement pairs, when typographer enabled,
+// and smartquotes on. Could be either a String or an Array.
+//
+// For example, you can use '«»„“' for Russian, '„“‚‘' for German,
+// and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
+quotes:'\u201C\u201D\u2018\u2019',/* “”‘’ */// Highlighter function. Should return escaped HTML,
+// or '' if the source string is not changed and should be escaped externaly.
+// If result starts with <pre... internal wrapper is skipped.
+//
+// function (/*str, lang*/) { return ''; }
+//
+highlight:null,maxNesting:20// Internal protection, recursion limit
+},components:{core:{rules:['normalize','block','inline']},block:{rules:['blockquote','code','fence','heading','hr','html_block','lheading','list','reference','paragraph']},inline:{rules:['autolink','backticks','emphasis','entity','escape','html_inline','image','link','newline','text'],rules2:['balance_pairs','emphasis','text_collapse']}}};
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// markdown-it default options
+module.exports={options:{html:!1,// Enable HTML tags in source
+xhtmlOut:!1,// Use '/' to close single tags (<br />)
+breaks:!1,// Convert '\n' in paragraphs into <br>
+langPrefix:'language-',// CSS language prefix for fenced blocks
+linkify:!1,// autoconvert URL-like texts to links
+// Enable some language-neutral replacements + quotes beautification
+typographer:!1,// Double + single quotes replacement pairs, when typographer enabled,
+// and smartquotes on. Could be either a String or an Array.
+//
+// For example, you can use '«»„“' for Russian, '„“‚‘' for German,
+// and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
+quotes:'\u201C\u201D\u2018\u2019',/* “”‘’ */// Highlighter function. Should return escaped HTML,
+// or '' if the source string is not changed and should be escaped externaly.
+// If result starts with <pre... internal wrapper is skipped.
+//
+// function (/*str, lang*/) { return ''; }
+//
+highlight:null,maxNesting:100// Internal protection, recursion limit
+},components:{core:{},block:{},inline:{}}};
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// "Zero" preset, with nothing enabled. Useful for manual configuring of simple
+// modes. For example, to parse bold/italic only.
+module.exports={options:{html:!1,// Enable HTML tags in source
+xhtmlOut:!1,// Use '/' to close single tags (<br />)
+breaks:!1,// Convert '\n' in paragraphs into <br>
+langPrefix:'language-',// CSS language prefix for fenced blocks
+linkify:!1,// autoconvert URL-like texts to links
+// Enable some language-neutral replacements + quotes beautification
+typographer:!1,// Double + single quotes replacement pairs, when typographer enabled,
+// and smartquotes on. Could be either a String or an Array.
+//
+// For example, you can use '«»„“' for Russian, '„“‚‘' for German,
+// and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
+quotes:'\u201C\u201D\u2018\u2019',/* “”‘’ */// Highlighter function. Should return escaped HTML,
+// or '' if the source string is not changed and should be escaped externaly.
+// If result starts with <pre... internal wrapper is skipped.
+//
+// function (/*str, lang*/) { return ''; }
+//
+highlight:null,maxNesting:20// Internal protection, recursion limit
+},components:{core:{rules:['normalize','block','inline']},block:{rules:['paragraph']},inline:{rules:['text'],rules2:['balance_pairs','text_collapse']}}};
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * class Renderer
+ *
+ * Generates HTML from parsed token stream. Each instance has independent
+ * copy of rules. Those can be rewritten with ease. Also, you can add new
+ * rules if you create plugin and adds new token types.
+ **/var assign=__webpack_require__(0).assign,unescapeAll=__webpack_require__(0).unescapeAll,escapeHtml=__webpack_require__(0).escapeHtml,default_rules={};////////////////////////////////////////////////////////////////////////////////
+default_rules.code_inline=function(a,b,c,d,e){var f=a[b];return'<code'+e.renderAttrs(f)+'>'+escapeHtml(a[b].content)+'</code>'},default_rules.code_block=function(a,b,c,d,e){var f=a[b];return'<pre'+e.renderAttrs(f)+'><code>'+escapeHtml(a[b].content)+'</code></pre>\n'},default_rules.fence=function(a,b,c,d,e){var j,k,m,n,f=a[b],g=f.info?unescapeAll(f.info).trim():'',h='';return g&&(h=g.split(/\s+/g)[0]),j=c.highlight?c.highlight(f.content,h)||escapeHtml(f.content):escapeHtml(f.content),0===j.indexOf('<pre')?j+'\n':g?(k=f.attrIndex('class'),m=f.attrs?f.attrs.slice():[],0>k?m.push(['class',c.langPrefix+h]):m[k][1]+=' '+c.langPrefix+h,n={attrs:m},'<pre><code'+e.renderAttrs(n)+'>'+j+'</code></pre>\n'):'<pre><code'+e.renderAttrs(f)+'>'+j+'</code></pre>\n';// If language exists, inject class gently, without mudofying original token.
+// May be, one day we will add .clone() for token and simplify this part, but
+// now we prefer to keep things local.
+},default_rules.image=function(a,b,c,d,e){var f=a[b];// "alt" attr MUST be set, even if empty. Because it's mandatory and
+// should be placed on proper position for tests.
+//
+// Replace content with actual value
+return f.attrs[f.attrIndex('alt')][1]=e.renderInlineAsText(f.children,c,d),e.renderToken(a,b,c)},default_rules.hardbreak=function(a,b,c/*, env */){return c.xhtmlOut?'<br />\n':'<br>\n'},default_rules.softbreak=function(a,b,c/*, env */){return c.breaks?c.xhtmlOut?'<br />\n':'<br>\n':'\n'},default_rules.text=function(a,b/*, options, env */){return escapeHtml(a[b].content)},default_rules.html_block=function(a,b/*, options, env */){return a[b].content},default_rules.html_inline=function(a,b/*, options, env */){return a[b].content};/**
+ * new Renderer()
+ *
+ * Creates new [[Renderer]] instance and fill [[Renderer#rules]] with defaults.
+ **/function Renderer(){this.rules=assign({},default_rules)}/**
+ * Renderer.renderAttrs(token) -> String
+ *
+ * Render token attributes to string.
+ **/Renderer.prototype.renderAttrs=function(b){var c,d,e;if(!b.attrs)return'';for(e='',c=0,d=b.attrs.length;c<d;c++)e+=' '+escapeHtml(b.attrs[c][0])+'="'+escapeHtml(b.attrs[c][1])+'"';return e},Renderer.prototype.renderToken=function(b,c,d){var e,f='',g=!1,h=b[c];// Tight list paragraphs
+return h.hidden?'':(h.block&&-1!==h.nesting&&c&&b[c-1].hidden&&(f+='\n'),f+=(-1===h.nesting?'</':'<')+h.tag,f+=this.renderAttrs(h),0===h.nesting&&d.xhtmlOut&&(f+=' /'),h.block&&(g=!0,1===h.nesting&&c+1<b.length&&(e=b[c+1],'inline'===e.type||e.hidden?g=!1:-1===e.nesting&&e.tag===h.tag&&(g=!1))),f+=g?'>\n':'>',f);// Insert a newline between hidden paragraph and subsequent opening
+// block-level tag.
+//
+// For example, here we should insert a newline before blockquote:
+//  - a
+//    >
+//
+},Renderer.prototype.renderInline=function(a,b,c){var d,e='',f=this.rules;for(var g=0,h=a.length;g<h;g++)d=a[g].type,e+='undefined'==typeof f[d]?this.renderToken(a,g,b):f[d](a,g,b,c,this);return e},Renderer.prototype.renderInlineAsText=function(a,b,c){var d='';for(var e=0,f=a.length;e<f;e++)'text'===a[e].type?d+=a[e].content:'image'===a[e].type&&(d+=this.renderInlineAsText(a[e].children,b,c));return d},Renderer.prototype.render=function(a,b,c){var d,e,f,g='',h=this.rules;for(d=0,e=a.length;d<e;d++)f=a[d].type,g+='inline'===f?this.renderInline(a[d].children,b,c):'undefined'==typeof h[f]?this.renderToken(a,d,b,c):h[a[d].type](a,d,b,c,this);return g},module.exports=Renderer;
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Block quotes
+var isSpace=__webpack_require__(0).isSpace;module.exports=function(b,c,d,e){var f,g,h,j,k,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A=b.bMarks[c]+b.tShift[c],B=b.eMarks[c];// check the block quote marker
+if(62!==b.src.charCodeAt(A++)/* > */)return!1;// we know that it's going to be a valid blockquote,
+// so no point trying to find the end of it in silent mode
+if(e)return!0;for(s=b.blkIndent,b.blkIndent=0,j=p=b.sCount[c]+A-(b.bMarks[c]+b.tShift[c]),32===b.src.charCodeAt(A)/* space */?(A++,j++,p++,f=!1,w=!0):9===b.src.charCodeAt(A)/* tab */?(w=!0,3==(b.bsCount[c]+p)%4?(A++,j++,p++,f=!1):f=!0):w=!1,q=[b.bMarks[c]],b.bMarks[c]=A;A<B&&(g=b.src.charCodeAt(A),!isSpace(g));){break;A++}// Search the end of the block
+//
+// Block ends with either:
+//  1. an empty line outside:
+//     ```
+//     > test
+//
+//     ```
+//  2. an empty line inside:
+//     ```
+//     >
+//     test
+//     ```
+//  3. another tag
+//     ```
+//     > test
+//      - - -
+//     ```
+for(r=[b.bsCount[c]],b.bsCount[c]=b.sCount[c]+1+(w?1:0),m=A>=B,u=[b.sCount[c]],b.sCount[c]=p-j,v=[b.tShift[c]],b.tShift[c]=A-b.bMarks[c],y=b.md.block.ruler.getRules('blockquote'),t=b.parentType,b.parentType='blockquote',o=c+1;o<d&&!(b.sCount[o]<s)&&(A=b.bMarks[o]+b.tShift[o],B=b.eMarks[o],!(A>=B));o++){if(62===b.src.charCodeAt(A++)/* > */){for(j=p=b.sCount[o]+A-(b.bMarks[o]+b.tShift[o]),32===b.src.charCodeAt(A)/* space */?(A++,j++,p++,f=!1,w=!0):9===b.src.charCodeAt(A)/* tab */?(w=!0,3==(b.bsCount[o]+p)%4?(A++,j++,p++,f=!1):f=!0):w=!1,q.push(b.bMarks[o]),b.bMarks[o]=A;A<B&&(g=b.src.charCodeAt(A),!isSpace(g));){break;A++}m=A>=B,r.push(b.bsCount[o]),b.bsCount[o]=b.sCount[o]+1+(w?1:0),u.push(b.sCount[o]),b.sCount[o]=p-j,v.push(b.tShift[o]),b.tShift[o]=A-b.bMarks[o];continue}// Case 2: line is not inside the blockquote, and the last line was empty.
+if(m)break;// Case 3: another tag found.
+for(x=!1,h=0,k=y.length;h<k;h++)if(y[h](b,o,d,!0)){x=!0;break}if(x)break;q.push(b.bMarks[o]),r.push(b.bsCount[o]),v.push(b.tShift[o]),u.push(b.sCount[o]),b.sCount[o]=-1}// Restore original tShift; this might not be necessary since the parser
+// has already been here, but just to make sure we can do that.
+for(z=b.push('blockquote_open','blockquote',1),z.markup='>',z.map=n=[c,0],b.md.block.tokenize(b,c,o),z=b.push('blockquote_close','blockquote',-1),z.markup='>',b.parentType=t,n[1]=b.line,h=0;h<v.length;h++)b.bMarks[h+c]=q[h],b.tShift[h+c]=v[h],b.sCount[h+c]=u[h],b.bsCount[h+c]=r[h];return b.blkIndent=s,!0};
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Code block (4 spaces padded)
+module.exports=function(b,c,d/*, silent*/){var e,f,g;if(4>b.sCount[c]-b.blkIndent)return!1;for(f=e=c+1;e<d;){if(b.isEmpty(e)){e++;continue}if(4<=b.sCount[e]-b.blkIndent){e++,f=e;continue}break}return b.line=f,g=b.push('code_block','code',0),g.content=b.getLines(c,f,4+b.blkIndent,!0),g.map=[c,b.line],!0};
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// fences (``` lang, ~~~ lang)
+module.exports=function(b,c,d,e){var f,g,h,i,j,k,l,m=!1,n=b.bMarks[c]+b.tShift[c],o=b.eMarks[c];if(n+3>o)return!1;if(f=b.src.charCodeAt(n),126!==f/* ~ */&&96!==f/* ` */)return!1;// scan marker length
+if(j=n,n=b.skipChars(n,f),g=n-j,3>g)return!1;if(l=b.src.slice(j,n),h=b.src.slice(n,o),0<=h.indexOf(String.fromCharCode(f)))return!1;// Since start is found, we can report success here in validation mode
+if(e)return!0;// search end of block
+for(i=c;;){if(i++,i>=d)// unclosed block should be autoclosed by end of document.
+// also block seems to be autoclosed by end of parent
+break;if(n=j=b.bMarks[i]+b.tShift[i],o=b.eMarks[i],n<o&&b.sCount[i]<b.blkIndent)// non-empty line with negative indent should stop the list:
+// - ```
+//  test
+break;// closing code fence must be at least as long as the opening one
+// found!
+if(b.src.charCodeAt(n)===f&&!(4<=b.sCount[i]-b.blkIndent)&&(n=b.skipChars(n,f),!(n-j<g))&&(n=b.skipSpaces(n),!(n<o))){m=!0;break}// make sure tail has spaces only
+}// If a fence has heading spaces, they should be removed from its inner block
+return g=b.sCount[c],b.line=i+(m?1:0),k=b.push('fence','code',0),k.info=h,k.content=b.getLines(c+1,i,g,!0),k.markup=l,k.map=[c,b.line],!0};
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// heading (#, ##, ...)
+var isSpace=__webpack_require__(0).isSpace;module.exports=function(b,c,d,e){var f,g,h,i,j=b.bMarks[c]+b.tShift[c],k=b.eMarks[c];if(f=b.src.charCodeAt(j),35!==f/* # */||j>=k)return!1;// count heading level
+for(g=1,f=b.src.charCodeAt(++j);35===f/* # */&&j<k&&6>=g;)g++,f=b.src.charCodeAt(++j);// Let's cut tails like '    ###  ' from the end of string
+return 6<g||j<k&&!isSpace(f)?!1:!!e||(k=b.skipSpacesBack(k,j),h=b.skipCharsBack(k,35,j),h>j&&isSpace(b.src.charCodeAt(h-1))&&(k=h),b.line=c+1,i=b.push('heading_open','h'+(g+''),1),i.markup='########'.slice(0,g),i.map=[c,b.line],i=b.push('inline','',0),i.content=b.src.slice(j,k).trim(),i.map=[c,b.line],i.children=[],i=b.push('heading_close','h'+(g+''),-1),i.markup='########'.slice(0,g),!0)};
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Horizontal rule
+var isSpace=__webpack_require__(0).isSpace;module.exports=function(b,c,d,e){var f,g,h,i,j=b.bMarks[c]+b.tShift[c],k=b.eMarks[c];// Check hr marker
+if(f=b.src.charCodeAt(j++),42!==f/* * */&&45!==f/* - */&&95!==f/* _ */)return!1;// markers can be mixed with spaces, but there should be at least 3 of them
+for(g=1;j<k;){if(h=b.src.charCodeAt(j++),h!=f&&!isSpace(h))return!1;h==f&&g++}return!(3>g)&&(!!e||(b.line=c+1,i=b.push('hr','hr',0),i.map=[c,b.line],i.markup=Array(g+1).join(String.fromCharCode(f)),!0))};
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// HTML block
+var block_names=__webpack_require__(19),HTML_OPEN_CLOSE_TAG_RE=__webpack_require__(5).HTML_OPEN_CLOSE_TAG_RE,HTML_SEQUENCES=[[/^<(script|pre|style)(?=(\s|>|$))/i,/<\/(script|pre|style)>/i,!0],[/^<!--/,/-->/,!0],[/^<\?/,/\?>/,!0],[/^<![A-Z]/,/>/,!0],[/^<!\[CDATA\[/,/\]\]>/,!0],[new RegExp('^</?('+block_names.join('|')+')(?=(\\s|/?>|$))','i'),/^$/,!0],[new RegExp(HTML_OPEN_CLOSE_TAG_RE.source+'\\s*$'),/^$/,!1]];// An array of opening and corresponding closing sequences for html tags,
+// last argument defines whether it can terminate a paragraph or not
+//
+module.exports=function(b,c,d,e){var f,g,h,j,k=b.bMarks[c]+b.tShift[c],l=b.eMarks[c];if(!b.md.options.html)return!1;if(60!==b.src.charCodeAt(k)/* < */)return!1;for(j=b.src.slice(k,l),f=0;f<HTML_SEQUENCES.length&&!HTML_SEQUENCES[f][0].test(j);f++);if(f===HTML_SEQUENCES.length)return!1;if(e)// true if this sequence can be a terminator, false otherwise
+return HTML_SEQUENCES[f][2];// If we are here - we detected HTML block.
+// Let's roll down till block end.
+if(g=c+1,!HTML_SEQUENCES[f][1].test(j))for(;g<d&&!(b.sCount[g]<b.blkIndent);g++)if(k=b.bMarks[g]+b.tShift[g],l=b.eMarks[g],j=b.src.slice(k,l),HTML_SEQUENCES[f][1].test(j)){0!==j.length&&g++;break}return b.line=g,h=b.push('html_block','',0),h.map=[c,g],h.content=b.getLines(c,g,b.blkIndent,!0),!0};
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// lheading (---, ===)
+module.exports=function(b,c,d/*, silent*/){var e,f,g,h,j,k,m,n,o,q,p=c+1,r=b.md.block.ruler.getRules('paragraph');// use paragraph to match terminatorRules
+// jump line-by-line until empty one or EOF
+for(q=b.parentType,b.parentType='paragraph';p<d&&!b.isEmpty(p);p++)// this would be a code block normally, but after paragraph
+// it's considered a lazy continuation regardless of what's there
+// Some tags can terminate paragraph without empty line.
+if(!(3<b.sCount[p]-b.blkIndent)){//
+// Check for underline in setext header
+//
+if(b.sCount[p]>=b.blkIndent&&(k=b.bMarks[p]+b.tShift[p],m=b.eMarks[p],k<m&&(o=b.src.charCodeAt(k),(45===o/* - */||61===o/* = */)&&(k=b.skipChars(k,o),k=b.skipSpaces(k),k>=m)))){n=61===o/* = */?1:2;break}// quirk for blockquotes, this line should already be checked by that rule
+if(!(0>b.sCount[p])){for(f=!1,g=0,h=r.length;g<h;g++)if(r[g](b,p,d,!0)){f=!0;break}if(f)break}}return!!n&&(e=b.getLines(c,p,b.blkIndent,!1).trim(),b.line=p+1,j=b.push('heading_open','h'+(n+''),1),j.markup=String.fromCharCode(o),j.map=[c,b.line],j=b.push('inline','',0),j.content=e,j.map=[c,b.line-1],j.children=[],j=b.push('heading_close','h'+(n+''),-1),j.markup=String.fromCharCode(o),b.parentType=q,!0)};
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Lists
+var isSpace=__webpack_require__(0).isSpace;// Search `[-+*][\n ]`, returns next pos arter marker on success
+// or -1 on fail.
+function skipBulletListMarker(a,b){var c,d,e,f;// Check bullet
+return d=a.bMarks[b]+a.tShift[b],e=a.eMarks[b],c=a.src.charCodeAt(d++),42!==c/* * */&&45!==c/* - */&&43!==c/* + */?-1:d<e&&(f=a.src.charCodeAt(d),!isSpace(f))?-1:d}// Search `\d+[.)][\n ]`, returns next pos arter marker on success
+// or -1 on fail.
+function skipOrderedListMarker(a,b){var c,d=a.bMarks[b]+a.tShift[b],e=d,f=a.eMarks[b];// List marker should have at least 2 chars (digit + dot)
+if(e+1>=f)return-1;if(c=a.src.charCodeAt(e++),48>c/* 0 */||57<c/* 9 */)return-1;for(;;){// EOL -> fail
+if(e>=f)return-1;if(c=a.src.charCodeAt(e++),48<=c/* 0 */&&57>=c/* 9 */){// List marker should have no more than 9 digits
+// (prevents integer overflow in browsers)
+if(10<=e-d)return-1;continue}// found valid marker
+if(41===c/* ) */||46===c/* . */)break;return-1}return e<f&&(c=a.src.charCodeAt(e),!isSpace(c))?-1:e}function markTightParagraphs(a,b){var c,d,e=a.level+2;for(c=b+2,d=a.tokens.length-2;c<d;c++)a.tokens[c].level===e&&'paragraph_open'===a.tokens[c].type&&(a.tokens[c+2].hidden=!0,a.tokens[c].hidden=!0,c+=2)}module.exports=function(b,c,d,e){var f,g,h,j,k,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J=!1,K=!0;// limit conditions when list can interrupt
+// a paragraph (validation mode only)
+// Detect list type and position after marker
+if(e&&'paragraph'===b.parentType&&b.tShift[c]>=b.blkIndent&&(J=!0),0<=(D=skipOrderedListMarker(b,c))){// If we're starting a new ordered list right after
+// a paragraph, it should start with 1.
+if(n=!0,F=b.bMarks[c]+b.tShift[c],t=+b.src.substr(F,D-F-1),J&&1!==t)return!1;}else if(0<=(D=skipBulletListMarker(b,c)))n=!1;else return!1;// If we're starting a new unordered list right after
+// a paragraph, first line should not be empty.
+if(J&&b.skipSpaces(D)>=b.eMarks[c])return!1;// We should terminate list on style change. Remember first one to compare.
+// For validation mode we can terminate immediately
+if(s=b.src.charCodeAt(D-1),e)return!0;// Start list
+for(r=b.tokens.length,n?(I=b.push('ordered_list_open','ol',1),1!==t&&(I.attrs=[['start',t]])):I=b.push('bullet_list_open','ul',1),I.map=q=[c,0],I.markup=String.fromCharCode(s),v=c,E=!1,H=b.md.block.ruler.getRules('list'),z=b.parentType,b.parentType='list';v<d;){for(C=D,u=b.eMarks[v],m=w=b.sCount[v]+D-(b.bMarks[c]+b.tShift[c]);C<u&&(f=b.src.charCodeAt(C),!isSpace(f));){break;C++}if(g=C,k=g>=u?1:w-m,4<k&&(k=1),j=m+k,I=b.push('list_item_open','li',1),I.markup=String.fromCharCode(s),I.map=o=[c,0],x=b.blkIndent,B=b.tight,A=b.tShift[c],y=b.sCount[c],b.blkIndent=j,b.tight=!0,b.tShift[c]=g-b.bMarks[c],b.sCount[c]=w,g>=u&&b.isEmpty(c+1)?b.line=Math.min(b.line+2,d):b.md.block.tokenize(b,c,d,!0),(!b.tight||E)&&(K=!1),E=1<b.line-c&&b.isEmpty(b.line-1),b.blkIndent=x,b.tShift[c]=A,b.sCount[c]=y,b.tight=B,I=b.push('list_item_close','li',-1),I.markup=String.fromCharCode(s),v=c=b.line,o[1]=v,g=b.bMarks[c],v>=d)break;//
+// Try to check if list is terminated or continued.
+//
+if(b.sCount[v]<b.blkIndent)break;// fail if terminating block found
+for(G=!1,h=0,p=H.length;h<p;h++)if(H[h](b,v,d,!0)){G=!0;break}if(G)break;// fail if list has another type
+if(n){if(D=skipOrderedListMarker(b,v),0>D)break;}else if(D=skipBulletListMarker(b,v),0>D)break;if(s!==b.src.charCodeAt(D-1))break}// Finilize list
+return I=n?b.push('ordered_list_close','ol',-1):b.push('bullet_list_close','ul',-1),I.markup=String.fromCharCode(s),q[1]=v,b.line=v,b.parentType=z,K&&markTightParagraphs(b,r),!0};
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Paragraph
+module.exports=function(b,c/*, endLine*/){var d,e,f,g,h,j,k=c+1,m=b.md.block.ruler.getRules('paragraph'),n=b.lineMax;// jump line-by-line until empty one or EOF
+for(j=b.parentType,b.parentType='paragraph';k<n&&!b.isEmpty(k);k++)// this would be a code block normally, but after paragraph
+// it's considered a lazy continuation regardless of what's there
+// Some tags can terminate paragraph without empty line.
+if(!(3<b.sCount[k]-b.blkIndent)&&!(0>b.sCount[k])){for(e=!1,f=0,g=m.length;f<g;f++)if(m[f](b,k,n,!0)){e=!0;break}if(e)break}// quirk for blockquotes, this line should already be checked by that rule
+return d=b.getLines(c,k,b.blkIndent,!1).trim(),b.line=k,h=b.push('paragraph_open','p',1),h.map=[c,b.line],h=b.push('inline','',0),h.content=d,h.map=[c,b.line],h.children=[],h=b.push('paragraph_close','p',-1),b.parentType=j,!0};
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+var normalizeReference=__webpack_require__(0).normalizeReference,isSpace=__webpack_require__(0).isSpace;module.exports=function(b,c,d,e){var f,g,h,j,k,m,n,o,p,q,r,s,t,u,v,w,x=0,y=b.bMarks[c]+b.tShift[c],z=b.eMarks[c],A=c+1;if(91!==b.src.charCodeAt(y)/* [ */)return!1;// Simple check to quickly interrupt scan on [link](url) at the start of line.
+// Can be useful on practice: https://github.com/markdown-it/markdown-it/issues/54
+for(;++y<z;)if(93===b.src.charCodeAt(y)/* ] */&&92!==b.src.charCodeAt(y-1)/* \ */){if(y+1===z)return!1;if(58!==b.src.charCodeAt(y+1)/* : */)return!1;break}for(j=b.lineMax,v=b.md.block.ruler.getRules('reference'),q=b.parentType,b.parentType='reference';A<j&&!b.isEmpty(A);A++)// this would be a code block normally, but after paragraph
+// it's considered a lazy continuation regardless of what's there
+// Some tags can terminate paragraph without empty line.
+if(!(3<b.sCount[A]-b.blkIndent)&&!(0>b.sCount[A])){for(u=!1,m=0,n=v.length;m<n;m++)if(v[m](b,A,j,!0)){u=!0;break}if(u)break}// quirk for blockquotes, this line should already be checked by that rule
+for(t=b.getLines(c,A,b.blkIndent,!1).trim(),z=t.length,y=1;y<z;y++){if(f=t.charCodeAt(y),91===f/* [ */)return!1;if(93===f/* ] */){p=y;break}else 10===f/* \n */?x++:92===f/* \ */&&(y++,y<z&&10===t.charCodeAt(y)&&x++)}if(0>p||58!==t.charCodeAt(p+1)/* : */)return!1;// [label]:   destination   'title'
+//         ^^^ skip optional whitespace here
+for(y=p+2;y<z;y++)if(f=t.charCodeAt(y),10===f)x++;else if(!isSpace(f))break;// [label]:   destination   'title'
+//            ^^^^^^^^^^^ parse this
+if(r=b.md.helpers.parseLinkDestination(t,y,z),!r.ok)return!1;if(k=b.md.normalizeLink(r.str),!b.md.validateLink(k))return!1;for(y=r.pos,x+=r.lines,g=y,h=x,s=y;y<z;y++)if(f=t.charCodeAt(y),10===f)x++;else if(!isSpace(f))break;// [label]:   destination   'title'
+//                          ^^^^^^^ parse this
+// skip trailing spaces until the rest of the line
+for(r=b.md.helpers.parseLinkTitle(t,y,z),y<z&&s!==y&&r.ok?(w=r.str,y=r.pos,x+=r.lines):(w='',y=g,x=h);y<z&&(f=t.charCodeAt(y),!!isSpace(f));)y++;if(y<z&&10!==t.charCodeAt(y)&&w)for(w='',y=g,x=h;y<z&&(f=t.charCodeAt(y),!!isSpace(f));)y++;// Reference can not terminate anything. This check is for safety only.
+/*istanbul ignore if*/return y<z&&10!==t.charCodeAt(y)?!1:(o=normalizeReference(t.slice(1,p)),!!o)&&(!!e||('undefined'==typeof b.env.references&&(b.env.references={}),'undefined'==typeof b.env.references[o]&&(b.env.references[o]={title:w,href:k}),b.parentType=q,b.line=c+x+1,!0))};
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Parser state class
+var Token=__webpack_require__(2),isSpace=__webpack_require__(0).isSpace;function StateBlock(a,b,c,d){var e,f,g,h,j,k,l,m;for(this.src=a,this.md=b,this.env=c,this.tokens=d,this.bMarks=[],this.eMarks=[],this.tShift=[],this.sCount=[],this.bsCount=[],this.blkIndent=0,this.line=0,this.lineMax=0,this.tight=!1,this.ddIndent=-1,this.parentType='root',this.level=0,this.result='',f=this.src,m=!1,(g=h=k=l=0,j=f.length);h<j;h++){if(e=f.charCodeAt(h),!m)if(isSpace(e)){k++,9===e?l+=4-l%4:l++;continue}else m=!0;(10===e||h===j-1)&&(10!==e&&h++,this.bMarks.push(g),this.eMarks.push(h),this.tShift.push(k),this.sCount.push(l),this.bsCount.push(0),m=!1,k=0,l=0,g=h+1)}// Push fake entry to simplify cache bounds checks
+this.bMarks.push(f.length),this.eMarks.push(f.length),this.tShift.push(0),this.sCount.push(0),this.bsCount.push(0),this.lineMax=this.bMarks.length-1}// Push new token to "stream".
+//
+StateBlock.prototype.push=function(a,b,c){var d=new Token(a,b,c);return d.block=!0,0>c&&this.level--,d.level=this.level,0<c&&this.level++,this.tokens.push(d),d},StateBlock.prototype.isEmpty=function(b){return this.bMarks[b]+this.tShift[b]>=this.eMarks[b]},StateBlock.prototype.skipEmptyLines=function(b){for(var c=this.lineMax;b<c&&!(this.bMarks[b]+this.tShift[b]<this.eMarks[b]);b++);return b},StateBlock.prototype.skipSpaces=function(b){var c;for(var d=this.src.length;b<d&&(c=this.src.charCodeAt(b),!!isSpace(c));b++);return b},StateBlock.prototype.skipSpacesBack=function(b,c){if(b<=c)return b;for(;b>c;)if(!isSpace(this.src.charCodeAt(--b)))return b+1;return b},StateBlock.prototype.skipChars=function(b,c){for(var d=this.src.length;b<d&&!(this.src.charCodeAt(b)!==c);b++);return b},StateBlock.prototype.skipCharsBack=function(b,c,d){if(b<=d)return b;for(;b>d;)if(c!==this.src.charCodeAt(--b))return b+1;return b},StateBlock.prototype.getLines=function(b,c,d,e){var f,g,h,j,k,l,m,n=b;if(b>=c)return'';for(l=Array(c-b),f=0;n<c;n++,f++){for(g=0,m=j=this.bMarks[n],k=n+1<c||e?this.eMarks[n]+1:this.eMarks[n];j<k&&g<d;){if(h=this.src.charCodeAt(j),isSpace(h))9===h?g+=4-(g+this.bsCount[n])%4:g++;else if(j-m<this.tShift[n])g++;else break;j++}l[f]=g>d?Array(g-d+1).join(' ')+this.src.slice(j,k):this.src.slice(j,k)}return l.join('')},StateBlock.prototype.Token=Token,module.exports=StateBlock;
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// GFM table, non-standard
+var isSpace=__webpack_require__(0).isSpace;function getLine(a,b){var c=a.bMarks[b]+a.blkIndent,d=a.eMarks[b];return a.src.substr(c,d-c)}function escapedSplit(a){var e,b=[],c=0,d=a.length,f=0,g=0,h=!1,j=0;for(e=a.charCodeAt(c);c<d;)96===e/* ` */?h?(h=!1,j=c):0==f%2&&(h=!0,j=c):124==e/* | */&&0==f%2&&!h&&(b.push(a.substring(g,c)),g=c+1),92===e/* \ */?f++:f=0,c++,c===d&&h&&(h=!1,c=j+1),e=a.charCodeAt(c);return b.push(a.substring(g)),b}module.exports=function(b,c,d,e){var f,g,h,j,k,l,m,n,o,p,q,r;// should have at least three lines
+if(c+2>d)return!1;if(k=c+1,b.sCount[k]<b.blkIndent)return!1;// first character of the second line should be '|', '-', ':',
+// and no other characters are allowed but spaces;
+// basically, this is the equivalent of /^[-:|][-:|\s]*$/ regexp
+if(h=b.bMarks[k]+b.tShift[k],h>=b.eMarks[k])return!1;if(f=b.src.charCodeAt(h++),124!==f/* | */&&45!==f/* - */&&58!==f/* : */)return!1;for(;h<b.eMarks[k];){if(f=b.src.charCodeAt(h),124!==f/* | */&&45!==f/* - */&&58!==f/* : */&&!isSpace(f))return!1;h++}for(g=getLine(b,c+1),l=g.split('|'),o=[],j=0;j<l.length;j++){if(p=l[j].trim(),!p)// allow empty columns before and after table, but not in between columns;
+// e.g. allow ` |---| `, disallow ` ---||--- `
+if(0===j||j===l.length-1)continue;else return!1;if(!/^:?-+:?$/.test(p))return!1;58===p.charCodeAt(p.length-1)/* : */?o.push(58===p.charCodeAt(0)/* : */?'center':'right'):58===p.charCodeAt(0)/* : */?o.push('left'):o.push('')}if(g=getLine(b,c).trim(),-1===g.indexOf('|'))return!1;if(l=escapedSplit(g.replace(/^\||\|$/g,'')),m=l.length,m>o.length)return!1;if(e)return!0;for(n=b.push('table_open','table',1),n.map=q=[c,0],n=b.push('thead_open','thead',1),n.map=[c,c+1],n=b.push('tr_open','tr',1),n.map=[c,c+1],j=0;j<l.length;j++)n=b.push('th_open','th',1),n.map=[c,c+1],o[j]&&(n.attrs=[['style','text-align:'+o[j]]]),n=b.push('inline','',0),n.content=l[j].trim(),n.map=[c,c+1],n.children=[],n=b.push('th_close','th',-1);for(n=b.push('tr_close','tr',-1),n=b.push('thead_close','thead',-1),n=b.push('tbody_open','tbody',1),n.map=r=[c+2,0],k=c+2;k<d&&!(b.sCount[k]<b.blkIndent)&&(g=getLine(b,k),-1!==g.indexOf('|'));k++){for(l=escapedSplit(g.replace(/^\||\|\s*$/g,'')),n=b.push('tr_open','tr',1),j=0;j<m;j++)n=b.push('td_open','td',1),o[j]&&(n.attrs=[['style','text-align:'+o[j]]]),n=b.push('inline','',0),n.content=l[j]?l[j].trim():'',n.children=[],n=b.push('td_close','td',-1);n=b.push('tr_close','tr',-1)}return n=b.push('tbody_close','tbody',-1),n=b.push('table_close','table',-1),q[1]=r[1]=k,b.line=k,!0};
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+module.exports=function(b){var c;b.inlineMode?(c=new b.Token('inline','',0),c.content=b.src,c.map=[0,1],c.children=[],b.tokens.push(c)):b.md.block.parse(b.src,b.md,b.env,b.tokens)};
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+module.exports=function(b){var d,e,f,c=b.tokens;// Parse inlines
+for(e=0,f=c.length;e<f;e++)d=c[e],'inline'===d.type&&b.md.inline.parse(d.content,b.md,b.env,d.children)};
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Replace link-like texts with link nodes.
+//
+// Currently restricted by `md.validateLink()` to http/https/ftp
+//
+var arrayReplaceAt=__webpack_require__(0).arrayReplaceAt;function isLinkOpen(a){return /^<a[>\s]/i.test(a)}function isLinkClose(a){return /^<\/a\s*>/i.test(a)}module.exports=function(b){var c,d,e,f,g,h,k,m,n,o,p,q,r,s,t,u,w,v=b.tokens;if(b.md.options.linkify)for(d=0,e=v.length;d<e;d++)if('inline'===v[d].type&&b.md.linkify.pretest(v[d].content))// We scan from the end, to keep position when new tags added.
+// Use reversed logic in links start/end match
+for(f=v[d].children,r=0,c=f.length-1;0<=c;c--){// Skip content of markdown links
+if(h=f[c],'link_close'===h.type){for(c--;f[c].level!==h.level&&'link_open'!==f[c].type;)c--;continue}// Skip content of html tag links
+if(('html_inline'===h.type&&(isLinkOpen(h.content)&&0<r&&r--,isLinkClose(h.content)&&r++),!(0<r))&&'text'===h.type&&b.md.linkify.test(h.content)){for(n=h.content,w=b.md.linkify.match(n),k=[],q=h.level,p=0,m=0;m<w.length;m++)(s=w[m].url,t=b.md.normalizeLink(s),!!b.md.validateLink(t))&&(u=w[m].text,u=w[m].schema?'mailto:'!==w[m].schema||/^mailto:/i.test(u)?b.md.normalizeLinkText(u):b.md.normalizeLinkText('mailto:'+u).replace(/^mailto:/,''):b.md.normalizeLinkText('http://'+u).replace(/^http:\/\//,''),o=w[m].index,o>p&&(g=new b.Token('text','',0),g.content=n.slice(p,o),g.level=q,k.push(g)),g=new b.Token('link_open','a',1),g.attrs=[['href',t]],g.level=q++,g.markup='linkify',g.info='auto',k.push(g),g=new b.Token('text','',0),g.content=u,g.level=q,k.push(g),g=new b.Token('link_close','a',-1),g.level=--q,g.markup='linkify',g.info='auto',k.push(g),p=w[m].lastIndex);p<n.length&&(g=new b.Token('text','',0),g.content=n.slice(p),g.level=q,k.push(g)),v[d].children=f=arrayReplaceAt(f,c,k)}}};
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Normalize input string
+var NEWLINES_RE=/\r[\n\u0085]?|[\u2424\u2028\u0085]/g,NULL_RE=/\u0000/g;module.exports=function(b){var c=b.src.replace(NEWLINES_RE,'\n');// Normalize newlines
+c=c.replace(NULL_RE,'\uFFFD'),b.src=c};
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Simple typographyc replacements
+//
+// (c) (C) → ©
+// (tm) (TM) → ™
+// (r) (R) → ®
+// +- → ±
+// (p) (P) -> §
+// ... → … (also ?.... → ?.., !.... → !..)
+// ???????? → ???, !!!!! → !!!, `,,` → `,`
+// -- → &ndash;, --- → &mdash;
+//
+// TODO:
+// - fractionals 1/2, 1/4, 3/4 -> ½, ¼, ¾
+// - miltiplication 2 x 4 -> 2 × 4
+var RARE_RE=/\+-|\.\.|\?\?\?\?|!!!!|,,|--/,SCOPED_ABBR_TEST_RE=/\((c|tm|r|p)\)/i,SCOPED_ABBR_RE=/\((c|tm|r|p)\)/ig,SCOPED_ABBR={c:'\xA9',r:'\xAE',p:'\xA7',tm:'\u2122'};// Workaround for phantomjs - need regex without /g flag,
+// or root check will fail every second time
+function replaceFn(a,b){return SCOPED_ABBR[b.toLowerCase()]}function replace_scoped(a){var b,c,d=0;for(b=a.length-1;0<=b;b--)c=a[b],'text'!==c.type||d||(c.content=c.content.replace(SCOPED_ABBR_RE,replaceFn)),'link_open'===c.type&&'auto'===c.info&&d--,'link_close'===c.type&&'auto'===c.info&&d++}function replace_rare(a){var b,c,d=0;for(b=a.length-1;0<=b;b--)c=a[b],'text'===c.type&&!d&&RARE_RE.test(c.content)&&(c.content=c.content.replace(/\+-/g,'\xB1')// .., ..., ....... -> …
+// but ?..... & !..... -> ?.. & !..
+.replace(/\.{2,}/g,'\u2026').replace(/([?!])…/g,'$1..').replace(/([?!]){4,}/g,'$1$1$1').replace(/,{2,}/g,',')// em-dash
+.replace(/(^|[^-])---([^-]|$)/mg,'$1\u2014$2')// en-dash
+.replace(/(^|\s)--(\s|$)/mg,'$1\u2013$2').replace(/(^|[^-\s])--([^-\s]|$)/mg,'$1\u2013$2')),'link_open'===c.type&&'auto'===c.info&&d--,'link_close'===c.type&&'auto'===c.info&&d++}module.exports=function(b){var c;if(b.md.options.typographer)for(c=b.tokens.length-1;0<=c;c--)'inline'===b.tokens[c].type&&(SCOPED_ABBR_TEST_RE.test(b.tokens[c].content)&&replace_scoped(b.tokens[c].children),RARE_RE.test(b.tokens[c].content)&&replace_rare(b.tokens[c].children))};
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Convert straight quotation marks to typographic ones
+//
+var isWhiteSpace=__webpack_require__(0).isWhiteSpace,isPunctChar=__webpack_require__(0).isPunctChar,isMdAsciiPunct=__webpack_require__(0).isMdAsciiPunct,QUOTE_TEST_RE=/['"]/,QUOTE_RE=/['"]/g,APOSTROPHE='\u2019';/* ’ */function replaceAt(a,b,c){return a.substr(0,b)+c+a.substr(b+1)}function process_inlines(a,b){var c,d,e,f,g,h,k,l,m,n,o,p,q,r,s,u,v,w,x,y,z;for(x=[],c=0;c<a.length;c++){for(d=a[c],k=a[c].level,v=x.length-1;0<=v&&!(x[v].level<=k);v--);if(x.length=v+1,'text'===d.type){e=d.content,g=0,h=e.length;/*eslint no-labels:0,block-scoped-var:0*/OUTER:for(;g<h&&(QUOTE_RE.lastIndex=g,f=QUOTE_RE.exec(e),!!f);){if(s=u=!0,g=f.index+1,w='\''===f[0],m=32,0<=f.index-1)m=e.charCodeAt(f.index-1);else for(v=c-1;0<=v;v--)if('text'===a[v].type){m=a[v].content.charCodeAt(a[v].content.length-1);break}// Find next character,
+// default to space if it's the end of the line
+//
+if(n=32,g<h)n=e.charCodeAt(g);else for(v=c+1;v<a.length;v++)if('text'===a[v].type){n=a[v].content.charCodeAt(0);break}if(o=isMdAsciiPunct(m)||isPunctChar(String.fromCharCode(m)),p=isMdAsciiPunct(n)||isPunctChar(String.fromCharCode(n)),q=isWhiteSpace(m),r=isWhiteSpace(n),r?s=!1:p&&!(q||o)&&(s=!1),q?u=!1:o&&!(r||p)&&(u=!1),34===n/* " */&&'"'===f[0]&&48<=m/* 0 */&&57>=m/* 9 */&&(u=s=!1),s&&u&&(s=!1,u=p),!s&&!u){w&&(d.content=replaceAt(d.content,f.index,APOSTROPHE));continue}if(u)// this could be a closing quote, rewind the stack to get a match
+for(v=x.length-1;0<=v&&(l=x[v],!(x[v].level<k));v--)if(l.single===w&&x[v].level===k){l=x[v],w?(y=b.md.options.quotes[2],z=b.md.options.quotes[3]):(y=b.md.options.quotes[0],z=b.md.options.quotes[1]),d.content=replaceAt(d.content,f.index,z),a[l.token].content=replaceAt(a[l.token].content,l.pos,y),g+=z.length-1,l.token===c&&(g+=y.length-1),e=d.content,h=e.length,x.length=v;continue OUTER}s?x.push({token:c,pos:f.index,single:w,level:k}):u&&w&&(d.content=replaceAt(d.content,f.index,APOSTROPHE))}}}}module.exports=function(b){/*eslint max-depth:0*/var c;if(b.md.options.typographer)for(c=b.tokens.length-1;0<=c;c--)'inline'===b.tokens[c].type&&QUOTE_TEST_RE.test(b.tokens[c].content)&&process_inlines(b.tokens[c].children,b)};
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Core state object
+//
+var Token=__webpack_require__(2);function StateCore(a,b,c){this.src=a,this.env=c,this.tokens=[],this.inlineMode=!1,this.md=b}// re-export Token class to use in core rules
+StateCore.prototype.Token=Token,module.exports=StateCore;
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Process autolinks '<protocol:...>'
+/*eslint max-len:0*/var EMAIL_RE=/^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/,AUTOLINK_RE=/^<([a-zA-Z][a-zA-Z0-9+.\-]{1,31}):([^<>\x00-\x20]*)>/;module.exports=function(b,c){var d,e,f,g,h,i,j=b.pos;return!(60!==b.src.charCodeAt(j)/* < */)&&(d=b.src.slice(j),!(0>d.indexOf('>'))&&(AUTOLINK_RE.test(d)?(e=d.match(AUTOLINK_RE),g=e[0].slice(1,-1),h=b.md.normalizeLink(g),!!b.md.validateLink(h))&&(c||(i=b.push('link_open','a',1),i.attrs=[['href',h]],i.markup='autolink',i.info='auto',i=b.push('text','',0),i.content=b.md.normalizeLinkText(g),i=b.push('link_close','a',-1),i.markup='autolink',i.info='auto'),b.pos+=e[0].length,!0):!!EMAIL_RE.test(d)&&(f=d.match(EMAIL_RE),g=f[0].slice(1,-1),h=b.md.normalizeLink('mailto:'+g),!!b.md.validateLink(h))&&(c||(i=b.push('link_open','a',1),i.attrs=[['href',h]],i.markup='autolink',i.info='auto',i=b.push('text','',0),i.content=b.md.normalizeLinkText(g),i=b.push('link_close','a',-1),i.markup='autolink',i.info='auto'),b.pos+=f[0].length,!0)))};
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Parse backticks
+module.exports=function(b,c){var d,e,f,g,h,i,j=b.pos,k=b.src.charCodeAt(j);if(96!==k/* ` */)return!1;for(d=j,j++,e=b.posMax;j<e&&96===b.src.charCodeAt(j)/* ` */;)j++;for(f=b.src.slice(d,j),g=h=j;-1!==(g=b.src.indexOf('`',h));){for(h=g+1;h<e&&96===b.src.charCodeAt(h)/* ` */;)h++;if(h-g===f.length)return c||(i=b.push('code_inline','code',0),i.markup=f,i.content=b.src.slice(j,g).replace(/[ \n]+/g,' ').trim()),b.pos=h,!0}return c||(b.pending+=f),b.pos+=f.length,!0};
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// For each opening emphasis-like marker find a matching closing one
+//
+module.exports=function(b){var c,d,e,f,g=b.delimiters,h=b.delimiters.length;for(c=0;c<h;c++)if(e=g[c],!!e.close)for(d=c-e.jump-1;0<=d;){if(f=g[d],f.open&&f.marker===e.marker&&0>f.end&&f.level===e.level){// typeofs are for backward compatibility with plugins
+var k=(f.close||e.open)&&'undefined'!=typeof f.length&&'undefined'!=typeof e.length&&0==(f.length+e.length)%3;if(!k){e.jump=c-d,e.open=!1,f.end=c,f.jump=0;break}}d-=f.jump+1}};
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Process html entity - &#123;, &#xAF;, &quot;, ...
+var entities=__webpack_require__(4),has=__webpack_require__(0).has,isValidEntityCode=__webpack_require__(0).isValidEntityCode,fromCodePoint=__webpack_require__(0).fromCodePoint,DIGITAL_RE=/^&#((?:x[a-f0-9]{1,8}|[0-9]{1,8}));/i,NAMED_RE=/^&([a-z][a-z0-9]{1,31});/i;module.exports=function(b,c){var d,e,f,g=b.pos,h=b.posMax;if(38!==b.src.charCodeAt(g)/* & */)return!1;if(g+1<h)if(d=b.src.charCodeAt(g+1),35===d/* # */){if(f=b.src.slice(g).match(DIGITAL_RE),f)return c||(e='x'===f[1][0].toLowerCase()?parseInt(f[1].slice(1),16):parseInt(f[1],10),b.pending+=isValidEntityCode(e)?fromCodePoint(e):fromCodePoint(65533)),b.pos+=f[0].length,!0;}else if(f=b.src.slice(g).match(NAMED_RE),f&&has(entities,f[1]))return c||(b.pending+=entities[f[1]]),b.pos+=f[0].length,!0;return c||(b.pending+='&'),b.pos++,!0};
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Proceess escaped chars and hardbreaks
+var isSpace=__webpack_require__(0).isSpace,ESCAPED=[];for(var i=0;256>i;i++)ESCAPED.push(0);'\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'.split('').forEach(function(a){ESCAPED[a.charCodeAt(0)]=1}),module.exports=function(b,c){var d,e=b.pos,f=b.posMax;if(92!==b.src.charCodeAt(e)/* \ */)return!1;if(e++,e<f){if(d=b.src.charCodeAt(e),256>d&&0!==ESCAPED[d])return c||(b.pending+=b.src[e]),b.pos+=2,!0;if(10===d){// skip leading whitespaces from next line
+for(c||b.push('hardbreak','br',0),e++;e<f&&(d=b.src.charCodeAt(e),!!isSpace(d));)e++;return b.pos=e,!0}}return c||(b.pending+='\\'),b.pos++,!0};
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Process html tags
+var HTML_TAG_RE=__webpack_require__(5).HTML_TAG_RE;function isLetter(a){/*eslint no-bitwise:0*/var b=32|a;// to lower case
+return 97<=b/* a */&&122>=b/* z */}module.exports=function(b,c){var d,e,f,g,h=b.pos;// Quick fail on second char
+return!!b.md.options.html&&(f=b.posMax,!(60!==b.src.charCodeAt(h)/* < */||h+2>=f))&&(d=b.src.charCodeAt(h+1),33===d/* ! */||63===d/* ? */||47===d/* / */||isLetter(d))&&(e=b.src.slice(h).match(HTML_TAG_RE),!!e)&&(c||(g=b.push('html_inline','',0),g.content=b.src.slice(h,h+e[0].length)),b.pos+=e[0].length,!0);// Check start
+};
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Process ![image](<src> "title")
+var normalizeReference=__webpack_require__(0).normalizeReference,isSpace=__webpack_require__(0).isSpace;module.exports=function(b,c){var d,e,f,g,h,i,j,k,l,m,n,o,p,q='',r=b.pos,s=b.posMax;if(33!==b.src.charCodeAt(b.pos)/* ! */)return!1;if(91!==b.src.charCodeAt(b.pos+1)/* [ */)return!1;// parser failed to find ']', so it's not a valid link
+if(i=b.pos+2,h=b.md.helpers.parseLinkLabel(b,b.pos+1,!1),0>h)return!1;if(j=h+1,j<s&&40===b.src.charCodeAt(j)/* ( */){for(j++;j<s&&(e=b.src.charCodeAt(j),isSpace(e)||10===e);j++);if(j>=s)return!1;// [link](  <href>  "title"  )
+//          ^^^^^^ parsing link destination
+for(p=j,l=b.md.helpers.parseLinkDestination(b.src,j,b.posMax),l.ok&&(q=b.md.normalizeLink(l.str),b.md.validateLink(q)?j=l.pos:q=''),p=j;j<s&&(e=b.src.charCodeAt(j),isSpace(e)||10===e);j++);// [link](  <href>  "title"  )
+//                  ^^^^^^^ parsing link title
+if(l=b.md.helpers.parseLinkTitle(b.src,j,b.posMax),j<s&&p!==j&&l.ok)// [link](  <href>  "title"  )
+//                         ^^ skipping these spaces
+for(m=l.str,j=l.pos;j<s&&(e=b.src.charCodeAt(j),isSpace(e)||10===e);j++);else m='';if(j>=s||41!==b.src.charCodeAt(j)/* ) */)return b.pos=r,!1;j++}else{//
+// Link reference
+//
+if('undefined'==typeof b.env.references)return!1;if(j<s&&91===b.src.charCodeAt(j)/* [ */?(p=j+1,j=b.md.helpers.parseLinkLabel(b,j),0<=j?g=b.src.slice(p,j++):j=h+1):j=h+1,g||(g=b.src.slice(i,h)),k=b.env.references[normalizeReference(g)],!k)return b.pos=r,!1;q=k.href,m=k.title}//
+// We found the end of the link, and know for a fact it's a valid link;
+// so all that's left to do is to call tokenizer.
+//
+return c||(f=b.src.slice(i,h),b.md.inline.parse(f,b.md,b.env,o=[]),n=b.push('image','img',0),n.attrs=d=[['src',q],['alt','']],n.children=o,n.content=f,m&&d.push(['title',m])),b.pos=j,b.posMax=s,!0};
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Process [link](<to> "stuff")
+var normalizeReference=__webpack_require__(0).normalizeReference,isSpace=__webpack_require__(0).isSpace;module.exports=function(b,c){var d,e,f,g,h,i,j,k,l,m,n='',o=b.pos,p=b.posMax,q=b.pos,r=!0;if(91!==b.src.charCodeAt(b.pos)/* [ */)return!1;// parser failed to find ']', so it's not a valid link
+if(h=b.pos+1,g=b.md.helpers.parseLinkLabel(b,b.pos,!0),0>g)return!1;if(i=g+1,i<p&&40===b.src.charCodeAt(i)/* ( */){for(r=!1,i++;i<p&&(e=b.src.charCodeAt(i),isSpace(e)||10===e);i++);if(i>=p)return!1;// [link](  <href>  "title"  )
+//          ^^^^^^ parsing link destination
+for(q=i,j=b.md.helpers.parseLinkDestination(b.src,i,b.posMax),j.ok&&(n=b.md.normalizeLink(j.str),b.md.validateLink(n)?i=j.pos:n=''),q=i;i<p&&(e=b.src.charCodeAt(i),isSpace(e)||10===e);i++);// [link](  <href>  "title"  )
+//                  ^^^^^^^ parsing link title
+if(j=b.md.helpers.parseLinkTitle(b.src,i,b.posMax),i<p&&q!==i&&j.ok)// [link](  <href>  "title"  )
+//                         ^^ skipping these spaces
+for(l=j.str,i=j.pos;i<p&&(e=b.src.charCodeAt(i),isSpace(e)||10===e);i++);else l='';(i>=p||41!==b.src.charCodeAt(i)/* ) */)&&(r=!0),i++}if(r){//
+// Link reference
+//
+if('undefined'==typeof b.env.references)return!1;if(i<p&&91===b.src.charCodeAt(i)/* [ */?(q=i+1,i=b.md.helpers.parseLinkLabel(b,i),0<=i?f=b.src.slice(q,i++):i=g+1):i=g+1,f||(f=b.src.slice(h,g)),k=b.env.references[normalizeReference(f)],!k)return b.pos=o,!1;n=k.href,l=k.title}//
+// We found the end of the link, and know for a fact it's a valid link;
+// so all that's left to do is to call tokenizer.
+//
+return c||(b.pos=h,b.posMax=g,m=b.push('link_open','a',1),m.attrs=d=[['href',n]],l&&d.push(['title',l]),b.md.inline.tokenize(b),m=b.push('link_close','a',-1)),b.pos=i,b.posMax=p,!0};
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Proceess '\n'
+module.exports=function(b,c){var d,e,f=b.pos;if(10!==b.src.charCodeAt(f)/* \n */)return!1;// skip heading spaces for next line
+for(d=b.pending.length-1,e=b.posMax,c||(0<=d&&32===b.pending.charCodeAt(d)?1<=d&&32===b.pending.charCodeAt(d-1)?(b.pending=b.pending.replace(/ +$/,''),b.push('hardbreak','br',0)):(b.pending=b.pending.slice(0,-1),b.push('softbreak','br',0)):b.push('softbreak','br',0)),f++;f<e&&32===b.src.charCodeAt(f);)f++;return b.pos=f,!0};
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Inline parser state
+var Token=__webpack_require__(2),isWhiteSpace=__webpack_require__(0).isWhiteSpace,isPunctChar=__webpack_require__(0).isPunctChar,isMdAsciiPunct=__webpack_require__(0).isMdAsciiPunct;function StateInline(a,b,c,d){this.src=a,this.env=c,this.md=b,this.tokens=d,this.pos=0,this.posMax=this.src.length,this.level=0,this.pending='',this.pendingLevel=0,this.cache={},this.delimiters=[]}// Flush pending text
+//
+StateInline.prototype.pushPending=function(){var a=new Token('text','',0);return a.content=this.pending,a.level=this.pendingLevel,this.tokens.push(a),this.pending='',a},StateInline.prototype.push=function(a,b,c){this.pending&&this.pushPending();var d=new Token(a,b,c);return 0>c&&this.level--,d.level=this.level,0<c&&this.level++,this.pendingLevel=this.level,this.tokens.push(d),d},StateInline.prototype.scanDelims=function(a,b){var d,e,f,g,h,i,j,k,l,c=a,m=!0,n=!0,o=this.posMax,p=this.src.charCodeAt(a);// treat beginning of the line as a whitespace
+for(d=0<a?this.src.charCodeAt(a-1):32;c<o&&this.src.charCodeAt(c)===p;)c++;return f=c-a,e=c<o?this.src.charCodeAt(c):32,j=isMdAsciiPunct(d)||isPunctChar(String.fromCharCode(d)),l=isMdAsciiPunct(e)||isPunctChar(String.fromCharCode(e)),i=isWhiteSpace(d),k=isWhiteSpace(e),k?m=!1:l&&!(i||j)&&(m=!1),i?n=!1:j&&!(k||l)&&(n=!1),b?(g=m,h=n):(g=m&&(!n||j),h=n&&(!m||l)),{can_open:g,can_close:h,length:f}},StateInline.prototype.Token=Token,module.exports=StateInline;
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Skip text characters for text token, place those to pending buffer
+// and increment current pos
+// Rule to skip pure text
+// '{}$%@~+=:' reserved for extentions
+// !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
+// !!!! Don't confuse with "Markdown ASCII Punctuation" chars
+// http://spec.commonmark.org/0.15/#ascii-punctuation-character
+function isTerminatorChar(a){return 10/* \n */===a||33/* ! */===a||35/* # */===a||36/* $ */===a||37/* % */===a||38/* & */===a||42/* * */===a||43/* + */===a||45/* - */===a||58/* : */===a||60/* < */===a||61/* = */===a||62/* > */===a||64/* @ */===a||91/* [ */===a||92/* \ */===a||93/* ] */===a||94/* ^ */===a||95/* _ */===a||96/* ` */===a||123/* { */===a||125/* } */===a||126/* ~ */===a}module.exports=function(b,c){for(var d=b.pos;d<b.posMax&&!isTerminatorChar(b.src.charCodeAt(d));)d++;return d!==b.pos&&(c||(b.pending+=b.src.slice(b.pos,d)),b.pos=d,!0)};
+
+/***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Merge adjacent text nodes into one, and re-calculate all token levels
+//
+module.exports=function(b){var c,d,e=0,f=b.tokens,g=b.tokens.length;for(c=d=0;c<g;c++)e+=f[c].nesting,f[c].level=e,'text'===f[c].type&&c+1<g&&'text'===f[c+1].type?f[c+1].content=f[c].content+f[c+1].content:(c!==d&&(f[d]=f[c]),d++);c!==d&&(f.length=d)};
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* eslint-disable no-bitwise */var decodeCache={};function getDecodeCache(a){var b,c,d=decodeCache[a];if(d)return d;for(d=decodeCache[a]=[],b=0;128>b;b++)c=String.fromCharCode(b),d.push(c);for(b=0;b<a.length;b++)c=a.charCodeAt(b),d[c]='%'+('0'+c.toString(16).toUpperCase()).slice(-2);return d}// Decode percent-encoded string.
+//
+function decode(a,b){var c;return'string'!=typeof b&&(b=decode.defaultChars),c=getDecodeCache(b),a.replace(/(%[a-f0-9]{2})+/gi,function(d){var e,f,g,h,j,k,m,n='';for(e=0,f=d.length;e<f;e+=3){if(g=parseInt(d.slice(e+1,e+3),16),128>g){n+=c[g];continue}if(192==(224&g)&&e+3<f&&(h=parseInt(d.slice(e+4,e+6),16),128==(192&h))){m=1984&g<<6|63&h,n+=128>m?'\uFFFD\uFFFD':String.fromCharCode(m),e+=3;continue}if(224==(240&g)&&e+6<f&&(h=parseInt(d.slice(e+4,e+6),16),j=parseInt(d.slice(e+7,e+9),16),128==(192&h)&&128==(192&j))){m=61440&g<<12|4032&h<<6|63&j,n+=2048>m||55296<=m&&57343>=m?'\uFFFD\uFFFD\uFFFD':String.fromCharCode(m),e+=6;continue}if(240==(248&g)&&e+9<f&&(h=parseInt(d.slice(e+4,e+6),16),j=parseInt(d.slice(e+7,e+9),16),k=parseInt(d.slice(e+10,e+12),16),128==(192&h)&&128==(192&j)&&128==(192&k))){m=1835008&g<<18|258048&h<<12|4032&j<<6|63&k,65536>m||1114111<m?n+='\uFFFD\uFFFD\uFFFD\uFFFD':(m-=65536,n+=String.fromCharCode(55296+(m>>10),56320+(1023&m))),e+=9;continue}n+='\uFFFD'}return n})}decode.defaultChars=';/?:@&=+$,#',decode.componentChars='',module.exports=decode;
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+var encodeCache={};// Create a lookup array where anything but characters in `chars` string
+// and alphanumeric chars is percent-encoded.
+//
+function getEncodeCache(a){var b,c,d=encodeCache[a];if(d)return d;for(d=encodeCache[a]=[],b=0;128>b;b++)c=String.fromCharCode(b),/^[0-9a-z]$/i.test(c)?d.push(c):d.push('%'+('0'+b.toString(16).toUpperCase()).slice(-2));for(b=0;b<a.length;b++)d[a.charCodeAt(b)]=a[b];return d}// Encode unsafe characters with percent-encoding, skipping already
+// encoded sequences.
+//
+//  - string       - string to encode
+//  - exclude      - list of characters to ignore (in addition to a-zA-Z0-9)
+//  - keepEscaped  - don't encode '%' in a correct escape sequence (default: true)
+//
+function encode(a,b,c){var d,e,f,g,h,j='';for('string'!=typeof b&&(c=b,b=encode.defaultChars),'undefined'==typeof c&&(c=!0),h=getEncodeCache(b),(d=0,e=a.length);d<e;d++){if(f=a.charCodeAt(d),c&&37===f/* % */&&d+2<e&&/^[0-9a-f]{2}$/i.test(a.slice(d+1,d+3))){j+=a.slice(d,d+3),d+=2;continue}if(128>f){j+=h[f];continue}if(55296<=f&&57343>=f){if(55296<=f&&56319>=f&&d+1<e&&(g=a.charCodeAt(d+1),56320<=g&&57343>=g)){j+=encodeURIComponent(a[d]+a[d+1]),d++;continue}j+='%EF%BF%BD';continue}j+=encodeURIComponent(a[d])}return j}encode.defaultChars=';/?:@&=+$,-_.!~*\'()#',encode.componentChars='-_.!~*\'()',module.exports=encode;
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+module.exports=function(b){var c='';return c+=b.protocol||'',c+=b.slashes?'//':'',c+=b.auth?b.auth+'@':'',c+=b.hostname&&-1!==b.hostname.indexOf(':')?'['+b.hostname+']':b.hostname||'',c+=b.port?':'+b.port:'',c+=b.pathname||'',c+=b.search||'',c+=b.hash||'',c};
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Changes from joyent/node:
+//
+// 1. No leading slash in paths,
+//    e.g. in `url.parse('http://foo?bar')` pathname is ``, not `/`
+//
+// 2. Backslashes are not replaced with slashes,
+//    so `http:\\example.org\` is treated like a relative path
+//
+// 3. Trailing colon is treated like a part of the path,
+//    i.e. in `http://example.org:foo` pathname is `:foo`
+//
+// 4. Nothing is URL-encoded in the resulting object,
+//    (in joyent/node some chars in auth and paths are encoded)
+//
+// 5. `url.parse()` does not have `parseQueryString` argument
+//
+// 6. Removed extraneous result properties: `host`, `path`, `query`, etc.,
+//    which can be constructed using other parts of the url.
+//
+function Url(){this.protocol=null,this.slashes=null,this.auth=null,this.port=null,this.hostname=null,this.hash=null,this.search=null,this.pathname=null}// Reference: RFC 3986, RFC 1808, RFC 2396
+// define these here so at least they only have to be
+// compiled once on the first module load.
+var protocolPattern=/^([a-z0-9.+-]+:)/i,portPattern=/:[0-9]*$/,// Special case for a simple path URL
+simplePathPattern=/^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,// RFC 2396: characters reserved for delimiting URLs.
+// We actually just auto-escape these.
+delims=['<','>','"','`',' ','\r','\n','\t'],// RFC 2396: characters not allowed for various reasons.
+unwise=['{','}','|','\\','^','`'].concat(delims),// Allowed by RFCs, but cause of XSS attacks.  Always escape these.
+autoEscape=['\''].concat(unwise),// Characters that are never ever allowed in a hostname.
+// Note that any invalid chars are also handled, but these
+// are the ones that are *expected* to be seen, so we fast-path
+// them.
+nonHostChars=['%','/','?',';','#'].concat(autoEscape),hostEndingChars=['/','?','#'],hostnameMaxLen=255,hostnamePartPattern=/^[+a-z0-9A-Z_-]{0,63}$/,hostnamePartStart=/^([+a-z0-9A-Z_-]{0,63})(.*)$/,// protocols that can allow "unsafe" and "unwise" chars.
+/* eslint-disable no-script-url */// protocols that never have a hostname.
+hostlessProtocol={javascript:!0,'javascript:':!0},// protocols that always contain a // bit.
+slashedProtocol={http:!0,https:!0,ftp:!0,gopher:!0,file:!0,'http:':!0,'https:':!0,'ftp:':!0,'gopher:':!0,'file:':!0};/* eslint-enable no-script-url */function urlParse(a,b){if(a&&a instanceof Url)return a;var c=new Url;return c.parse(a,b),c}Url.prototype.parse=function(a,b){var c,d,e,f,g,h=a;// trim before proceeding.
+// This is to support parse stuff like "  http://foo.com  \n"
+if(h=h.trim(),!b&&1===a.split('#').length){// Try fast path regexp
+var m=simplePathPattern.exec(h);if(m)return this.pathname=m[1],m[2]&&(this.search=m[2]),this}var n=protocolPattern.exec(h);if(n&&(n=n[0],e=n.toLowerCase(),this.protocol=n,h=h.substr(n.length)),(b||n||h.match(/^\/\/[^@\/]+@[^@\/]+/))&&(g='//'===h.substr(0,2),g&&!(n&&hostlessProtocol[n])&&(h=h.substr(2),this.slashes=!0)),!hostlessProtocol[n]&&(g||n&&!slashedProtocol[n])){// there's a hostname.
+// the first instance of /, ?, ;, or # ends the host.
+//
+// If there is an @ in the hostname, then non-host chars *are* allowed
+// to the left of the last @ sign, unless some host-ending character
+// comes *before* the @-sign.
+// URLs are obnoxious.
+//
+// ex:
+// http://a@b@c/ => user:a@b host:c
+// http://a@b?@c => user:a host:c path:/?@c
+// v0.12 TODO(isaacs): This is not quite how Chrome does things.
+// Review our test case against browsers more comprehensively.
+// find the first instance of any hostEndingChars
+var o=-1;for(c=0;c<hostEndingChars.length;c++)f=h.indexOf(hostEndingChars[c]),-1!==f&&(-1==o||f<o)&&(o=f);// at this point, either we have an explicit point where the
+// auth portion cannot go past, or the last @ char is the decider.
+var p,q;for(q=-1==o?h.lastIndexOf('@'):h.lastIndexOf('@',o),-1!==q&&(p=h.slice(0,q),h=h.slice(q+1),this.auth=p),o=-1,c=0;c<nonHostChars.length;c++)f=h.indexOf(nonHostChars[c]),-1!==f&&(-1==o||f<o)&&(o=f);// if we still have not hit it, then the entire thing is a host.
+-1==o&&(o=h.length),':'===h[o-1]&&o--;var r=h.slice(0,o);h=h.slice(o),this.parseHost(r),this.hostname=this.hostname||'';// if hostname begins with [ and ends with ]
+// assume that it's an IPv6 address.
+var s='['===this.hostname[0]&&']'===this.hostname[this.hostname.length-1];// validate a little.
+if(!s){var t=this.hostname.split(/\./);for(c=0,d=t.length;c<d;c++){var v=t[c];if(v&&!v.match(hostnamePartPattern)){var w='';for(var x=0,y=v.length;x<y;x++)w+=127<v.charCodeAt(x)?'x':v[x];// we test again with ASCII char only
+if(!w.match(hostnamePartPattern)){var z=t.slice(0,c),A=t.slice(c+1),B=v.match(hostnamePartStart);B&&(z.push(B[1]),A.unshift(B[2])),A.length&&(h=A.join('.')+h),this.hostname=z.join('.');break}}}}this.hostname.length>hostnameMaxLen&&(this.hostname=''),s&&(this.hostname=this.hostname.substr(1,this.hostname.length-2))}// chop off from the tail first.
+var C=h.indexOf('#');-1!==C&&(this.hash=h.substr(C),h=h.slice(0,C));var D=h.indexOf('?');return-1!==D&&(this.search=h.substr(D),h=h.slice(0,D)),h&&(this.pathname=h),slashedProtocol[e]&&this.hostname&&!this.pathname&&(this.pathname=''),this},Url.prototype.parseHost=function(a){var b=portPattern.exec(a);b&&(b=b[0],':'!==b&&(this.port=b.substr(1)),a=a.substr(0,a.length-b.length)),a&&(this.hostname=a)},module.exports=urlParse;
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;(function(a){/*--------------------------------------------------------------------------*//**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */function b(M){throw new RangeError(H[M])}/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */function c(M,N){for(var O=M.length,P=[];O--;)P[O]=N(M[O]);return P}/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+	 * addresses.
+	 * @private
+	 * @param {String} domain The domain name or email address.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */function d(M,N){var O=M.split('@'),P='';1<O.length&&(P=O[0]+'@',M=O[1]),M=M.replace(G,'.');var Q=M.split('.'),R=c(Q,N).join('.');return P+R}/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */function e(M){for(var Q,R,N=[],O=0,P=M.length;O<P;)Q=M.charCodeAt(O++),55296<=Q&&56319>=Q&&O<P?(R=M.charCodeAt(O++),56320==(64512&R)?N.push(((1023&Q)<<10)+(1023&R)+65536):(N.push(Q),O--)):N.push(Q);return N}/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */function f(M){return c(M,function(N){var O='';return 65535<N&&(N-=65536,O+=K(55296|1023&N>>>10),N=56320|1023&N),O+=K(N),O}).join('')}/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */function g(M){return 10>M-48?M-22:26>M-65?M-65:26>M-97?M-97:y}/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */function h(M,N){//  0..25 map to ASCII a..z or A..Z
+// 26..35 map to ASCII 0..9
+return M+22+75*(26>M)-((0!=N)<<5)}/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */function l(M,N,O){var P=0;for(M=O?J(M/700):M>>1,M+=J(M/N);/* no initialization */M>I*A>>1;P+=y)M=J(M/I);return J(P+(I+1)*M/(M+38))}/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */function o(M){// Don't use UCS-2
+var P,T,U,V,W,X,Y,Z,$,/** Cached calculation results */_,N=[],O=M.length,Q=0,R=C,S=B;// Handle the basic code points: let `basic` be the number of input code
+// points before the last delimiter, or `0` if there is none, then copy
+// the first basic code points to the output.
+for(T=M.lastIndexOf(D),0>T&&(T=0),U=0;U<T;++U)128<=M.charCodeAt(U)&&b('not-basic'),N.push(M.charCodeAt(U));// Main decoding loop: start just after the last delimiter if any basic code
+// points were copied; start at the beginning otherwise.
+for(V=0<T?T+1:0;V<O;)/* no final expression */{// `index` is the index of the next character to be consumed.
+// Decode a generalized variable-length integer into `delta`,
+// which gets added to `i`. The overflow checking is easier
+// if we increase `i` as we go, then subtract off its starting
+// value at the end to obtain `delta`.
+for(W=Q,X=1,Y=y;;/* no condition */Y+=y){if(V>=O&&b('invalid-input'),Z=g(M.charCodeAt(V++)),(Z>=y||Z>J((x-Q)/X))&&b('overflow'),Q+=Z*X,$=Y<=S?z:Y>=S+A?A:Y-S,Z<$)break;_=y-$,X>J(x/_)&&b('overflow'),X*=_}P=N.length+1,S=l(Q-W,P,0==W),J(Q/P)>x-R&&b('overflow'),R+=J(Q/P),Q%=P,N.splice(Q++,0,R)}return f(N)}/**
+	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+	 * Punycode string of ASCII-only symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */function p(M){var N,O,P,Q,R,S,T,U,V,W,X,/** `inputLength` will hold the number of code points in `input`. */Z,/** Cached calculation results */$,_,aa,Y=[];// Convert the input in UCS-2 to Unicode
+// Handle the basic code points
+for(M=e(M),Z=M.length,N=C,O=0,R=B,S=0;S<Z;++S)X=M[S],128>X&&Y.push(K(X));// Main encoding loop:
+for(P=Q=Y.length,Q&&Y.push(D);P<Z;){// All non-basic code points < n have been handled already. Find the next
+// larger one:
+for(T=x,S=0;S<Z;++S)X=M[S],X>=N&&X<T&&(T=X);// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+// but guard against overflow
+for($=P+1,T-N>J((x-O)/$)&&b('overflow'),O+=(T-N)*$,N=T,S=0;S<Z;++S)if(X=M[S],X<N&&++O>x&&b('overflow'),X==N){// Represent delta as a generalized variable-length integer
+for(U=O,V=y;;/* no condition */V+=y){if(W=V<=R?z:V>=R+A?A:V-R,U<W)break;aa=U-W,_=y-W,Y.push(K(h(W+aa%_,0))),U=J(aa/_)}Y.push(K(h(U,0))),R=l(O,$,P==Q),O=0,++P}++O,++N}return Y.join('')}/**
+	 * Converts a Punycode string representing a domain name or an email address
+	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+	 * it doesn't matter if you call it on a string that has already been
+	 * converted to Unicode.
+	 * @memberOf punycode
+	 * @param {String} input The Punycoded domain name or email address to
+	 * convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 *//**
+	 * Converts a Unicode string representing a domain name or an email address to
+	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+	 * i.e. it doesn't matter if you call it with a domain that's already in
+	 * ASCII.
+	 * @memberOf punycode
+	 * @param {String} input The domain name or email address to convert, as a
+	 * Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name or
+	 * email address.
+	 *//** Detect free variables */var r='object'==typeof exports&&exports&&!exports.nodeType&&exports,s='object'==typeof module&&module&&!module.nodeType&&module,u='object'==typeof global&&global;(u.global===u||u.window===u||u.self===u)&&(a=u);/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */var v,/** Temporary variable */L,/** Highest positive signed 32-bit float value */x=2147483647,// aka. 0x7FFFFFFF or 2^31-1
+/** Bootstring parameters */y=36,z=1,A=26,B=72,C=128,// 0x80
+D='-',// '\x2D'
+/** Regular expressions */E=/^xn--/,F=/[^\x20-\x7E]/,// unprintable ASCII chars + non-ASCII chars
+G=/[\x2E\u3002\uFF0E\uFF61]/g,// RFC 3490 separators
+/** Error messages */H={overflow:'Overflow: input needs wider integers to process','not-basic':'Illegal input >= 0x80 (not a basic code point)','invalid-input':'Invalid input'},/** Convenience shortcuts */I=y-z,J=Math.floor,K=String.fromCharCode;/** Expose `punycode` */// Some AMD build optimizers, like r.js, check for specific condition patterns
+// like the following:
+if(v={/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */version:'1.4.1',/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */ucs2:{decode:e,encode:f},decode:o,encode:p,toASCII:function(N){return d(N,function(O){return F.test(O)?'xn--'+p(O):O})}/*--------------------------------------------------------------------------*//** Define the public API */,toUnicode:function(N){return d(N,function(O){return E.test(O)?o(O.slice(4).toLowerCase()):O})}},'function'=="function"&&'object'==typeof __webpack_require__(12)&&__webpack_require__(12))!(__WEBPACK_AMD_DEFINE_RESULT__ = function(){return v}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else if(!(r&&s))a.punycode=v;else if(module.exports==r)s.exports=v;else// in Narwhal or RingoJS v0.7.0-
+for(L in v)v.hasOwnProperty(L)&&(r[L]=v[L])})(this);/*! https://mths.be/punycode v1.4.1 by @mathias */
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(71)(module), __webpack_require__(70)))
+
+/***/ },
+/* 68 */
+/***/ function(module, exports) {
+
+module.exports=/[\xAD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF\uFFF9-\uFFFB]|\uD804\uDCBD|\uD82F[\uDCA0-\uDCA3]|\uD834[\uDD73-\uDD7A]|\uDB40[\uDC01\uDC20-\uDC7F]/;
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+exports.Any=__webpack_require__(11),exports.Cc=__webpack_require__(9),exports.Cf=__webpack_require__(68),exports.P=__webpack_require__(3),exports.Z=__webpack_require__(10);
+
+/***/ },
+/* 70 */
+/***/ function(module, exports) {
+
+var g=function(){return this}();// This works in non-strict mode
+try{g=g||Function("return this")()||(1,eval)("this")}catch(a){"object"==typeof window&&(g=window)}// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+module.exports=g;
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+module.exports=function(a){return a.webpackPolyfill||(a.deprecate=function(){},a.paths=[],!a.children&&(a.children=[]),Object.defineProperty(a,"loaded",{enumerable:!0,configurable:!1,get:function(){return a.l}}),Object.defineProperty(a,"id",{enumerable:!0,configurable:!1,get:function(){return a.i}}),a.webpackPolyfill=1),a};
+
+/***/ },
+/* 72 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -3490,7103 +3665,18 @@ module.exports = {
 };
 
 /***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-module.exports = isPromise;
-
-function isPromise(obj) {
-  return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
-}
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Helpers
-
-// Merge objects
-//
-function assign(obj /*from1, from2, from3, ...*/) {
-  var sources = Array.prototype.slice.call(arguments, 1);
-
-  sources.forEach(function (source) {
-    if (!source) { return; }
-
-    Object.keys(source).forEach(function (key) {
-      obj[key] = source[key];
-    });
-  });
-
-  return obj;
-}
-
-function _class(obj) { return Object.prototype.toString.call(obj); }
-function isString(obj) { return _class(obj) === '[object String]'; }
-function isObject(obj) { return _class(obj) === '[object Object]'; }
-function isRegExp(obj) { return _class(obj) === '[object RegExp]'; }
-function isFunction(obj) { return _class(obj) === '[object Function]'; }
-
-
-function escapeRE(str) { return str.replace(/[.?*+^$[\]\\(){}|-]/g, '\\$&'); }
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-var defaultOptions = {
-  fuzzyLink: true,
-  fuzzyEmail: true,
-  fuzzyIP: false
-};
-
-
-function isOptionsObj(obj) {
-  return Object.keys(obj || {}).reduce(function (acc, k) {
-    return acc || defaultOptions.hasOwnProperty(k);
-  }, false);
-}
-
-
-var defaultSchemas = {
-  'http:': {
-    validate: function (text, pos, self) {
-      var tail = text.slice(pos);
-
-      if (!self.re.http) {
-        // compile lazily, because "host"-containing variables can change on tlds update.
-        self.re.http =  new RegExp(
-          '^\\/\\/' + self.re.src_auth + self.re.src_host_port_strict + self.re.src_path, 'i'
-        );
-      }
-      if (self.re.http.test(tail)) {
-        return tail.match(self.re.http)[0].length;
-      }
-      return 0;
-    }
-  },
-  'https:':  'http:',
-  'ftp:':    'http:',
-  '//':      {
-    validate: function (text, pos, self) {
-      var tail = text.slice(pos);
-
-      if (!self.re.no_http) {
-      // compile lazily, because "host"-containing variables can change on tlds update.
-        self.re.no_http =  new RegExp(
-          '^' +
-          self.re.src_auth +
-          // Don't allow single-level domains, because of false positives like '//test'
-          // with code comments
-          '(?:localhost|(?:(?:' + self.re.src_domain + ')\\.)+' + self.re.src_domain_root + ')' +
-          self.re.src_port +
-          self.re.src_host_terminator +
-          self.re.src_path,
-
-          'i'
-        );
-      }
-
-      if (self.re.no_http.test(tail)) {
-        // should not be `://` & `///`, that protects from errors in protocol name
-        if (pos >= 3 && text[pos - 3] === ':') { return 0; }
-        if (pos >= 3 && text[pos - 3] === '/') { return 0; }
-        return tail.match(self.re.no_http)[0].length;
-      }
-      return 0;
-    }
-  },
-  'mailto:': {
-    validate: function (text, pos, self) {
-      var tail = text.slice(pos);
-
-      if (!self.re.mailto) {
-        self.re.mailto =  new RegExp(
-          '^' + self.re.src_email_name + '@' + self.re.src_host_strict, 'i'
-        );
-      }
-      if (self.re.mailto.test(tail)) {
-        return tail.match(self.re.mailto)[0].length;
-      }
-      return 0;
-    }
-  }
-};
-
-/*eslint-disable max-len*/
-
-// RE pattern for 2-character tlds (autogenerated by ./support/tlds_2char_gen.js)
-var tlds_2ch_src_re = 'a[cdefgilmnoqrstuwxz]|b[abdefghijmnorstvwyz]|c[acdfghiklmnoruvwxyz]|d[ejkmoz]|e[cegrstu]|f[ijkmor]|g[abdefghilmnpqrstuwy]|h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|m[acdeghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eosuw]|s[abcdeghijklmnortuvxyz]|t[cdfghjklmnortvwz]|u[agksyz]|v[aceginu]|w[fs]|y[et]|z[amw]';
-
-// DON'T try to make PRs with changes. Extend TLDs with LinkifyIt.tlds() instead
-var tlds_default = 'biz|com|edu|gov|net|org|pro|web|xxx|aero|asia|coop|info|museum|name|shop|рф'.split('|');
-
-/*eslint-enable max-len*/
-
-////////////////////////////////////////////////////////////////////////////////
-
-function resetScanCache(self) {
-  self.__index__ = -1;
-  self.__text_cache__   = '';
-}
-
-function createValidator(re) {
-  return function (text, pos) {
-    var tail = text.slice(pos);
-
-    if (re.test(tail)) {
-      return tail.match(re)[0].length;
-    }
-    return 0;
-  };
-}
-
-function createNormalizer() {
-  return function (match, self) {
-    self.normalize(match);
-  };
-}
-
-// Schemas compiler. Build regexps.
-//
-function compile(self) {
-
-  // Load & clone RE patterns.
-  var re = self.re = __webpack_require__(17)(self.__opts__);
-
-  // Define dynamic patterns
-  var tlds = self.__tlds__.slice();
-
-  self.onCompile();
-
-  if (!self.__tlds_replaced__) {
-    tlds.push(tlds_2ch_src_re);
-  }
-  tlds.push(re.src_xn);
-
-  re.src_tlds = tlds.join('|');
-
-  function untpl(tpl) { return tpl.replace('%TLDS%', re.src_tlds); }
-
-  re.email_fuzzy      = RegExp(untpl(re.tpl_email_fuzzy), 'i');
-  re.link_fuzzy       = RegExp(untpl(re.tpl_link_fuzzy), 'i');
-  re.link_no_ip_fuzzy = RegExp(untpl(re.tpl_link_no_ip_fuzzy), 'i');
-  re.host_fuzzy_test  = RegExp(untpl(re.tpl_host_fuzzy_test), 'i');
-
-  //
-  // Compile each schema
-  //
-
-  var aliases = [];
-
-  self.__compiled__ = {}; // Reset compiled data
-
-  function schemaError(name, val) {
-    throw new Error('(LinkifyIt) Invalid schema "' + name + '": ' + val);
-  }
-
-  Object.keys(self.__schemas__).forEach(function (name) {
-    var val = self.__schemas__[name];
-
-    // skip disabled methods
-    if (val === null) { return; }
-
-    var compiled = { validate: null, link: null };
-
-    self.__compiled__[name] = compiled;
-
-    if (isObject(val)) {
-      if (isRegExp(val.validate)) {
-        compiled.validate = createValidator(val.validate);
-      } else if (isFunction(val.validate)) {
-        compiled.validate = val.validate;
-      } else {
-        schemaError(name, val);
-      }
-
-      if (isFunction(val.normalize)) {
-        compiled.normalize = val.normalize;
-      } else if (!val.normalize) {
-        compiled.normalize = createNormalizer();
-      } else {
-        schemaError(name, val);
-      }
-
-      return;
-    }
-
-    if (isString(val)) {
-      aliases.push(name);
-      return;
-    }
-
-    schemaError(name, val);
-  });
-
-  //
-  // Compile postponed aliases
-  //
-
-  aliases.forEach(function (alias) {
-    if (!self.__compiled__[self.__schemas__[alias]]) {
-      // Silently fail on missed schemas to avoid errons on disable.
-      // schemaError(alias, self.__schemas__[alias]);
-      return;
-    }
-
-    self.__compiled__[alias].validate =
-      self.__compiled__[self.__schemas__[alias]].validate;
-    self.__compiled__[alias].normalize =
-      self.__compiled__[self.__schemas__[alias]].normalize;
-  });
-
-  //
-  // Fake record for guessed links
-  //
-  self.__compiled__[''] = { validate: null, normalize: createNormalizer() };
-
-  //
-  // Build schema condition
-  //
-  var slist = Object.keys(self.__compiled__)
-                      .filter(function (name) {
-                        // Filter disabled & fake schemas
-                        return name.length > 0 && self.__compiled__[name];
-                      })
-                      .map(escapeRE)
-                      .join('|');
-  // (?!_) cause 1.5x slowdown
-  self.re.schema_test   = RegExp('(^|(?!_)(?:[><]|' + re.src_ZPCc + '))(' + slist + ')', 'i');
-  self.re.schema_search = RegExp('(^|(?!_)(?:[><]|' + re.src_ZPCc + '))(' + slist + ')', 'ig');
-
-  self.re.pretest       = RegExp(
-                            '(' + self.re.schema_test.source + ')|' +
-                            '(' + self.re.host_fuzzy_test.source + ')|' +
-                            '@',
-                            'i');
-
-  //
-  // Cleanup
-  //
-
-  resetScanCache(self);
-}
-
-/**
- * class Match
- *
- * Match result. Single element of array, returned by [[LinkifyIt#match]]
- **/
-function Match(self, shift) {
-  var start = self.__index__,
-      end   = self.__last_index__,
-      text  = self.__text_cache__.slice(start, end);
-
-  /**
-   * Match#schema -> String
-   *
-   * Prefix (protocol) for matched string.
-   **/
-  this.schema    = self.__schema__.toLowerCase();
-  /**
-   * Match#index -> Number
-   *
-   * First position of matched string.
-   **/
-  this.index     = start + shift;
-  /**
-   * Match#lastIndex -> Number
-   *
-   * Next position after matched string.
-   **/
-  this.lastIndex = end + shift;
-  /**
-   * Match#raw -> String
-   *
-   * Matched string.
-   **/
-  this.raw       = text;
-  /**
-   * Match#text -> String
-   *
-   * Notmalized text of matched string.
-   **/
-  this.text      = text;
-  /**
-   * Match#url -> String
-   *
-   * Normalized url of matched string.
-   **/
-  this.url       = text;
-}
-
-function createMatch(self, shift) {
-  var match = new Match(self, shift);
-
-  self.__compiled__[match.schema].normalize(match, self);
-
-  return match;
-}
-
-
-/**
- * class LinkifyIt
- **/
-
-/**
- * new LinkifyIt(schemas, options)
- * - schemas (Object): Optional. Additional schemas to validate (prefix/validator)
- * - options (Object): { fuzzyLink|fuzzyEmail|fuzzyIP: true|false }
- *
- * Creates new linkifier instance with optional additional schemas.
- * Can be called without `new` keyword for convenience.
- *
- * By default understands:
- *
- * - `http(s)://...` , `ftp://...`, `mailto:...` & `//...` links
- * - "fuzzy" links and emails (example.com, foo@bar.com).
- *
- * `schemas` is an object, where each key/value describes protocol/rule:
- *
- * - __key__ - link prefix (usually, protocol name with `:` at the end, `skype:`
- *   for example). `linkify-it` makes shure that prefix is not preceeded with
- *   alphanumeric char and symbols. Only whitespaces and punctuation allowed.
- * - __value__ - rule to check tail after link prefix
- *   - _String_ - just alias to existing rule
- *   - _Object_
- *     - _validate_ - validator function (should return matched length on success),
- *       or `RegExp`.
- *     - _normalize_ - optional function to normalize text & url of matched result
- *       (for example, for @twitter mentions).
- *
- * `options`:
- *
- * - __fuzzyLink__ - recognige URL-s without `http(s):` prefix. Default `true`.
- * - __fuzzyIP__ - allow IPs in fuzzy links above. Can conflict with some texts
- *   like version numbers. Default `false`.
- * - __fuzzyEmail__ - recognize emails without `mailto:` prefix.
- *
- **/
-function LinkifyIt(schemas, options) {
-  if (!(this instanceof LinkifyIt)) {
-    return new LinkifyIt(schemas, options);
-  }
-
-  if (!options) {
-    if (isOptionsObj(schemas)) {
-      options = schemas;
-      schemas = {};
-    }
-  }
-
-  this.__opts__           = assign({}, defaultOptions, options);
-
-  // Cache last tested result. Used to skip repeating steps on next `match` call.
-  this.__index__          = -1;
-  this.__last_index__     = -1; // Next scan position
-  this.__schema__         = '';
-  this.__text_cache__     = '';
-
-  this.__schemas__        = assign({}, defaultSchemas, schemas);
-  this.__compiled__       = {};
-
-  this.__tlds__           = tlds_default;
-  this.__tlds_replaced__  = false;
-
-  this.re = {};
-
-  compile(this);
-}
-
-
-/** chainable
- * LinkifyIt#add(schema, definition)
- * - schema (String): rule name (fixed pattern prefix)
- * - definition (String|RegExp|Object): schema definition
- *
- * Add new rule definition. See constructor description for details.
- **/
-LinkifyIt.prototype.add = function add(schema, definition) {
-  this.__schemas__[schema] = definition;
-  compile(this);
-  return this;
-};
-
-
-/** chainable
- * LinkifyIt#set(options)
- * - options (Object): { fuzzyLink|fuzzyEmail|fuzzyIP: true|false }
- *
- * Set recognition options for links without schema.
- **/
-LinkifyIt.prototype.set = function set(options) {
-  this.__opts__ = assign(this.__opts__, options);
-  return this;
-};
-
-
-/**
- * LinkifyIt#test(text) -> Boolean
- *
- * Searches linkifiable pattern and returns `true` on success or `false` on fail.
- **/
-LinkifyIt.prototype.test = function test(text) {
-  // Reset scan cache
-  this.__text_cache__ = text;
-  this.__index__      = -1;
-
-  if (!text.length) { return false; }
-
-  var m, ml, me, len, shift, next, re, tld_pos, at_pos;
-
-  // try to scan for link with schema - that's the most simple rule
-  if (this.re.schema_test.test(text)) {
-    re = this.re.schema_search;
-    re.lastIndex = 0;
-    while ((m = re.exec(text)) !== null) {
-      len = this.testSchemaAt(text, m[2], re.lastIndex);
-      if (len) {
-        this.__schema__     = m[2];
-        this.__index__      = m.index + m[1].length;
-        this.__last_index__ = m.index + m[0].length + len;
-        break;
-      }
-    }
-  }
-
-  if (this.__opts__.fuzzyLink && this.__compiled__['http:']) {
-    // guess schemaless links
-    tld_pos = text.search(this.re.host_fuzzy_test);
-    if (tld_pos >= 0) {
-      // if tld is located after found link - no need to check fuzzy pattern
-      if (this.__index__ < 0 || tld_pos < this.__index__) {
-        if ((ml = text.match(this.__opts__.fuzzyIP ? this.re.link_fuzzy : this.re.link_no_ip_fuzzy)) !== null) {
-
-          shift = ml.index + ml[1].length;
-
-          if (this.__index__ < 0 || shift < this.__index__) {
-            this.__schema__     = '';
-            this.__index__      = shift;
-            this.__last_index__ = ml.index + ml[0].length;
-          }
-        }
-      }
-    }
-  }
-
-  if (this.__opts__.fuzzyEmail && this.__compiled__['mailto:']) {
-    // guess schemaless emails
-    at_pos = text.indexOf('@');
-    if (at_pos >= 0) {
-      // We can't skip this check, because this cases are possible:
-      // 192.168.1.1@gmail.com, my.in@example.com
-      if ((me = text.match(this.re.email_fuzzy)) !== null) {
-
-        shift = me.index + me[1].length;
-        next  = me.index + me[0].length;
-
-        if (this.__index__ < 0 || shift < this.__index__ ||
-            (shift === this.__index__ && next > this.__last_index__)) {
-          this.__schema__     = 'mailto:';
-          this.__index__      = shift;
-          this.__last_index__ = next;
-        }
-      }
-    }
-  }
-
-  return this.__index__ >= 0;
-};
-
-
-/**
- * LinkifyIt#pretest(text) -> Boolean
- *
- * Very quick check, that can give false positives. Returns true if link MAY BE
- * can exists. Can be used for speed optimization, when you need to check that
- * link NOT exists.
- **/
-LinkifyIt.prototype.pretest = function pretest(text) {
-  return this.re.pretest.test(text);
-};
-
-
-/**
- * LinkifyIt#testSchemaAt(text, name, position) -> Number
- * - text (String): text to scan
- * - name (String): rule (schema) name
- * - position (Number): text offset to check from
- *
- * Similar to [[LinkifyIt#test]] but checks only specific protocol tail exactly
- * at given position. Returns length of found pattern (0 on fail).
- **/
-LinkifyIt.prototype.testSchemaAt = function testSchemaAt(text, schema, pos) {
-  // If not supported schema check requested - terminate
-  if (!this.__compiled__[schema.toLowerCase()]) {
-    return 0;
-  }
-  return this.__compiled__[schema.toLowerCase()].validate(text, pos, this);
-};
-
-
-/**
- * LinkifyIt#match(text) -> Array|null
- *
- * Returns array of found link descriptions or `null` on fail. We strongly
- * recommend to use [[LinkifyIt#test]] first, for best speed.
- *
- * ##### Result match description
- *
- * - __schema__ - link schema, can be empty for fuzzy links, or `//` for
- *   protocol-neutral  links.
- * - __index__ - offset of matched text
- * - __lastIndex__ - index of next char after mathch end
- * - __raw__ - matched text
- * - __text__ - normalized text
- * - __url__ - link, generated from matched text
- **/
-LinkifyIt.prototype.match = function match(text) {
-  var shift = 0, result = [];
-
-  // Try to take previous element from cache, if .test() called before
-  if (this.__index__ >= 0 && this.__text_cache__ === text) {
-    result.push(createMatch(this, shift));
-    shift = this.__last_index__;
-  }
-
-  // Cut head if cache was used
-  var tail = shift ? text.slice(shift) : text;
-
-  // Scan string until end reached
-  while (this.test(tail)) {
-    result.push(createMatch(this, shift));
-
-    tail = tail.slice(this.__last_index__);
-    shift += this.__last_index__;
-  }
-
-  if (result.length) {
-    return result;
-  }
-
-  return null;
-};
-
-
-/** chainable
- * LinkifyIt#tlds(list [, keepOld]) -> this
- * - list (Array): list of tlds
- * - keepOld (Boolean): merge with current list if `true` (`false` by default)
- *
- * Load (or merge) new tlds list. Those are user for fuzzy links (without prefix)
- * to avoid false positives. By default this algorythm used:
- *
- * - hostname with any 2-letter root zones are ok.
- * - biz|com|edu|gov|net|org|pro|web|xxx|aero|asia|coop|info|museum|name|shop|рф
- *   are ok.
- * - encoded (`xn--...`) root zones are ok.
- *
- * If list is replaced, then exact match for 2-chars root zones will be checked.
- **/
-LinkifyIt.prototype.tlds = function tlds(list, keepOld) {
-  list = Array.isArray(list) ? list : [ list ];
-
-  if (!keepOld) {
-    this.__tlds__ = list.slice();
-    this.__tlds_replaced__ = true;
-    compile(this);
-    return this;
-  }
-
-  this.__tlds__ = this.__tlds__.concat(list)
-                                  .sort()
-                                  .filter(function (el, idx, arr) {
-                                    return el !== arr[idx - 1];
-                                  })
-                                  .reverse();
-
-  compile(this);
-  return this;
-};
-
-/**
- * LinkifyIt#normalize(match)
- *
- * Default normalizer (if schema does not define it's own).
- **/
-LinkifyIt.prototype.normalize = function normalize(match) {
-
-  // Do minimal possible changes by default. Need to collect feedback prior
-  // to move forward https://github.com/markdown-it/linkify-it/issues/1
-
-  if (!match.schema) { match.url = 'http://' + match.url; }
-
-  if (match.schema === 'mailto:' && !/^mailto:/i.test(match.url)) {
-    match.url = 'mailto:' + match.url;
-  }
-};
-
-
-/**
- * LinkifyIt#onCompile()
- *
- * Override to modify basic RegExp-s.
- **/
-LinkifyIt.prototype.onCompile = function onCompile() {
-};
-
-
-module.exports = LinkifyIt;
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-module.exports = function (opts) {
-  var re = {};
-
-  // Use direct extract instead of `regenerate` to reduse browserified size
-  re.src_Any = __webpack_require__(11).source;
-  re.src_Cc  = __webpack_require__(9).source;
-  re.src_Z   = __webpack_require__(10).source;
-  re.src_P   = __webpack_require__(3).source;
-
-  // \p{\Z\P\Cc\CF} (white spaces + control + format + punctuation)
-  re.src_ZPCc = [ re.src_Z, re.src_P, re.src_Cc ].join('|');
-
-  // \p{\Z\Cc} (white spaces + control)
-  re.src_ZCc = [ re.src_Z, re.src_Cc ].join('|');
-
-  // All possible word characters (everything without punctuation, spaces & controls)
-  // Defined via punctuation & spaces to save space
-  // Should be something like \p{\L\N\S\M} (\w but without `_`)
-  re.src_pseudo_letter       = '(?:(?!>|<|' + re.src_ZPCc + ')' + re.src_Any + ')';
-  // The same as abothe but without [0-9]
-  // var src_pseudo_letter_non_d = '(?:(?![0-9]|' + src_ZPCc + ')' + src_Any + ')';
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  re.src_ip4 =
-
-    '(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
-
-  // Prohibit any of "@/[]()" in user/pass to avoid wrong domain fetch.
-  re.src_auth    = '(?:(?:(?!' + re.src_ZCc + '|[@/\\[\\]()]).)+@)?';
-
-  re.src_port =
-
-    '(?::(?:6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5])))|[1-5]?\\d{1,4}))?';
-
-  re.src_host_terminator =
-
-    '(?=$|>|<|' + re.src_ZPCc + ')(?!-|_|:\\d|\\.-|\\.(?!$|' + re.src_ZPCc + '))';
-
-  re.src_path =
-
-    '(?:' +
-      '[/?#]' +
-        '(?:' +
-          '(?!' + re.src_ZCc + '|[()[\\]{}.,"\'?!\\-<>]).|' +
-          '\\[(?:(?!' + re.src_ZCc + '|\\]).)*\\]|' +
-          '\\((?:(?!' + re.src_ZCc + '|[)]).)*\\)|' +
-          '\\{(?:(?!' + re.src_ZCc + '|[}]).)*\\}|' +
-          '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' +
-          "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" +
-          "\\'(?=" + re.src_pseudo_letter + '|[-]).|' +  // allow `I'm_king` if no pair found
-          '\\.{2,3}[a-zA-Z0-9%/]|' + // github has ... in commit range links. Restrict to
-                                     // - english
-                                     // - percent-encoded
-                                     // - parts of file path
-                                     // until more examples found.
-          '\\.(?!' + re.src_ZCc + '|[.]).|' +
-          (opts && opts['---'] ?
-            '\\-(?!--(?:[^-]|$))(?:-*)|' // `---` => long dash, terminate
-          :
-            '\\-+|'
-          ) +
-          '\\,(?!' + re.src_ZCc + ').|' +      // allow `,,,` in paths
-          '\\!(?!' + re.src_ZCc + '|[!]).|' +
-          '\\?(?!' + re.src_ZCc + '|[?]).' +
-        ')+' +
-      '|\\/' +
-    ')?';
-
-  re.src_email_name =
-
-    '[\\-;:&=\\+\\$,\\"\\.a-zA-Z0-9_]+';
-
-  re.src_xn =
-
-    'xn--[a-z0-9\\-]{1,59}';
-
-  // More to read about domain names
-  // http://serverfault.com/questions/638260/
-
-  re.src_domain_root =
-
-    // Allow letters & digits (http://test1)
-    '(?:' +
-      re.src_xn +
-      '|' +
-      re.src_pseudo_letter + '{1,63}' +
-    ')';
-
-  re.src_domain =
-
-    '(?:' +
-      re.src_xn +
-      '|' +
-      '(?:' + re.src_pseudo_letter + ')' +
-      '|' +
-      // don't allow `--` in domain names, because:
-      // - that can conflict with markdown &mdash; / &ndash;
-      // - nobody use those anyway
-      '(?:' + re.src_pseudo_letter + '(?:-(?!-)|' + re.src_pseudo_letter + '){0,61}' + re.src_pseudo_letter + ')' +
-    ')';
-
-  re.src_host =
-
-    '(?:' +
-    // Don't need IP check, because digits are already allowed in normal domain names
-    //   src_ip4 +
-    // '|' +
-      '(?:(?:(?:' + re.src_domain + ')\\.)*' + re.src_domain/*_root*/ + ')' +
-    ')';
-
-  re.tpl_host_fuzzy =
-
-    '(?:' +
-      re.src_ip4 +
-    '|' +
-      '(?:(?:(?:' + re.src_domain + ')\\.)+(?:%TLDS%))' +
-    ')';
-
-  re.tpl_host_no_ip_fuzzy =
-
-    '(?:(?:(?:' + re.src_domain + ')\\.)+(?:%TLDS%))';
-
-  re.src_host_strict =
-
-    re.src_host + re.src_host_terminator;
-
-  re.tpl_host_fuzzy_strict =
-
-    re.tpl_host_fuzzy + re.src_host_terminator;
-
-  re.src_host_port_strict =
-
-    re.src_host + re.src_port + re.src_host_terminator;
-
-  re.tpl_host_port_fuzzy_strict =
-
-    re.tpl_host_fuzzy + re.src_port + re.src_host_terminator;
-
-  re.tpl_host_port_no_ip_fuzzy_strict =
-
-    re.tpl_host_no_ip_fuzzy + re.src_port + re.src_host_terminator;
-
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // Main rules
-
-  // Rude test fuzzy links by host, for quick deny
-  re.tpl_host_fuzzy_test =
-
-    'localhost|www\\.|\\.\\d{1,3}\\.|(?:\\.(?:%TLDS%)(?:' + re.src_ZPCc + '|>|$))';
-
-  re.tpl_email_fuzzy =
-
-      '(^|<|>|\\(|' + re.src_ZCc + ')(' + re.src_email_name + '@' + re.tpl_host_fuzzy_strict + ')';
-
-  re.tpl_link_fuzzy =
-      // Fuzzy link can't be prepended with .:/\- and non punctuation.
-      // but can start with > (markdown blockquote)
-      '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + re.src_ZPCc + '))' +
-      '((?![$+<=>^`|])' + re.tpl_host_port_fuzzy_strict + re.src_path + ')';
-
-  re.tpl_link_no_ip_fuzzy =
-      // Fuzzy link can't be prepended with .:/\- and non punctuation.
-      // but can start with > (markdown blockquote)
-      '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + re.src_ZPCc + '))' +
-      '((?![$+<=>^`|])' + re.tpl_host_port_no_ip_fuzzy_strict + re.src_path + ')';
-
-  return re;
-};
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// List of valid html blocks names, accorting to commonmark spec
-// http://jgm.github.io/CommonMark/spec.html#html-blocks
-
-
-
-
-module.exports = [
-  'address',
-  'article',
-  'aside',
-  'base',
-  'basefont',
-  'blockquote',
-  'body',
-  'caption',
-  'center',
-  'col',
-  'colgroup',
-  'dd',
-  'details',
-  'dialog',
-  'dir',
-  'div',
-  'dl',
-  'dt',
-  'fieldset',
-  'figcaption',
-  'figure',
-  'footer',
-  'form',
-  'frame',
-  'frameset',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'head',
-  'header',
-  'hr',
-  'html',
-  'iframe',
-  'legend',
-  'li',
-  'link',
-  'main',
-  'menu',
-  'menuitem',
-  'meta',
-  'nav',
-  'noframes',
-  'ol',
-  'optgroup',
-  'option',
-  'p',
-  'param',
-  'pre',
-  'section',
-  'source',
-  'title',
-  'summary',
-  'table',
-  'tbody',
-  'td',
-  'tfoot',
-  'th',
-  'thead',
-  'title',
-  'tr',
-  'track',
-  'ul'
-];
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Just a shortcut for bulk export
-
-
-
-exports.parseLinkLabel       = __webpack_require__(21);
-exports.parseLinkDestination = __webpack_require__(20);
-exports.parseLinkTitle       = __webpack_require__(22);
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Parse link destination
-//
-
-
-
-var isSpace     = __webpack_require__(0).isSpace;
-var unescapeAll = __webpack_require__(0).unescapeAll;
-
-
-module.exports = function parseLinkDestination(str, pos, max) {
-  var code, level,
-      lines = 0,
-      start = pos,
-      result = {
-        ok: false,
-        pos: 0,
-        lines: 0,
-        str: ''
-      };
-
-  if (str.charCodeAt(pos) === 0x3C /* < */) {
-    pos++;
-    while (pos < max) {
-      code = str.charCodeAt(pos);
-      if (code === 0x0A /* \n */ || isSpace(code)) { return result; }
-      if (code === 0x3E /* > */) {
-        result.pos = pos + 1;
-        result.str = unescapeAll(str.slice(start + 1, pos));
-        result.ok = true;
-        return result;
-      }
-      if (code === 0x5C /* \ */ && pos + 1 < max) {
-        pos += 2;
-        continue;
-      }
-
-      pos++;
-    }
-
-    // no closing '>'
-    return result;
-  }
-
-  // this should be ... } else { ... branch
-
-  level = 0;
-  while (pos < max) {
-    code = str.charCodeAt(pos);
-
-    if (code === 0x20) { break; }
-
-    // ascii control characters
-    if (code < 0x20 || code === 0x7F) { break; }
-
-    if (code === 0x5C /* \ */ && pos + 1 < max) {
-      pos += 2;
-      continue;
-    }
-
-    if (code === 0x28 /* ( */) {
-      level++;
-      if (level > 1) { break; }
-    }
-
-    if (code === 0x29 /* ) */) {
-      level--;
-      if (level < 0) { break; }
-    }
-
-    pos++;
-  }
-
-  if (start === pos) { return result; }
-
-  result.str = unescapeAll(str.slice(start, pos));
-  result.lines = lines;
-  result.pos = pos;
-  result.ok = true;
-  return result;
-};
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Parse link label
-//
-// this function assumes that first character ("[") already matches;
-// returns the end of the label
-//
-
-
-module.exports = function parseLinkLabel(state, start, disableNested) {
-  var level, found, marker, prevPos,
-      labelEnd = -1,
-      max = state.posMax,
-      oldPos = state.pos;
-
-  state.pos = start + 1;
-  level = 1;
-
-  while (state.pos < max) {
-    marker = state.src.charCodeAt(state.pos);
-    if (marker === 0x5D /* ] */) {
-      level--;
-      if (level === 0) {
-        found = true;
-        break;
-      }
-    }
-
-    prevPos = state.pos;
-    state.md.inline.skipToken(state);
-    if (marker === 0x5B /* [ */) {
-      if (prevPos === state.pos - 1) {
-        // increase level if we find text `[`, which is not a part of any token
-        level++;
-      } else if (disableNested) {
-        state.pos = oldPos;
-        return -1;
-      }
-    }
-  }
-
-  if (found) {
-    labelEnd = state.pos;
-  }
-
-  // restore old state
-  state.pos = oldPos;
-
-  return labelEnd;
-};
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Parse link title
-//
-
-
-
-var unescapeAll = __webpack_require__(0).unescapeAll;
-
-
-module.exports = function parseLinkTitle(str, pos, max) {
-  var code,
-      marker,
-      lines = 0,
-      start = pos,
-      result = {
-        ok: false,
-        pos: 0,
-        lines: 0,
-        str: ''
-      };
-
-  if (pos >= max) { return result; }
-
-  marker = str.charCodeAt(pos);
-
-  if (marker !== 0x22 /* " */ && marker !== 0x27 /* ' */ && marker !== 0x28 /* ( */) { return result; }
-
-  pos++;
-
-  // if opening marker is "(", switch it to closing marker ")"
-  if (marker === 0x28) { marker = 0x29; }
-
-  while (pos < max) {
-    code = str.charCodeAt(pos);
-    if (code === marker) {
-      result.pos = pos + 1;
-      result.lines = lines;
-      result.str = unescapeAll(str.slice(start + 1, pos));
-      result.ok = true;
-      return result;
-    } else if (code === 0x0A) {
-      lines++;
-    } else if (code === 0x5C /* \ */ && pos + 1 < max) {
-      pos++;
-      if (str.charCodeAt(pos) === 0x0A) {
-        lines++;
-      }
-    }
-
-    pos++;
-  }
-
-  return result;
-};
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Main parser class
-
-
-
-
-var utils        = __webpack_require__(0);
-var helpers      = __webpack_require__(19);
-var Renderer     = __webpack_require__(30);
-var ParserCore   = __webpack_require__(25);
-var ParserBlock  = __webpack_require__(24);
-var ParserInline = __webpack_require__(26);
-var LinkifyIt    = __webpack_require__(16);
-var mdurl        = __webpack_require__(8);
-var punycode     = __webpack_require__(66);
-
-
-var config = {
-  'default': __webpack_require__(28),
-  zero: __webpack_require__(29),
-  commonmark: __webpack_require__(27)
-};
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// This validator can prohibit more than really needed to prevent XSS. It's a
-// tradeoff to keep code simple and to be secure by default.
-//
-// If you need different setup - override validator method as you wish. Or
-// replace it with dummy function and use external sanitizer.
-//
-
-var BAD_PROTO_RE = /^(vbscript|javascript|file|data):/;
-var GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
-
-function validateLink(url) {
-  // url should be normalized at this point, and existing entities are decoded
-  var str = url.trim().toLowerCase();
-
-  return BAD_PROTO_RE.test(str) ? (GOOD_DATA_RE.test(str) ? true : false) : true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-var RECODE_HOSTNAME_FOR = [ 'http:', 'https:', 'mailto:' ];
-
-function normalizeLink(url) {
-  var parsed = mdurl.parse(url, true);
-
-  if (parsed.hostname) {
-    // Encode hostnames in urls like:
-    // `http://host/`, `https://host/`, `mailto:user@host`, `//host/`
-    //
-    // We don't encode unknown schemas, because it's likely that we encode
-    // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
-    //
-    if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
-      try {
-        parsed.hostname = punycode.toASCII(parsed.hostname);
-      } catch (er) { /**/ }
-    }
-  }
-
-  return mdurl.encode(mdurl.format(parsed));
-}
-
-function normalizeLinkText(url) {
-  var parsed = mdurl.parse(url, true);
-
-  if (parsed.hostname) {
-    // Encode hostnames in urls like:
-    // `http://host/`, `https://host/`, `mailto:user@host`, `//host/`
-    //
-    // We don't encode unknown schemas, because it's likely that we encode
-    // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
-    //
-    if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
-      try {
-        parsed.hostname = punycode.toUnicode(parsed.hostname);
-      } catch (er) { /**/ }
-    }
-  }
-
-  return mdurl.decode(mdurl.format(parsed));
-}
-
-
-/**
- * class MarkdownIt
- *
- * Main parser/renderer class.
- *
- * ##### Usage
- *
- * ```javascript
- * // node.js, "classic" way:
- * var MarkdownIt = require('markdown-it'),
- *     md = new MarkdownIt();
- * var result = md.render('# markdown-it rulezz!');
- *
- * // node.js, the same, but with sugar:
- * var md = require('markdown-it')();
- * var result = md.render('# markdown-it rulezz!');
- *
- * // browser without AMD, added to "window" on script load
- * // Note, there are no dash.
- * var md = window.markdownit();
- * var result = md.render('# markdown-it rulezz!');
- * ```
- *
- * Single line rendering, without paragraph wrap:
- *
- * ```javascript
- * var md = require('markdown-it')();
- * var result = md.renderInline('__markdown-it__ rulezz!');
- * ```
- **/
-
-/**
- * new MarkdownIt([presetName, options])
- * - presetName (String): optional, `commonmark` / `zero`
- * - options (Object)
- *
- * Creates parser instanse with given config. Can be called without `new`.
- *
- * ##### presetName
- *
- * MarkdownIt provides named presets as a convenience to quickly
- * enable/disable active syntax rules and options for common use cases.
- *
- * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.js) -
- *   configures parser to strict [CommonMark](http://commonmark.org/) mode.
- * - [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js) -
- *   similar to GFM, used when no preset name given. Enables all available rules,
- *   but still without html, typographer & autolinker.
- * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js) -
- *   all rules disabled. Useful to quickly setup your config via `.enable()`.
- *   For example, when you need only `bold` and `italic` markup and nothing else.
- *
- * ##### options:
- *
- * - __html__ - `false`. Set `true` to enable HTML tags in source. Be careful!
- *   That's not safe! You may need external sanitizer to protect output from XSS.
- *   It's better to extend features via plugins, instead of enabling HTML.
- * - __xhtmlOut__ - `false`. Set `true` to add '/' when closing single tags
- *   (`<br />`). This is needed only for full CommonMark compatibility. In real
- *   world you will need HTML output.
- * - __breaks__ - `false`. Set `true` to convert `\n` in paragraphs into `<br>`.
- * - __langPrefix__ - `language-`. CSS language class prefix for fenced blocks.
- *   Can be useful for external highlighters.
- * - __linkify__ - `false`. Set `true` to autoconvert URL-like text to links.
- * - __typographer__  - `false`. Set `true` to enable [some language-neutral
- *   replacement](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js) +
- *   quotes beautification (smartquotes).
- * - __quotes__ - `“”‘’`, String or Array. Double + single quotes replacement
- *   pairs, when typographer enabled and smartquotes on. For example, you can
- *   use `'«»„“'` for Russian, `'„“‚‘'` for German, and
- *   `['«\xA0', '\xA0»', '‹\xA0', '\xA0›']` for French (including nbsp).
- * - __highlight__ - `null`. Highlighter function for fenced code blocks.
- *   Highlighter `function (str, lang)` should return escaped HTML. It can also
- *   return empty string if the source was not changed and should be escaped
- *   externaly. If result starts with <pre... internal wrapper is skipped.
- *
- * ##### Example
- *
- * ```javascript
- * // commonmark mode
- * var md = require('markdown-it')('commonmark');
- *
- * // default mode
- * var md = require('markdown-it')();
- *
- * // enable everything
- * var md = require('markdown-it')({
- *   html: true,
- *   linkify: true,
- *   typographer: true
- * });
- * ```
- *
- * ##### Syntax highlighting
- *
- * ```js
- * var hljs = require('highlight.js') // https://highlightjs.org/
- *
- * var md = require('markdown-it')({
- *   highlight: function (str, lang) {
- *     if (lang && hljs.getLanguage(lang)) {
- *       try {
- *         return hljs.highlight(lang, str, true).value;
- *       } catch (__) {}
- *     }
- *
- *     return ''; // use external default escaping
- *   }
- * });
- * ```
- *
- * Or with full wrapper override (if you need assign class to `<pre>`):
- *
- * ```javascript
- * var hljs = require('highlight.js') // https://highlightjs.org/
- *
- * // Actual default values
- * var md = require('markdown-it')({
- *   highlight: function (str, lang) {
- *     if (lang && hljs.getLanguage(lang)) {
- *       try {
- *         return '<pre class="hljs"><code>' +
- *                hljs.highlight(lang, str, true).value +
- *                '</code></pre>';
- *       } catch (__) {}
- *     }
- *
- *     return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
- *   }
- * });
- * ```
- *
- **/
-function MarkdownIt(presetName, options) {
-  if (!(this instanceof MarkdownIt)) {
-    return new MarkdownIt(presetName, options);
-  }
-
-  if (!options) {
-    if (!utils.isString(presetName)) {
-      options = presetName || {};
-      presetName = 'default';
-    }
-  }
-
-  /**
-   * MarkdownIt#inline -> ParserInline
-   *
-   * Instance of [[ParserInline]]. You may need it to add new rules when
-   * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
-   * [[MarkdownIt.enable]].
-   **/
-  this.inline = new ParserInline();
-
-  /**
-   * MarkdownIt#block -> ParserBlock
-   *
-   * Instance of [[ParserBlock]]. You may need it to add new rules when
-   * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
-   * [[MarkdownIt.enable]].
-   **/
-  this.block = new ParserBlock();
-
-  /**
-   * MarkdownIt#core -> Core
-   *
-   * Instance of [[Core]] chain executor. You may need it to add new rules when
-   * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
-   * [[MarkdownIt.enable]].
-   **/
-  this.core = new ParserCore();
-
-  /**
-   * MarkdownIt#renderer -> Renderer
-   *
-   * Instance of [[Renderer]]. Use it to modify output look. Or to add rendering
-   * rules for new token types, generated by plugins.
-   *
-   * ##### Example
-   *
-   * ```javascript
-   * var md = require('markdown-it')();
-   *
-   * function myToken(tokens, idx, options, env, self) {
-   *   //...
-   *   return result;
-   * };
-   *
-   * md.renderer.rules['my_token'] = myToken
-   * ```
-   *
-   * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js).
-   **/
-  this.renderer = new Renderer();
-
-  /**
-   * MarkdownIt#linkify -> LinkifyIt
-   *
-   * [linkify-it](https://github.com/markdown-it/linkify-it) instance.
-   * Used by [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.js)
-   * rule.
-   **/
-  this.linkify = new LinkifyIt();
-
-  /**
-   * MarkdownIt#validateLink(url) -> Boolean
-   *
-   * Link validation function. CommonMark allows too much in links. By default
-   * we disable `javascript:`, `vbscript:`, `file:` schemas, and almost all `data:...` schemas
-   * except some embedded image types.
-   *
-   * You can change this behaviour:
-   *
-   * ```javascript
-   * var md = require('markdown-it')();
-   * // enable everything
-   * md.validateLink = function () { return true; }
-   * ```
-   **/
-  this.validateLink = validateLink;
-
-  /**
-   * MarkdownIt#normalizeLink(url) -> String
-   *
-   * Function used to encode link url to a machine-readable format,
-   * which includes url-encoding, punycode, etc.
-   **/
-  this.normalizeLink = normalizeLink;
-
-  /**
-   * MarkdownIt#normalizeLinkText(url) -> String
-   *
-   * Function used to decode link url to a human-readable format`
-   **/
-  this.normalizeLinkText = normalizeLinkText;
-
-
-  // Expose utils & helpers for easy acces from plugins
-
-  /**
-   * MarkdownIt#utils -> utils
-   *
-   * Assorted utility functions, useful to write plugins. See details
-   * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/common/utils.js).
-   **/
-  this.utils = utils;
-
-  /**
-   * MarkdownIt#helpers -> helpers
-   *
-   * Link components parser functions, useful to write plugins. See details
-   * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/helpers).
-   **/
-  this.helpers = utils.assign({}, helpers);
-
-
-  this.options = {};
-  this.configure(presetName);
-
-  if (options) { this.set(options); }
-}
-
-
-/** chainable
- * MarkdownIt.set(options)
- *
- * Set parser options (in the same format as in constructor). Probably, you
- * will never need it, but you can change options after constructor call.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')()
- *             .set({ html: true, breaks: true })
- *             .set({ typographer, true });
- * ```
- *
- * __Note:__ To achieve the best possible performance, don't modify a
- * `markdown-it` instance options on the fly. If you need multiple configurations
- * it's best to create multiple instances and initialize each with separate
- * config.
- **/
-MarkdownIt.prototype.set = function (options) {
-  utils.assign(this.options, options);
-  return this;
-};
-
-
-/** chainable, internal
- * MarkdownIt.configure(presets)
- *
- * Batch load of all options and compenent settings. This is internal method,
- * and you probably will not need it. But if you with - see available presets
- * and data structure [here](https://github.com/markdown-it/markdown-it/tree/master/lib/presets)
- *
- * We strongly recommend to use presets instead of direct config loads. That
- * will give better compatibility with next versions.
- **/
-MarkdownIt.prototype.configure = function (presets) {
-  var self = this, presetName;
-
-  if (utils.isString(presets)) {
-    presetName = presets;
-    presets = config[presetName];
-    if (!presets) { throw new Error('Wrong `markdown-it` preset "' + presetName + '", check name'); }
-  }
-
-  if (!presets) { throw new Error('Wrong `markdown-it` preset, can\'t be empty'); }
-
-  if (presets.options) { self.set(presets.options); }
-
-  if (presets.components) {
-    Object.keys(presets.components).forEach(function (name) {
-      if (presets.components[name].rules) {
-        self[name].ruler.enableOnly(presets.components[name].rules);
-      }
-      if (presets.components[name].rules2) {
-        self[name].ruler2.enableOnly(presets.components[name].rules2);
-      }
-    });
-  }
-  return this;
-};
-
-
-/** chainable
- * MarkdownIt.enable(list, ignoreInvalid)
- * - list (String|Array): rule name or list of rule names to enable
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Enable list or rules. It will automatically find appropriate components,
- * containing rules with given names. If rule not found, and `ignoreInvalid`
- * not set - throws exception.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')()
- *             .enable(['sub', 'sup'])
- *             .disable('smartquotes');
- * ```
- **/
-MarkdownIt.prototype.enable = function (list, ignoreInvalid) {
-  var result = [];
-
-  if (!Array.isArray(list)) { list = [ list ]; }
-
-  [ 'core', 'block', 'inline' ].forEach(function (chain) {
-    result = result.concat(this[chain].ruler.enable(list, true));
-  }, this);
-
-  result = result.concat(this.inline.ruler2.enable(list, true));
-
-  var missed = list.filter(function (name) { return result.indexOf(name) < 0; });
-
-  if (missed.length && !ignoreInvalid) {
-    throw new Error('MarkdownIt. Failed to enable unknown rule(s): ' + missed);
-  }
-
-  return this;
-};
-
-
-/** chainable
- * MarkdownIt.disable(list, ignoreInvalid)
- * - list (String|Array): rule name or list of rule names to disable.
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * The same as [[MarkdownIt.enable]], but turn specified rules off.
- **/
-MarkdownIt.prototype.disable = function (list, ignoreInvalid) {
-  var result = [];
-
-  if (!Array.isArray(list)) { list = [ list ]; }
-
-  [ 'core', 'block', 'inline' ].forEach(function (chain) {
-    result = result.concat(this[chain].ruler.disable(list, true));
-  }, this);
-
-  result = result.concat(this.inline.ruler2.disable(list, true));
-
-  var missed = list.filter(function (name) { return result.indexOf(name) < 0; });
-
-  if (missed.length && !ignoreInvalid) {
-    throw new Error('MarkdownIt. Failed to disable unknown rule(s): ' + missed);
-  }
-  return this;
-};
-
-
-/** chainable
- * MarkdownIt.use(plugin, params)
- *
- * Load specified plugin with given params into current parser instance.
- * It's just a sugar to call `plugin(md, params)` with curring.
- *
- * ##### Example
- *
- * ```javascript
- * var iterator = require('markdown-it-for-inline');
- * var md = require('markdown-it')()
- *             .use(iterator, 'foo_replace', 'text', function (tokens, idx) {
- *               tokens[idx].content = tokens[idx].content.replace(/foo/g, 'bar');
- *             });
- * ```
- **/
-MarkdownIt.prototype.use = function (plugin /*, params, ... */) {
-  var args = [ this ].concat(Array.prototype.slice.call(arguments, 1));
-  plugin.apply(plugin, args);
-  return this;
-};
-
-
-/** internal
- * MarkdownIt.parse(src, env) -> Array
- * - src (String): source string
- * - env (Object): environment sandbox
- *
- * Parse input string and returns list of block tokens (special token type
- * "inline" will contain list of inline tokens). You should not call this
- * method directly, until you write custom renderer (for example, to produce
- * AST).
- *
- * `env` is used to pass data between "distributed" rules and return additional
- * metadata like reference info, needed for the renderer. It also can be used to
- * inject data in specific cases. Usually, you will be ok to pass `{}`,
- * and then pass updated object to renderer.
- **/
-MarkdownIt.prototype.parse = function (src, env) {
-  var state = new this.core.State(src, this, env);
-
-  this.core.process(state);
-
-  return state.tokens;
-};
-
-
-/**
- * MarkdownIt.render(src [, env]) -> String
- * - src (String): source string
- * - env (Object): environment sandbox
- *
- * Render markdown string into html. It does all magic for you :).
- *
- * `env` can be used to inject additional metadata (`{}` by default).
- * But you will not need it with high probability. See also comment
- * in [[MarkdownIt.parse]].
- **/
-MarkdownIt.prototype.render = function (src, env) {
-  env = env || {};
-
-  return this.renderer.render(this.parse(src, env), this.options, env);
-};
-
-
-/** internal
- * MarkdownIt.parseInline(src, env) -> Array
- * - src (String): source string
- * - env (Object): environment sandbox
- *
- * The same as [[MarkdownIt.parse]] but skip all block rules. It returns the
- * block tokens list with the single `inline` element, containing parsed inline
- * tokens in `children` property. Also updates `env` object.
- **/
-MarkdownIt.prototype.parseInline = function (src, env) {
-  var state = new this.core.State(src, this, env);
-
-  state.inlineMode = true;
-  this.core.process(state);
-
-  return state.tokens;
-};
-
-
-/**
- * MarkdownIt.renderInline(src [, env]) -> String
- * - src (String): source string
- * - env (Object): environment sandbox
- *
- * Similar to [[MarkdownIt.render]] but for single paragraph content. Result
- * will NOT be wrapped into `<p>` tags.
- **/
-MarkdownIt.prototype.renderInline = function (src, env) {
-  env = env || {};
-
-  return this.renderer.render(this.parseInline(src, env), this.options, env);
-};
-
-
-module.exports = MarkdownIt;
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/** internal
- * class ParserBlock
- *
- * Block-level tokenizer.
- **/
-
-
-
-var Ruler           = __webpack_require__(1);
-
-
-var _rules = [
-  // First 2 params - rule name & source. Secondary array - list of rules,
-  // which can be terminated by this one.
-  [ 'table',      __webpack_require__(42),      [ 'paragraph', 'reference' ] ],
-  [ 'code',       __webpack_require__(32) ],
-  [ 'fence',      __webpack_require__(33),      [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
-  [ 'blockquote', __webpack_require__(31), [ 'paragraph', 'reference', 'list' ] ],
-  [ 'hr',         __webpack_require__(35),         [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
-  [ 'list',       __webpack_require__(38),       [ 'paragraph', 'reference', 'blockquote' ] ],
-  [ 'reference',  __webpack_require__(40) ],
-  [ 'heading',    __webpack_require__(34),    [ 'paragraph', 'reference', 'blockquote' ] ],
-  [ 'lheading',   __webpack_require__(37) ],
-  [ 'html_block', __webpack_require__(36), [ 'paragraph', 'reference', 'blockquote' ] ],
-  [ 'paragraph',  __webpack_require__(39) ]
-];
-
-
-/**
- * new ParserBlock()
- **/
-function ParserBlock() {
-  /**
-   * ParserBlock#ruler -> Ruler
-   *
-   * [[Ruler]] instance. Keep configuration of block rules.
-   **/
-  this.ruler = new Ruler();
-
-  for (var i = 0; i < _rules.length; i++) {
-    this.ruler.push(_rules[i][0], _rules[i][1], { alt: (_rules[i][2] || []).slice() });
-  }
-}
-
-
-// Generate tokens for input range
-//
-ParserBlock.prototype.tokenize = function (state, startLine, endLine) {
-  var ok, i,
-      rules = this.ruler.getRules(''),
-      len = rules.length,
-      line = startLine,
-      hasEmptyLines = false,
-      maxNesting = state.md.options.maxNesting;
-
-  while (line < endLine) {
-    state.line = line = state.skipEmptyLines(line);
-    if (line >= endLine) { break; }
-
-    // Termination condition for nested calls.
-    // Nested calls currently used for blockquotes & lists
-    if (state.sCount[line] < state.blkIndent) { break; }
-
-    // If nesting level exceeded - skip tail to the end. That's not ordinary
-    // situation and we should not care about content.
-    if (state.level >= maxNesting) {
-      state.line = endLine;
-      break;
-    }
-
-    // Try all possible rules.
-    // On success, rule should:
-    //
-    // - update `state.line`
-    // - update `state.tokens`
-    // - return true
-
-    for (i = 0; i < len; i++) {
-      ok = rules[i](state, line, endLine, false);
-      if (ok) { break; }
-    }
-
-    // set state.tight iff we had an empty line before current tag
-    // i.e. latest empty line should not count
-    state.tight = !hasEmptyLines;
-
-    // paragraph might "eat" one newline after it in nested lists
-    if (state.isEmpty(state.line - 1)) {
-      hasEmptyLines = true;
-    }
-
-    line = state.line;
-
-    if (line < endLine && state.isEmpty(line)) {
-      hasEmptyLines = true;
-      line++;
-      state.line = line;
-    }
-  }
-};
-
-
-/**
- * ParserBlock.parse(str, md, env, outTokens)
- *
- * Process input string and push block tokens into `outTokens`
- **/
-ParserBlock.prototype.parse = function (src, md, env, outTokens) {
-  var state;
-
-  if (!src) { return; }
-
-  state = new this.State(src, md, env, outTokens);
-
-  this.tokenize(state, state.line, state.lineMax);
-};
-
-
-ParserBlock.prototype.State = __webpack_require__(41);
-
-
-module.exports = ParserBlock;
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/** internal
- * class Core
- *
- * Top-level rules executor. Glues block/inline parsers and does intermediate
- * transformations.
- **/
-
-
-
-var Ruler  = __webpack_require__(1);
-
-
-var _rules = [
-  [ 'normalize',      __webpack_require__(46)      ],
-  [ 'block',          __webpack_require__(43)          ],
-  [ 'inline',         __webpack_require__(44)         ],
-  [ 'linkify',        __webpack_require__(45)        ],
-  [ 'replacements',   __webpack_require__(47)   ],
-  [ 'smartquotes',    __webpack_require__(48)    ]
-];
-
-
-/**
- * new Core()
- **/
-function Core() {
-  /**
-   * Core#ruler -> Ruler
-   *
-   * [[Ruler]] instance. Keep configuration of core rules.
-   **/
-  this.ruler = new Ruler();
-
-  for (var i = 0; i < _rules.length; i++) {
-    this.ruler.push(_rules[i][0], _rules[i][1]);
-  }
-}
-
-
-/**
- * Core.process(state)
- *
- * Executes core chain rules.
- **/
-Core.prototype.process = function (state) {
-  var i, l, rules;
-
-  rules = this.ruler.getRules('');
-
-  for (i = 0, l = rules.length; i < l; i++) {
-    rules[i](state);
-  }
-};
-
-Core.prototype.State = __webpack_require__(49);
-
-
-module.exports = Core;
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/** internal
- * class ParserInline
- *
- * Tokenizes paragraph content.
- **/
-
-
-
-var Ruler           = __webpack_require__(1);
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Parser rules
-
-var _rules = [
-  [ 'text',            __webpack_require__(60) ],
-  [ 'newline',         __webpack_require__(58) ],
-  [ 'escape',          __webpack_require__(54) ],
-  [ 'backticks',       __webpack_require__(51) ],
-  [ 'strikethrough',   __webpack_require__(7).tokenize ],
-  [ 'emphasis',        __webpack_require__(6).tokenize ],
-  [ 'link',            __webpack_require__(57) ],
-  [ 'image',           __webpack_require__(56) ],
-  [ 'autolink',        __webpack_require__(50) ],
-  [ 'html_inline',     __webpack_require__(55) ],
-  [ 'entity',          __webpack_require__(53) ]
-];
-
-var _rules2 = [
-  [ 'balance_pairs',   __webpack_require__(52) ],
-  [ 'strikethrough',   __webpack_require__(7).postProcess ],
-  [ 'emphasis',        __webpack_require__(6).postProcess ],
-  [ 'text_collapse',   __webpack_require__(61) ]
-];
-
-
-/**
- * new ParserInline()
- **/
-function ParserInline() {
-  var i;
-
-  /**
-   * ParserInline#ruler -> Ruler
-   *
-   * [[Ruler]] instance. Keep configuration of inline rules.
-   **/
-  this.ruler = new Ruler();
-
-  for (i = 0; i < _rules.length; i++) {
-    this.ruler.push(_rules[i][0], _rules[i][1]);
-  }
-
-  /**
-   * ParserInline#ruler2 -> Ruler
-   *
-   * [[Ruler]] instance. Second ruler used for post-processing
-   * (e.g. in emphasis-like rules).
-   **/
-  this.ruler2 = new Ruler();
-
-  for (i = 0; i < _rules2.length; i++) {
-    this.ruler2.push(_rules2[i][0], _rules2[i][1]);
-  }
-}
-
-
-// Skip single token by running all rules in validation mode;
-// returns `true` if any rule reported success
-//
-ParserInline.prototype.skipToken = function (state) {
-  var ok, i, pos = state.pos,
-      rules = this.ruler.getRules(''),
-      len = rules.length,
-      maxNesting = state.md.options.maxNesting,
-      cache = state.cache;
-
-
-  if (typeof cache[pos] !== 'undefined') {
-    state.pos = cache[pos];
-    return;
-  }
-
-  if (state.level < maxNesting) {
-    for (i = 0; i < len; i++) {
-      // Increment state.level and decrement it later to limit recursion.
-      // It's harmless to do here, because no tokens are created. But ideally,
-      // we'd need a separate private state variable for this purpose.
-      //
-      state.level++;
-      ok = rules[i](state, true);
-      state.level--;
-
-      if (ok) { break; }
-    }
-  } else {
-    // Too much nesting, just skip until the end of the paragraph.
-    //
-    // NOTE: this will cause links to behave incorrectly in the following case,
-    //       when an amount of `[` is exactly equal to `maxNesting + 1`:
-    //
-    //       [[[[[[[[[[[[[[[[[[[[[foo]()
-    //
-    // TODO: remove this workaround when CM standard will allow nested links
-    //       (we can replace it by preventing links from being parsed in
-    //       validation mode)
-    //
-    state.pos = state.posMax;
-  }
-
-  if (!ok) { state.pos++; }
-  cache[pos] = state.pos;
-};
-
-
-// Generate tokens for input range
-//
-ParserInline.prototype.tokenize = function (state) {
-  var ok, i,
-      rules = this.ruler.getRules(''),
-      len = rules.length,
-      end = state.posMax,
-      maxNesting = state.md.options.maxNesting;
-
-  while (state.pos < end) {
-    // Try all possible rules.
-    // On success, rule should:
-    //
-    // - update `state.pos`
-    // - update `state.tokens`
-    // - return true
-
-    if (state.level < maxNesting) {
-      for (i = 0; i < len; i++) {
-        ok = rules[i](state, false);
-        if (ok) { break; }
-      }
-    }
-
-    if (ok) {
-      if (state.pos >= end) { break; }
-      continue;
-    }
-
-    state.pending += state.src[state.pos++];
-  }
-
-  if (state.pending) {
-    state.pushPending();
-  }
-};
-
-
-/**
- * ParserInline.parse(str, md, env, outTokens)
- *
- * Process input string and push inline tokens into `outTokens`
- **/
-ParserInline.prototype.parse = function (str, md, env, outTokens) {
-  var i, rules, len;
-  var state = new this.State(str, md, env, outTokens);
-
-  this.tokenize(state);
-
-  rules = this.ruler2.getRules('');
-  len = rules.length;
-
-  for (i = 0; i < len; i++) {
-    rules[i](state);
-  }
-};
-
-
-ParserInline.prototype.State = __webpack_require__(59);
-
-
-module.exports = ParserInline;
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Commonmark default options
-
-
-
-
-module.exports = {
-  options: {
-    html:         true,         // Enable HTML tags in source
-    xhtmlOut:     true,         // Use '/' to close single tags (<br />)
-    breaks:       false,        // Convert '\n' in paragraphs into <br>
-    langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert URL-like texts to links
-
-    // Enable some language-neutral replacements + quotes beautification
-    typographer:  false,
-
-    // Double + single quotes replacement pairs, when typographer enabled,
-    // and smartquotes on. Could be either a String or an Array.
-    //
-    // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
-    // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
-    quotes: '\u201c\u201d\u2018\u2019', /* “”‘’ */
-
-    // Highlighter function. Should return escaped HTML,
-    // or '' if the source string is not changed and should be escaped externaly.
-    // If result starts with <pre... internal wrapper is skipped.
-    //
-    // function (/*str, lang*/) { return ''; }
-    //
-    highlight: null,
-
-    maxNesting:   20            // Internal protection, recursion limit
-  },
-
-  components: {
-
-    core: {
-      rules: [
-        'normalize',
-        'block',
-        'inline'
-      ]
-    },
-
-    block: {
-      rules: [
-        'blockquote',
-        'code',
-        'fence',
-        'heading',
-        'hr',
-        'html_block',
-        'lheading',
-        'list',
-        'reference',
-        'paragraph'
-      ]
-    },
-
-    inline: {
-      rules: [
-        'autolink',
-        'backticks',
-        'emphasis',
-        'entity',
-        'escape',
-        'html_inline',
-        'image',
-        'link',
-        'newline',
-        'text'
-      ],
-      rules2: [
-        'balance_pairs',
-        'emphasis',
-        'text_collapse'
-      ]
-    }
-  }
-};
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// markdown-it default options
-
-
-
-
-module.exports = {
-  options: {
-    html:         false,        // Enable HTML tags in source
-    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
-    breaks:       false,        // Convert '\n' in paragraphs into <br>
-    langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert URL-like texts to links
-
-    // Enable some language-neutral replacements + quotes beautification
-    typographer:  false,
-
-    // Double + single quotes replacement pairs, when typographer enabled,
-    // and smartquotes on. Could be either a String or an Array.
-    //
-    // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
-    // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
-    quotes: '\u201c\u201d\u2018\u2019', /* “”‘’ */
-
-    // Highlighter function. Should return escaped HTML,
-    // or '' if the source string is not changed and should be escaped externaly.
-    // If result starts with <pre... internal wrapper is skipped.
-    //
-    // function (/*str, lang*/) { return ''; }
-    //
-    highlight: null,
-
-    maxNesting:   100            // Internal protection, recursion limit
-  },
-
-  components: {
-
-    core: {},
-    block: {},
-    inline: {}
-  }
-};
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// "Zero" preset, with nothing enabled. Useful for manual configuring of simple
-// modes. For example, to parse bold/italic only.
-
-
-
-
-module.exports = {
-  options: {
-    html:         false,        // Enable HTML tags in source
-    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
-    breaks:       false,        // Convert '\n' in paragraphs into <br>
-    langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert URL-like texts to links
-
-    // Enable some language-neutral replacements + quotes beautification
-    typographer:  false,
-
-    // Double + single quotes replacement pairs, when typographer enabled,
-    // and smartquotes on. Could be either a String or an Array.
-    //
-    // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
-    // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
-    quotes: '\u201c\u201d\u2018\u2019', /* “”‘’ */
-
-    // Highlighter function. Should return escaped HTML,
-    // or '' if the source string is not changed and should be escaped externaly.
-    // If result starts with <pre... internal wrapper is skipped.
-    //
-    // function (/*str, lang*/) { return ''; }
-    //
-    highlight: null,
-
-    maxNesting:   20            // Internal protection, recursion limit
-  },
-
-  components: {
-
-    core: {
-      rules: [
-        'normalize',
-        'block',
-        'inline'
-      ]
-    },
-
-    block: {
-      rules: [
-        'paragraph'
-      ]
-    },
-
-    inline: {
-      rules: [
-        'text'
-      ],
-      rules2: [
-        'balance_pairs',
-        'text_collapse'
-      ]
-    }
-  }
-};
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * class Renderer
- *
- * Generates HTML from parsed token stream. Each instance has independent
- * copy of rules. Those can be rewritten with ease. Also, you can add new
- * rules if you create plugin and adds new token types.
- **/
-
-
-
-var assign          = __webpack_require__(0).assign;
-var unescapeAll     = __webpack_require__(0).unescapeAll;
-var escapeHtml      = __webpack_require__(0).escapeHtml;
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-var default_rules = {};
-
-
-default_rules.code_inline = function (tokens, idx, options, env, slf) {
-  var token = tokens[idx];
-
-  return  '<code' + slf.renderAttrs(token) + '>' +
-          escapeHtml(tokens[idx].content) +
-          '</code>';
-};
-
-
-default_rules.code_block = function (tokens, idx, options, env, slf) {
-  var token = tokens[idx];
-
-  return  '<pre' + slf.renderAttrs(token) + '><code>' +
-          escapeHtml(tokens[idx].content) +
-          '</code></pre>\n';
-};
-
-
-default_rules.fence = function (tokens, idx, options, env, slf) {
-  var token = tokens[idx],
-      info = token.info ? unescapeAll(token.info).trim() : '',
-      langName = '',
-      highlighted, i, tmpAttrs, tmpToken;
-
-  if (info) {
-    langName = info.split(/\s+/g)[0];
-  }
-
-  if (options.highlight) {
-    highlighted = options.highlight(token.content, langName) || escapeHtml(token.content);
-  } else {
-    highlighted = escapeHtml(token.content);
-  }
-
-  if (highlighted.indexOf('<pre') === 0) {
-    return highlighted + '\n';
-  }
-
-  // If language exists, inject class gently, without mudofying original token.
-  // May be, one day we will add .clone() for token and simplify this part, but
-  // now we prefer to keep things local.
-  if (info) {
-    i        = token.attrIndex('class');
-    tmpAttrs = token.attrs ? token.attrs.slice() : [];
-
-    if (i < 0) {
-      tmpAttrs.push([ 'class', options.langPrefix + langName ]);
-    } else {
-      tmpAttrs[i][1] += ' ' + options.langPrefix + langName;
-    }
-
-    // Fake token just to render attributes
-    tmpToken = {
-      attrs: tmpAttrs
-    };
-
-    return  '<pre><code' + slf.renderAttrs(tmpToken) + '>'
-          + highlighted
-          + '</code></pre>\n';
-  }
-
-
-  return  '<pre><code' + slf.renderAttrs(token) + '>'
-        + highlighted
-        + '</code></pre>\n';
-};
-
-
-default_rules.image = function (tokens, idx, options, env, slf) {
-  var token = tokens[idx];
-
-  // "alt" attr MUST be set, even if empty. Because it's mandatory and
-  // should be placed on proper position for tests.
-  //
-  // Replace content with actual value
-
-  token.attrs[token.attrIndex('alt')][1] =
-    slf.renderInlineAsText(token.children, options, env);
-
-  return slf.renderToken(tokens, idx, options);
-};
-
-
-default_rules.hardbreak = function (tokens, idx, options /*, env */) {
-  return options.xhtmlOut ? '<br />\n' : '<br>\n';
-};
-default_rules.softbreak = function (tokens, idx, options /*, env */) {
-  return options.breaks ? (options.xhtmlOut ? '<br />\n' : '<br>\n') : '\n';
-};
-
-
-default_rules.text = function (tokens, idx /*, options, env */) {
-  return escapeHtml(tokens[idx].content);
-};
-
-
-default_rules.html_block = function (tokens, idx /*, options, env */) {
-  return tokens[idx].content;
-};
-default_rules.html_inline = function (tokens, idx /*, options, env */) {
-  return tokens[idx].content;
-};
-
-
-/**
- * new Renderer()
- *
- * Creates new [[Renderer]] instance and fill [[Renderer#rules]] with defaults.
- **/
-function Renderer() {
-
-  /**
-   * Renderer#rules -> Object
-   *
-   * Contains render rules for tokens. Can be updated and extended.
-   *
-   * ##### Example
-   *
-   * ```javascript
-   * var md = require('markdown-it')();
-   *
-   * md.renderer.rules.strong_open  = function () { return '<b>'; };
-   * md.renderer.rules.strong_close = function () { return '</b>'; };
-   *
-   * var result = md.renderInline(...);
-   * ```
-   *
-   * Each rule is called as independed static function with fixed signature:
-   *
-   * ```javascript
-   * function my_token_render(tokens, idx, options, env, renderer) {
-   *   // ...
-   *   return renderedHTML;
-   * }
-   * ```
-   *
-   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
-   * for more details and examples.
-   **/
-  this.rules = assign({}, default_rules);
-}
-
-
-/**
- * Renderer.renderAttrs(token) -> String
- *
- * Render token attributes to string.
- **/
-Renderer.prototype.renderAttrs = function renderAttrs(token) {
-  var i, l, result;
-
-  if (!token.attrs) { return ''; }
-
-  result = '';
-
-  for (i = 0, l = token.attrs.length; i < l; i++) {
-    result += ' ' + escapeHtml(token.attrs[i][0]) + '="' + escapeHtml(token.attrs[i][1]) + '"';
-  }
-
-  return result;
-};
-
-
-/**
- * Renderer.renderToken(tokens, idx, options) -> String
- * - tokens (Array): list of tokens
- * - idx (Numbed): token index to render
- * - options (Object): params of parser instance
- *
- * Default token renderer. Can be overriden by custom function
- * in [[Renderer#rules]].
- **/
-Renderer.prototype.renderToken = function renderToken(tokens, idx, options) {
-  var nextToken,
-      result = '',
-      needLf = false,
-      token = tokens[idx];
-
-  // Tight list paragraphs
-  if (token.hidden) {
-    return '';
-  }
-
-  // Insert a newline between hidden paragraph and subsequent opening
-  // block-level tag.
-  //
-  // For example, here we should insert a newline before blockquote:
-  //  - a
-  //    >
-  //
-  if (token.block && token.nesting !== -1 && idx && tokens[idx - 1].hidden) {
-    result += '\n';
-  }
-
-  // Add token name, e.g. `<img`
-  result += (token.nesting === -1 ? '</' : '<') + token.tag;
-
-  // Encode attributes, e.g. `<img src="foo"`
-  result += this.renderAttrs(token);
-
-  // Add a slash for self-closing tags, e.g. `<img src="foo" /`
-  if (token.nesting === 0 && options.xhtmlOut) {
-    result += ' /';
-  }
-
-  // Check if we need to add a newline after this tag
-  if (token.block) {
-    needLf = true;
-
-    if (token.nesting === 1) {
-      if (idx + 1 < tokens.length) {
-        nextToken = tokens[idx + 1];
-
-        if (nextToken.type === 'inline' || nextToken.hidden) {
-          // Block-level tag containing an inline tag.
-          //
-          needLf = false;
-
-        } else if (nextToken.nesting === -1 && nextToken.tag === token.tag) {
-          // Opening tag + closing tag of the same type. E.g. `<li></li>`.
-          //
-          needLf = false;
-        }
-      }
-    }
-  }
-
-  result += needLf ? '>\n' : '>';
-
-  return result;
-};
-
-
-/**
- * Renderer.renderInline(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to renter
- * - options (Object): params of parser instance
- * - env (Object): additional data from parsed input (references, for example)
- *
- * The same as [[Renderer.render]], but for single token of `inline` type.
- **/
-Renderer.prototype.renderInline = function (tokens, options, env) {
-  var type,
-      result = '',
-      rules = this.rules;
-
-  for (var i = 0, len = tokens.length; i < len; i++) {
-    type = tokens[i].type;
-
-    if (typeof rules[type] !== 'undefined') {
-      result += rules[type](tokens, i, options, env, this);
-    } else {
-      result += this.renderToken(tokens, i, options);
-    }
-  }
-
-  return result;
-};
-
-
-/** internal
- * Renderer.renderInlineAsText(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to renter
- * - options (Object): params of parser instance
- * - env (Object): additional data from parsed input (references, for example)
- *
- * Special kludge for image `alt` attributes to conform CommonMark spec.
- * Don't try to use it! Spec requires to show `alt` content with stripped markup,
- * instead of simple escaping.
- **/
-Renderer.prototype.renderInlineAsText = function (tokens, options, env) {
-  var result = '';
-
-  for (var i = 0, len = tokens.length; i < len; i++) {
-    if (tokens[i].type === 'text') {
-      result += tokens[i].content;
-    } else if (tokens[i].type === 'image') {
-      result += this.renderInlineAsText(tokens[i].children, options, env);
-    }
-  }
-
-  return result;
-};
-
-
-/**
- * Renderer.render(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to renter
- * - options (Object): params of parser instance
- * - env (Object): additional data from parsed input (references, for example)
- *
- * Takes token stream and generates HTML. Probably, you will never need to call
- * this method directly.
- **/
-Renderer.prototype.render = function (tokens, options, env) {
-  var i, len, type,
-      result = '',
-      rules = this.rules;
-
-  for (i = 0, len = tokens.length; i < len; i++) {
-    type = tokens[i].type;
-
-    if (type === 'inline') {
-      result += this.renderInline(tokens[i].children, options, env);
-    } else if (typeof rules[type] !== 'undefined') {
-      result += rules[tokens[i].type](tokens, i, options, env, this);
-    } else {
-      result += this.renderToken(tokens, i, options, env);
-    }
-  }
-
-  return result;
-};
-
-module.exports = Renderer;
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Block quotes
-
-
-
-var isSpace = __webpack_require__(0).isSpace;
-
-
-module.exports = function blockquote(state, startLine, endLine, silent) {
-  var adjustTab,
-      ch,
-      i,
-      initial,
-      l,
-      lastLineEmpty,
-      lines,
-      nextLine,
-      offset,
-      oldBMarks,
-      oldBSCount,
-      oldIndent,
-      oldParentType,
-      oldSCount,
-      oldTShift,
-      spaceAfterMarker,
-      terminate,
-      terminatorRules,
-      token,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  // check the block quote marker
-  if (state.src.charCodeAt(pos++) !== 0x3E/* > */) { return false; }
-
-  // we know that it's going to be a valid blockquote,
-  // so no point trying to find the end of it in silent mode
-  if (silent) { return true; }
-
-  oldIndent = state.blkIndent;
-  state.blkIndent = 0;
-
-  // skip spaces after ">" and re-calculate offset
-  initial = offset = state.sCount[startLine] + pos - (state.bMarks[startLine] + state.tShift[startLine]);
-
-  // skip one optional space after '>'
-  if (state.src.charCodeAt(pos) === 0x20 /* space */) {
-    // ' >   test '
-    //     ^ -- position start of line here:
-    pos++;
-    initial++;
-    offset++;
-    adjustTab = false;
-    spaceAfterMarker = true;
-  } else if (state.src.charCodeAt(pos) === 0x09 /* tab */) {
-    spaceAfterMarker = true;
-
-    if ((state.bsCount[startLine] + offset) % 4 === 3) {
-      // '  >\t  test '
-      //       ^ -- position start of line here (tab has width===1)
-      pos++;
-      initial++;
-      offset++;
-      adjustTab = false;
-    } else {
-      // ' >\t  test '
-      //    ^ -- position start of line here + shift bsCount slightly
-      //         to make extra space appear
-      adjustTab = true;
-    }
-  } else {
-    spaceAfterMarker = false;
-  }
-
-  oldBMarks = [ state.bMarks[startLine] ];
-  state.bMarks[startLine] = pos;
-
-  while (pos < max) {
-    ch = state.src.charCodeAt(pos);
-
-    if (isSpace(ch)) {
-      if (ch === 0x09) {
-        offset += 4 - (offset + state.bsCount[startLine] + (adjustTab ? 1 : 0)) % 4;
-      } else {
-        offset++;
-      }
-    } else {
-      break;
-    }
-
-    pos++;
-  }
-
-  oldBSCount = [ state.bsCount[startLine] ];
-  state.bsCount[startLine] = state.sCount[startLine] + 1 + (spaceAfterMarker ? 1 : 0);
-
-  lastLineEmpty = pos >= max;
-
-  oldSCount = [ state.sCount[startLine] ];
-  state.sCount[startLine] = offset - initial;
-
-  oldTShift = [ state.tShift[startLine] ];
-  state.tShift[startLine] = pos - state.bMarks[startLine];
-
-  terminatorRules = state.md.block.ruler.getRules('blockquote');
-
-  oldParentType = state.parentType;
-  state.parentType = 'blockquote';
-
-  // Search the end of the block
-  //
-  // Block ends with either:
-  //  1. an empty line outside:
-  //     ```
-  //     > test
-  //
-  //     ```
-  //  2. an empty line inside:
-  //     ```
-  //     >
-  //     test
-  //     ```
-  //  3. another tag
-  //     ```
-  //     > test
-  //      - - -
-  //     ```
-  for (nextLine = startLine + 1; nextLine < endLine; nextLine++) {
-    if (state.sCount[nextLine] < oldIndent) { break; }
-
-    pos = state.bMarks[nextLine] + state.tShift[nextLine];
-    max = state.eMarks[nextLine];
-
-    if (pos >= max) {
-      // Case 1: line is not inside the blockquote, and this line is empty.
-      break;
-    }
-
-    if (state.src.charCodeAt(pos++) === 0x3E/* > */) {
-      // This line is inside the blockquote.
-
-      // skip spaces after ">" and re-calculate offset
-      initial = offset = state.sCount[nextLine] + pos - (state.bMarks[nextLine] + state.tShift[nextLine]);
-
-      // skip one optional space after '>'
-      if (state.src.charCodeAt(pos) === 0x20 /* space */) {
-        // ' >   test '
-        //     ^ -- position start of line here:
-        pos++;
-        initial++;
-        offset++;
-        adjustTab = false;
-        spaceAfterMarker = true;
-      } else if (state.src.charCodeAt(pos) === 0x09 /* tab */) {
-        spaceAfterMarker = true;
-
-        if ((state.bsCount[nextLine] + offset) % 4 === 3) {
-          // '  >\t  test '
-          //       ^ -- position start of line here (tab has width===1)
-          pos++;
-          initial++;
-          offset++;
-          adjustTab = false;
-        } else {
-          // ' >\t  test '
-          //    ^ -- position start of line here + shift bsCount slightly
-          //         to make extra space appear
-          adjustTab = true;
-        }
-      } else {
-        spaceAfterMarker = false;
-      }
-
-      oldBMarks.push(state.bMarks[nextLine]);
-      state.bMarks[nextLine] = pos;
-
-      while (pos < max) {
-        ch = state.src.charCodeAt(pos);
-
-        if (isSpace(ch)) {
-          if (ch === 0x09) {
-            offset += 4 - (offset + state.bsCount[nextLine] + (adjustTab ? 1 : 0)) % 4;
-          } else {
-            offset++;
-          }
-        } else {
-          break;
-        }
-
-        pos++;
-      }
-
-      lastLineEmpty = pos >= max;
-
-      oldBSCount.push(state.bsCount[nextLine]);
-      state.bsCount[nextLine] = state.sCount[nextLine] + 1 + (spaceAfterMarker ? 1 : 0);
-
-      oldSCount.push(state.sCount[nextLine]);
-      state.sCount[nextLine] = offset - initial;
-
-      oldTShift.push(state.tShift[nextLine]);
-      state.tShift[nextLine] = pos - state.bMarks[nextLine];
-      continue;
-    }
-
-    // Case 2: line is not inside the blockquote, and the last line was empty.
-    if (lastLineEmpty) { break; }
-
-    // Case 3: another tag found.
-    terminate = false;
-    for (i = 0, l = terminatorRules.length; i < l; i++) {
-      if (terminatorRules[i](state, nextLine, endLine, true)) {
-        terminate = true;
-        break;
-      }
-    }
-    if (terminate) { break; }
-
-    oldBMarks.push(state.bMarks[nextLine]);
-    oldBSCount.push(state.bsCount[nextLine]);
-    oldTShift.push(state.tShift[nextLine]);
-    oldSCount.push(state.sCount[nextLine]);
-
-    // A negative indentation means that this is a paragraph continuation
-    //
-    state.sCount[nextLine] = -1;
-  }
-
-  token        = state.push('blockquote_open', 'blockquote', 1);
-  token.markup = '>';
-  token.map    = lines = [ startLine, 0 ];
-
-  state.md.block.tokenize(state, startLine, nextLine);
-
-  token        = state.push('blockquote_close', 'blockquote', -1);
-  token.markup = '>';
-
-  state.parentType = oldParentType;
-  lines[1] = state.line;
-
-  // Restore original tShift; this might not be necessary since the parser
-  // has already been here, but just to make sure we can do that.
-  for (i = 0; i < oldTShift.length; i++) {
-    state.bMarks[i + startLine] = oldBMarks[i];
-    state.tShift[i + startLine] = oldTShift[i];
-    state.sCount[i + startLine] = oldSCount[i];
-    state.bsCount[i + startLine] = oldBSCount[i];
-  }
-  state.blkIndent = oldIndent;
-
-  return true;
-};
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Code block (4 spaces padded)
-
-
-
-
-module.exports = function code(state, startLine, endLine/*, silent*/) {
-  var nextLine, last, token;
-
-  if (state.sCount[startLine] - state.blkIndent < 4) { return false; }
-
-  last = nextLine = startLine + 1;
-
-  while (nextLine < endLine) {
-    if (state.isEmpty(nextLine)) {
-      nextLine++;
-      continue;
-    }
-
-    if (state.sCount[nextLine] - state.blkIndent >= 4) {
-      nextLine++;
-      last = nextLine;
-      continue;
-    }
-    break;
-  }
-
-  state.line = last;
-
-  token         = state.push('code_block', 'code', 0);
-  token.content = state.getLines(startLine, last, 4 + state.blkIndent, true);
-  token.map     = [ startLine, state.line ];
-
-  return true;
-};
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// fences (``` lang, ~~~ lang)
-
-
-
-
-module.exports = function fence(state, startLine, endLine, silent) {
-  var marker, len, params, nextLine, mem, token, markup,
-      haveEndMarker = false,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  if (pos + 3 > max) { return false; }
-
-  marker = state.src.charCodeAt(pos);
-
-  if (marker !== 0x7E/* ~ */ && marker !== 0x60 /* ` */) {
-    return false;
-  }
-
-  // scan marker length
-  mem = pos;
-  pos = state.skipChars(pos, marker);
-
-  len = pos - mem;
-
-  if (len < 3) { return false; }
-
-  markup = state.src.slice(mem, pos);
-  params = state.src.slice(pos, max);
-
-  if (params.indexOf(String.fromCharCode(marker)) >= 0) { return false; }
-
-  // Since start is found, we can report success here in validation mode
-  if (silent) { return true; }
-
-  // search end of block
-  nextLine = startLine;
-
-  for (;;) {
-    nextLine++;
-    if (nextLine >= endLine) {
-      // unclosed block should be autoclosed by end of document.
-      // also block seems to be autoclosed by end of parent
-      break;
-    }
-
-    pos = mem = state.bMarks[nextLine] + state.tShift[nextLine];
-    max = state.eMarks[nextLine];
-
-    if (pos < max && state.sCount[nextLine] < state.blkIndent) {
-      // non-empty line with negative indent should stop the list:
-      // - ```
-      //  test
-      break;
-    }
-
-    if (state.src.charCodeAt(pos) !== marker) { continue; }
-
-    if (state.sCount[nextLine] - state.blkIndent >= 4) {
-      // closing fence should be indented less than 4 spaces
-      continue;
-    }
-
-    pos = state.skipChars(pos, marker);
-
-    // closing code fence must be at least as long as the opening one
-    if (pos - mem < len) { continue; }
-
-    // make sure tail has spaces only
-    pos = state.skipSpaces(pos);
-
-    if (pos < max) { continue; }
-
-    haveEndMarker = true;
-    // found!
-    break;
-  }
-
-  // If a fence has heading spaces, they should be removed from its inner block
-  len = state.sCount[startLine];
-
-  state.line = nextLine + (haveEndMarker ? 1 : 0);
-
-  token         = state.push('fence', 'code', 0);
-  token.info    = params;
-  token.content = state.getLines(startLine + 1, nextLine, len, true);
-  token.markup  = markup;
-  token.map     = [ startLine, state.line ];
-
-  return true;
-};
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// heading (#, ##, ...)
-
-
-
-var isSpace = __webpack_require__(0).isSpace;
-
-
-module.exports = function heading(state, startLine, endLine, silent) {
-  var ch, level, tmp, token,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  ch  = state.src.charCodeAt(pos);
-
-  if (ch !== 0x23/* # */ || pos >= max) { return false; }
-
-  // count heading level
-  level = 1;
-  ch = state.src.charCodeAt(++pos);
-  while (ch === 0x23/* # */ && pos < max && level <= 6) {
-    level++;
-    ch = state.src.charCodeAt(++pos);
-  }
-
-  if (level > 6 || (pos < max && !isSpace(ch))) { return false; }
-
-  if (silent) { return true; }
-
-  // Let's cut tails like '    ###  ' from the end of string
-
-  max = state.skipSpacesBack(max, pos);
-  tmp = state.skipCharsBack(max, 0x23, pos); // #
-  if (tmp > pos && isSpace(state.src.charCodeAt(tmp - 1))) {
-    max = tmp;
-  }
-
-  state.line = startLine + 1;
-
-  token        = state.push('heading_open', 'h' + String(level), 1);
-  token.markup = '########'.slice(0, level);
-  token.map    = [ startLine, state.line ];
-
-  token          = state.push('inline', '', 0);
-  token.content  = state.src.slice(pos, max).trim();
-  token.map      = [ startLine, state.line ];
-  token.children = [];
-
-  token        = state.push('heading_close', 'h' + String(level), -1);
-  token.markup = '########'.slice(0, level);
-
-  return true;
-};
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Horizontal rule
-
-
-
-var isSpace = __webpack_require__(0).isSpace;
-
-
-module.exports = function hr(state, startLine, endLine, silent) {
-  var marker, cnt, ch, token,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  marker = state.src.charCodeAt(pos++);
-
-  // Check hr marker
-  if (marker !== 0x2A/* * */ &&
-      marker !== 0x2D/* - */ &&
-      marker !== 0x5F/* _ */) {
-    return false;
-  }
-
-  // markers can be mixed with spaces, but there should be at least 3 of them
-
-  cnt = 1;
-  while (pos < max) {
-    ch = state.src.charCodeAt(pos++);
-    if (ch !== marker && !isSpace(ch)) { return false; }
-    if (ch === marker) { cnt++; }
-  }
-
-  if (cnt < 3) { return false; }
-
-  if (silent) { return true; }
-
-  state.line = startLine + 1;
-
-  token        = state.push('hr', 'hr', 0);
-  token.map    = [ startLine, state.line ];
-  token.markup = Array(cnt + 1).join(String.fromCharCode(marker));
-
-  return true;
-};
-
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// HTML block
-
-
-
-
-var block_names = __webpack_require__(18);
-var HTML_OPEN_CLOSE_TAG_RE = __webpack_require__(5).HTML_OPEN_CLOSE_TAG_RE;
-
-// An array of opening and corresponding closing sequences for html tags,
-// last argument defines whether it can terminate a paragraph or not
-//
-var HTML_SEQUENCES = [
-  [ /^<(script|pre|style)(?=(\s|>|$))/i, /<\/(script|pre|style)>/i, true ],
-  [ /^<!--/,        /-->/,   true ],
-  [ /^<\?/,         /\?>/,   true ],
-  [ /^<![A-Z]/,     />/,     true ],
-  [ /^<!\[CDATA\[/, /\]\]>/, true ],
-  [ new RegExp('^</?(' + block_names.join('|') + ')(?=(\\s|/?>|$))', 'i'), /^$/, true ],
-  [ new RegExp(HTML_OPEN_CLOSE_TAG_RE.source + '\\s*$'),  /^$/, false ]
-];
-
-
-module.exports = function html_block(state, startLine, endLine, silent) {
-  var i, nextLine, token, lineText,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  if (!state.md.options.html) { return false; }
-
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
-
-  lineText = state.src.slice(pos, max);
-
-  for (i = 0; i < HTML_SEQUENCES.length; i++) {
-    if (HTML_SEQUENCES[i][0].test(lineText)) { break; }
-  }
-
-  if (i === HTML_SEQUENCES.length) { return false; }
-
-  if (silent) {
-    // true if this sequence can be a terminator, false otherwise
-    return HTML_SEQUENCES[i][2];
-  }
-
-  nextLine = startLine + 1;
-
-  // If we are here - we detected HTML block.
-  // Let's roll down till block end.
-  if (!HTML_SEQUENCES[i][1].test(lineText)) {
-    for (; nextLine < endLine; nextLine++) {
-      if (state.sCount[nextLine] < state.blkIndent) { break; }
-
-      pos = state.bMarks[nextLine] + state.tShift[nextLine];
-      max = state.eMarks[nextLine];
-      lineText = state.src.slice(pos, max);
-
-      if (HTML_SEQUENCES[i][1].test(lineText)) {
-        if (lineText.length !== 0) { nextLine++; }
-        break;
-      }
-    }
-  }
-
-  state.line = nextLine;
-
-  token         = state.push('html_block', '', 0);
-  token.map     = [ startLine, nextLine ];
-  token.content = state.getLines(startLine, nextLine, state.blkIndent, true);
-
-  return true;
-};
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// lheading (---, ===)
-
-
-
-
-module.exports = function lheading(state, startLine, endLine/*, silent*/) {
-  var content, terminate, i, l, token, pos, max, level, marker,
-      nextLine = startLine + 1, oldParentType,
-      terminatorRules = state.md.block.ruler.getRules('paragraph');
-
-  oldParentType = state.parentType;
-  state.parentType = 'paragraph'; // use paragraph to match terminatorRules
-
-  // jump line-by-line until empty one or EOF
-  for (; nextLine < endLine && !state.isEmpty(nextLine); nextLine++) {
-    // this would be a code block normally, but after paragraph
-    // it's considered a lazy continuation regardless of what's there
-    if (state.sCount[nextLine] - state.blkIndent > 3) { continue; }
-
-    //
-    // Check for underline in setext header
-    //
-    if (state.sCount[nextLine] >= state.blkIndent) {
-      pos = state.bMarks[nextLine] + state.tShift[nextLine];
-      max = state.eMarks[nextLine];
-
-      if (pos < max) {
-        marker = state.src.charCodeAt(pos);
-
-        if (marker === 0x2D/* - */ || marker === 0x3D/* = */) {
-          pos = state.skipChars(pos, marker);
-          pos = state.skipSpaces(pos);
-
-          if (pos >= max) {
-            level = (marker === 0x3D/* = */ ? 1 : 2);
-            break;
-          }
-        }
-      }
-    }
-
-    // quirk for blockquotes, this line should already be checked by that rule
-    if (state.sCount[nextLine] < 0) { continue; }
-
-    // Some tags can terminate paragraph without empty line.
-    terminate = false;
-    for (i = 0, l = terminatorRules.length; i < l; i++) {
-      if (terminatorRules[i](state, nextLine, endLine, true)) {
-        terminate = true;
-        break;
-      }
-    }
-    if (terminate) { break; }
-  }
-
-  if (!level) {
-    // Didn't find valid underline
-    return false;
-  }
-
-  content = state.getLines(startLine, nextLine, state.blkIndent, false).trim();
-
-  state.line = nextLine + 1;
-
-  token          = state.push('heading_open', 'h' + String(level), 1);
-  token.markup   = String.fromCharCode(marker);
-  token.map      = [ startLine, state.line ];
-
-  token          = state.push('inline', '', 0);
-  token.content  = content;
-  token.map      = [ startLine, state.line - 1 ];
-  token.children = [];
-
-  token          = state.push('heading_close', 'h' + String(level), -1);
-  token.markup   = String.fromCharCode(marker);
-
-  state.parentType = oldParentType;
-
-  return true;
-};
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Lists
-
-
-
-var isSpace = __webpack_require__(0).isSpace;
-
-
-// Search `[-+*][\n ]`, returns next pos arter marker on success
-// or -1 on fail.
-function skipBulletListMarker(state, startLine) {
-  var marker, pos, max, ch;
-
-  pos = state.bMarks[startLine] + state.tShift[startLine];
-  max = state.eMarks[startLine];
-
-  marker = state.src.charCodeAt(pos++);
-  // Check bullet
-  if (marker !== 0x2A/* * */ &&
-      marker !== 0x2D/* - */ &&
-      marker !== 0x2B/* + */) {
-    return -1;
-  }
-
-  if (pos < max) {
-    ch = state.src.charCodeAt(pos);
-
-    if (!isSpace(ch)) {
-      // " -test " - is not a list item
-      return -1;
-    }
-  }
-
-  return pos;
-}
-
-// Search `\d+[.)][\n ]`, returns next pos arter marker on success
-// or -1 on fail.
-function skipOrderedListMarker(state, startLine) {
-  var ch,
-      start = state.bMarks[startLine] + state.tShift[startLine],
-      pos = start,
-      max = state.eMarks[startLine];
-
-  // List marker should have at least 2 chars (digit + dot)
-  if (pos + 1 >= max) { return -1; }
-
-  ch = state.src.charCodeAt(pos++);
-
-  if (ch < 0x30/* 0 */ || ch > 0x39/* 9 */) { return -1; }
-
-  for (;;) {
-    // EOL -> fail
-    if (pos >= max) { return -1; }
-
-    ch = state.src.charCodeAt(pos++);
-
-    if (ch >= 0x30/* 0 */ && ch <= 0x39/* 9 */) {
-
-      // List marker should have no more than 9 digits
-      // (prevents integer overflow in browsers)
-      if (pos - start >= 10) { return -1; }
-
-      continue;
-    }
-
-    // found valid marker
-    if (ch === 0x29/* ) */ || ch === 0x2e/* . */) {
-      break;
-    }
-
-    return -1;
-  }
-
-
-  if (pos < max) {
-    ch = state.src.charCodeAt(pos);
-
-    if (!isSpace(ch)) {
-      // " 1.test " - is not a list item
-      return -1;
-    }
-  }
-  return pos;
-}
-
-function markTightParagraphs(state, idx) {
-  var i, l,
-      level = state.level + 2;
-
-  for (i = idx + 2, l = state.tokens.length - 2; i < l; i++) {
-    if (state.tokens[i].level === level && state.tokens[i].type === 'paragraph_open') {
-      state.tokens[i + 2].hidden = true;
-      state.tokens[i].hidden = true;
-      i += 2;
-    }
-  }
-}
-
-
-module.exports = function list(state, startLine, endLine, silent) {
-  var ch,
-      contentStart,
-      i,
-      indent,
-      indentAfterMarker,
-      initial,
-      isOrdered,
-      itemLines,
-      l,
-      listLines,
-      listTokIdx,
-      markerCharCode,
-      markerValue,
-      max,
-      nextLine,
-      offset,
-      oldIndent,
-      oldLIndent,
-      oldParentType,
-      oldTShift,
-      oldTight,
-      pos,
-      posAfterMarker,
-      prevEmptyEnd,
-      start,
-      terminate,
-      terminatorRules,
-      token,
-      isTerminatingParagraph = false,
-      tight = true;
-
-  // limit conditions when list can interrupt
-  // a paragraph (validation mode only)
-  if (silent && state.parentType === 'paragraph') {
-    // Next list item should still terminate previous list item;
-    //
-    // This code can fail if plugins use blkIndent as well as lists,
-    // but I hope the spec gets fixed long before that happens.
-    //
-    if (state.tShift[startLine] >= state.blkIndent) {
-      isTerminatingParagraph = true;
-    }
-  }
-
-  // Detect list type and position after marker
-  if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
-    isOrdered = true;
-    start = state.bMarks[startLine] + state.tShift[startLine];
-    markerValue = Number(state.src.substr(start, posAfterMarker - start - 1));
-
-    // If we're starting a new ordered list right after
-    // a paragraph, it should start with 1.
-    if (isTerminatingParagraph && markerValue !== 1) return false;
-
-  } else if ((posAfterMarker = skipBulletListMarker(state, startLine)) >= 0) {
-    isOrdered = false;
-
-  } else {
-    return false;
-  }
-
-  // If we're starting a new unordered list right after
-  // a paragraph, first line should not be empty.
-  if (isTerminatingParagraph) {
-    if (state.skipSpaces(posAfterMarker) >= state.eMarks[startLine]) return false;
-  }
-
-  // We should terminate list on style change. Remember first one to compare.
-  markerCharCode = state.src.charCodeAt(posAfterMarker - 1);
-
-  // For validation mode we can terminate immediately
-  if (silent) { return true; }
-
-  // Start list
-  listTokIdx = state.tokens.length;
-
-  if (isOrdered) {
-    token       = state.push('ordered_list_open', 'ol', 1);
-    if (markerValue !== 1) {
-      token.attrs = [ [ 'start', markerValue ] ];
-    }
-
-  } else {
-    token       = state.push('bullet_list_open', 'ul', 1);
-  }
-
-  token.map    = listLines = [ startLine, 0 ];
-  token.markup = String.fromCharCode(markerCharCode);
-
-  //
-  // Iterate list items
-  //
-
-  nextLine = startLine;
-  prevEmptyEnd = false;
-  terminatorRules = state.md.block.ruler.getRules('list');
-
-  oldParentType = state.parentType;
-  state.parentType = 'list';
-
-  while (nextLine < endLine) {
-    pos = posAfterMarker;
-    max = state.eMarks[nextLine];
-
-    initial = offset = state.sCount[nextLine] + posAfterMarker - (state.bMarks[startLine] + state.tShift[startLine]);
-
-    while (pos < max) {
-      ch = state.src.charCodeAt(pos);
-
-      if (isSpace(ch)) {
-        if (ch === 0x09) {
-          offset += 4 - (offset + state.bsCount[nextLine]) % 4;
-        } else {
-          offset++;
-        }
-      } else {
-        break;
-      }
-
-      pos++;
-    }
-
-    contentStart = pos;
-
-    if (contentStart >= max) {
-      // trimming space in "-    \n  3" case, indent is 1 here
-      indentAfterMarker = 1;
-    } else {
-      indentAfterMarker = offset - initial;
-    }
-
-    // If we have more than 4 spaces, the indent is 1
-    // (the rest is just indented code block)
-    if (indentAfterMarker > 4) { indentAfterMarker = 1; }
-
-    // "  -  test"
-    //  ^^^^^ - calculating total length of this thing
-    indent = initial + indentAfterMarker;
-
-    // Run subparser & write tokens
-    token        = state.push('list_item_open', 'li', 1);
-    token.markup = String.fromCharCode(markerCharCode);
-    token.map    = itemLines = [ startLine, 0 ];
-
-    oldIndent = state.blkIndent;
-    oldTight = state.tight;
-    oldTShift = state.tShift[startLine];
-    oldLIndent = state.sCount[startLine];
-    state.blkIndent = indent;
-    state.tight = true;
-    state.tShift[startLine] = contentStart - state.bMarks[startLine];
-    state.sCount[startLine] = offset;
-
-    if (contentStart >= max && state.isEmpty(startLine + 1)) {
-      // workaround for this case
-      // (list item is empty, list terminates before "foo"):
-      // ~~~~~~~~
-      //   -
-      //
-      //     foo
-      // ~~~~~~~~
-      state.line = Math.min(state.line + 2, endLine);
-    } else {
-      state.md.block.tokenize(state, startLine, endLine, true);
-    }
-
-    // If any of list item is tight, mark list as tight
-    if (!state.tight || prevEmptyEnd) {
-      tight = false;
-    }
-    // Item become loose if finish with empty line,
-    // but we should filter last element, because it means list finish
-    prevEmptyEnd = (state.line - startLine) > 1 && state.isEmpty(state.line - 1);
-
-    state.blkIndent = oldIndent;
-    state.tShift[startLine] = oldTShift;
-    state.sCount[startLine] = oldLIndent;
-    state.tight = oldTight;
-
-    token        = state.push('list_item_close', 'li', -1);
-    token.markup = String.fromCharCode(markerCharCode);
-
-    nextLine = startLine = state.line;
-    itemLines[1] = nextLine;
-    contentStart = state.bMarks[startLine];
-
-    if (nextLine >= endLine) { break; }
-
-    //
-    // Try to check if list is terminated or continued.
-    //
-    if (state.sCount[nextLine] < state.blkIndent) { break; }
-
-    // fail if terminating block found
-    terminate = false;
-    for (i = 0, l = terminatorRules.length; i < l; i++) {
-      if (terminatorRules[i](state, nextLine, endLine, true)) {
-        terminate = true;
-        break;
-      }
-    }
-    if (terminate) { break; }
-
-    // fail if list has another type
-    if (isOrdered) {
-      posAfterMarker = skipOrderedListMarker(state, nextLine);
-      if (posAfterMarker < 0) { break; }
-    } else {
-      posAfterMarker = skipBulletListMarker(state, nextLine);
-      if (posAfterMarker < 0) { break; }
-    }
-
-    if (markerCharCode !== state.src.charCodeAt(posAfterMarker - 1)) { break; }
-  }
-
-  // Finilize list
-  if (isOrdered) {
-    token = state.push('ordered_list_close', 'ol', -1);
-  } else {
-    token = state.push('bullet_list_close', 'ul', -1);
-  }
-  token.markup = String.fromCharCode(markerCharCode);
-
-  listLines[1] = nextLine;
-  state.line = nextLine;
-
-  state.parentType = oldParentType;
-
-  // mark paragraphs tight if needed
-  if (tight) {
-    markTightParagraphs(state, listTokIdx);
-  }
-
-  return true;
-};
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Paragraph
-
-
-
-
-module.exports = function paragraph(state, startLine/*, endLine*/) {
-  var content, terminate, i, l, token, oldParentType,
-      nextLine = startLine + 1,
-      terminatorRules = state.md.block.ruler.getRules('paragraph'),
-      endLine = state.lineMax;
-
-  oldParentType = state.parentType;
-  state.parentType = 'paragraph';
-
-  // jump line-by-line until empty one or EOF
-  for (; nextLine < endLine && !state.isEmpty(nextLine); nextLine++) {
-    // this would be a code block normally, but after paragraph
-    // it's considered a lazy continuation regardless of what's there
-    if (state.sCount[nextLine] - state.blkIndent > 3) { continue; }
-
-    // quirk for blockquotes, this line should already be checked by that rule
-    if (state.sCount[nextLine] < 0) { continue; }
-
-    // Some tags can terminate paragraph without empty line.
-    terminate = false;
-    for (i = 0, l = terminatorRules.length; i < l; i++) {
-      if (terminatorRules[i](state, nextLine, endLine, true)) {
-        terminate = true;
-        break;
-      }
-    }
-    if (terminate) { break; }
-  }
-
-  content = state.getLines(startLine, nextLine, state.blkIndent, false).trim();
-
-  state.line = nextLine;
-
-  token          = state.push('paragraph_open', 'p', 1);
-  token.map      = [ startLine, state.line ];
-
-  token          = state.push('inline', '', 0);
-  token.content  = content;
-  token.map      = [ startLine, state.line ];
-  token.children = [];
-
-  token          = state.push('paragraph_close', 'p', -1);
-
-  state.parentType = oldParentType;
-
-  return true;
-};
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-var normalizeReference   = __webpack_require__(0).normalizeReference;
-var isSpace              = __webpack_require__(0).isSpace;
-
-
-module.exports = function reference(state, startLine, _endLine, silent) {
-  var ch,
-      destEndPos,
-      destEndLineNo,
-      endLine,
-      href,
-      i,
-      l,
-      label,
-      labelEnd,
-      oldParentType,
-      res,
-      start,
-      str,
-      terminate,
-      terminatorRules,
-      title,
-      lines = 0,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine],
-      nextLine = startLine + 1;
-
-  if (state.src.charCodeAt(pos) !== 0x5B/* [ */) { return false; }
-
-  // Simple check to quickly interrupt scan on [link](url) at the start of line.
-  // Can be useful on practice: https://github.com/markdown-it/markdown-it/issues/54
-  while (++pos < max) {
-    if (state.src.charCodeAt(pos) === 0x5D /* ] */ &&
-        state.src.charCodeAt(pos - 1) !== 0x5C/* \ */) {
-      if (pos + 1 === max) { return false; }
-      if (state.src.charCodeAt(pos + 1) !== 0x3A/* : */) { return false; }
-      break;
-    }
-  }
-
-  endLine = state.lineMax;
-
-  // jump line-by-line until empty one or EOF
-  terminatorRules = state.md.block.ruler.getRules('reference');
-
-  oldParentType = state.parentType;
-  state.parentType = 'reference';
-
-  for (; nextLine < endLine && !state.isEmpty(nextLine); nextLine++) {
-    // this would be a code block normally, but after paragraph
-    // it's considered a lazy continuation regardless of what's there
-    if (state.sCount[nextLine] - state.blkIndent > 3) { continue; }
-
-    // quirk for blockquotes, this line should already be checked by that rule
-    if (state.sCount[nextLine] < 0) { continue; }
-
-    // Some tags can terminate paragraph without empty line.
-    terminate = false;
-    for (i = 0, l = terminatorRules.length; i < l; i++) {
-      if (terminatorRules[i](state, nextLine, endLine, true)) {
-        terminate = true;
-        break;
-      }
-    }
-    if (terminate) { break; }
-  }
-
-  str = state.getLines(startLine, nextLine, state.blkIndent, false).trim();
-  max = str.length;
-
-  for (pos = 1; pos < max; pos++) {
-    ch = str.charCodeAt(pos);
-    if (ch === 0x5B /* [ */) {
-      return false;
-    } else if (ch === 0x5D /* ] */) {
-      labelEnd = pos;
-      break;
-    } else if (ch === 0x0A /* \n */) {
-      lines++;
-    } else if (ch === 0x5C /* \ */) {
-      pos++;
-      if (pos < max && str.charCodeAt(pos) === 0x0A) {
-        lines++;
-      }
-    }
-  }
-
-  if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 0x3A/* : */) { return false; }
-
-  // [label]:   destination   'title'
-  //         ^^^ skip optional whitespace here
-  for (pos = labelEnd + 2; pos < max; pos++) {
-    ch = str.charCodeAt(pos);
-    if (ch === 0x0A) {
-      lines++;
-    } else if (isSpace(ch)) {
-      /*eslint no-empty:0*/
-    } else {
-      break;
-    }
-  }
-
-  // [label]:   destination   'title'
-  //            ^^^^^^^^^^^ parse this
-  res = state.md.helpers.parseLinkDestination(str, pos, max);
-  if (!res.ok) { return false; }
-
-  href = state.md.normalizeLink(res.str);
-  if (!state.md.validateLink(href)) { return false; }
-
-  pos = res.pos;
-  lines += res.lines;
-
-  // save cursor state, we could require to rollback later
-  destEndPos = pos;
-  destEndLineNo = lines;
-
-  // [label]:   destination   'title'
-  //                       ^^^ skipping those spaces
-  start = pos;
-  for (; pos < max; pos++) {
-    ch = str.charCodeAt(pos);
-    if (ch === 0x0A) {
-      lines++;
-    } else if (isSpace(ch)) {
-      /*eslint no-empty:0*/
-    } else {
-      break;
-    }
-  }
-
-  // [label]:   destination   'title'
-  //                          ^^^^^^^ parse this
-  res = state.md.helpers.parseLinkTitle(str, pos, max);
-  if (pos < max && start !== pos && res.ok) {
-    title = res.str;
-    pos = res.pos;
-    lines += res.lines;
-  } else {
-    title = '';
-    pos = destEndPos;
-    lines = destEndLineNo;
-  }
-
-  // skip trailing spaces until the rest of the line
-  while (pos < max) {
-    ch = str.charCodeAt(pos);
-    if (!isSpace(ch)) { break; }
-    pos++;
-  }
-
-  if (pos < max && str.charCodeAt(pos) !== 0x0A) {
-    if (title) {
-      // garbage at the end of the line after title,
-      // but it could still be a valid reference if we roll back
-      title = '';
-      pos = destEndPos;
-      lines = destEndLineNo;
-      while (pos < max) {
-        ch = str.charCodeAt(pos);
-        if (!isSpace(ch)) { break; }
-        pos++;
-      }
-    }
-  }
-
-  if (pos < max && str.charCodeAt(pos) !== 0x0A) {
-    // garbage at the end of the line
-    return false;
-  }
-
-  label = normalizeReference(str.slice(1, labelEnd));
-  if (!label) {
-    // CommonMark 0.20 disallows empty labels
-    return false;
-  }
-
-  // Reference can not terminate anything. This check is for safety only.
-  /*istanbul ignore if*/
-  if (silent) { return true; }
-
-  if (typeof state.env.references === 'undefined') {
-    state.env.references = {};
-  }
-  if (typeof state.env.references[label] === 'undefined') {
-    state.env.references[label] = { title: title, href: href };
-  }
-
-  state.parentType = oldParentType;
-
-  state.line = startLine + lines + 1;
-  return true;
-};
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Parser state class
-
-
-
-var Token = __webpack_require__(2);
-var isSpace = __webpack_require__(0).isSpace;
-
-
-function StateBlock(src, md, env, tokens) {
-  var ch, s, start, pos, len, indent, offset, indent_found;
-
-  this.src = src;
-
-  // link to parser instance
-  this.md     = md;
-
-  this.env = env;
-
-  //
-  // Internal state vartiables
-  //
-
-  this.tokens = tokens;
-
-  this.bMarks = [];  // line begin offsets for fast jumps
-  this.eMarks = [];  // line end offsets for fast jumps
-  this.tShift = [];  // offsets of the first non-space characters (tabs not expanded)
-  this.sCount = [];  // indents for each line (tabs expanded)
-
-  // An amount of virtual spaces (tabs expanded) between beginning
-  // of each line (bMarks) and real beginning of that line.
-  //
-  // It exists only as a hack because blockquotes override bMarks
-  // losing information in the process.
-  //
-  // It's used only when expanding tabs, you can think about it as
-  // an initial tab length, e.g. bsCount=21 applied to string `\t123`
-  // means first tab should be expanded to 4-21%4 === 3 spaces.
-  //
-  this.bsCount = [];
-
-  // block parser variables
-  this.blkIndent  = 0; // required block content indent
-                       // (for example, if we are in list)
-  this.line       = 0; // line index in src
-  this.lineMax    = 0; // lines count
-  this.tight      = false;  // loose/tight mode for lists
-  this.ddIndent   = -1; // indent of the current dd block (-1 if there isn't any)
-
-  // can be 'blockquote', 'list', 'root', 'paragraph' or 'reference'
-  // used in lists to determine if they interrupt a paragraph
-  this.parentType = 'root';
-
-  this.level = 0;
-
-  // renderer
-  this.result = '';
-
-  // Create caches
-  // Generate markers.
-  s = this.src;
-  indent_found = false;
-
-  for (start = pos = indent = offset = 0, len = s.length; pos < len; pos++) {
-    ch = s.charCodeAt(pos);
-
-    if (!indent_found) {
-      if (isSpace(ch)) {
-        indent++;
-
-        if (ch === 0x09) {
-          offset += 4 - offset % 4;
-        } else {
-          offset++;
-        }
-        continue;
-      } else {
-        indent_found = true;
-      }
-    }
-
-    if (ch === 0x0A || pos === len - 1) {
-      if (ch !== 0x0A) { pos++; }
-      this.bMarks.push(start);
-      this.eMarks.push(pos);
-      this.tShift.push(indent);
-      this.sCount.push(offset);
-      this.bsCount.push(0);
-
-      indent_found = false;
-      indent = 0;
-      offset = 0;
-      start = pos + 1;
-    }
-  }
-
-  // Push fake entry to simplify cache bounds checks
-  this.bMarks.push(s.length);
-  this.eMarks.push(s.length);
-  this.tShift.push(0);
-  this.sCount.push(0);
-  this.bsCount.push(0);
-
-  this.lineMax = this.bMarks.length - 1; // don't count last fake line
-}
-
-// Push new token to "stream".
-//
-StateBlock.prototype.push = function (type, tag, nesting) {
-  var token = new Token(type, tag, nesting);
-  token.block = true;
-
-  if (nesting < 0) { this.level--; }
-  token.level = this.level;
-  if (nesting > 0) { this.level++; }
-
-  this.tokens.push(token);
-  return token;
-};
-
-StateBlock.prototype.isEmpty = function isEmpty(line) {
-  return this.bMarks[line] + this.tShift[line] >= this.eMarks[line];
-};
-
-StateBlock.prototype.skipEmptyLines = function skipEmptyLines(from) {
-  for (var max = this.lineMax; from < max; from++) {
-    if (this.bMarks[from] + this.tShift[from] < this.eMarks[from]) {
-      break;
-    }
-  }
-  return from;
-};
-
-// Skip spaces from given position.
-StateBlock.prototype.skipSpaces = function skipSpaces(pos) {
-  var ch;
-
-  for (var max = this.src.length; pos < max; pos++) {
-    ch = this.src.charCodeAt(pos);
-    if (!isSpace(ch)) { break; }
-  }
-  return pos;
-};
-
-// Skip spaces from given position in reverse.
-StateBlock.prototype.skipSpacesBack = function skipSpacesBack(pos, min) {
-  if (pos <= min) { return pos; }
-
-  while (pos > min) {
-    if (!isSpace(this.src.charCodeAt(--pos))) { return pos + 1; }
-  }
-  return pos;
-};
-
-// Skip char codes from given position
-StateBlock.prototype.skipChars = function skipChars(pos, code) {
-  for (var max = this.src.length; pos < max; pos++) {
-    if (this.src.charCodeAt(pos) !== code) { break; }
-  }
-  return pos;
-};
-
-// Skip char codes reverse from given position - 1
-StateBlock.prototype.skipCharsBack = function skipCharsBack(pos, code, min) {
-  if (pos <= min) { return pos; }
-
-  while (pos > min) {
-    if (code !== this.src.charCodeAt(--pos)) { return pos + 1; }
-  }
-  return pos;
-};
-
-// cut lines range from source.
-StateBlock.prototype.getLines = function getLines(begin, end, indent, keepLastLF) {
-  var i, lineIndent, ch, first, last, queue, lineStart,
-      line = begin;
-
-  if (begin >= end) {
-    return '';
-  }
-
-  queue = new Array(end - begin);
-
-  for (i = 0; line < end; line++, i++) {
-    lineIndent = 0;
-    lineStart = first = this.bMarks[line];
-
-    if (line + 1 < end || keepLastLF) {
-      // No need for bounds check because we have fake entry on tail.
-      last = this.eMarks[line] + 1;
-    } else {
-      last = this.eMarks[line];
-    }
-
-    while (first < last && lineIndent < indent) {
-      ch = this.src.charCodeAt(first);
-
-      if (isSpace(ch)) {
-        if (ch === 0x09) {
-          lineIndent += 4 - (lineIndent + this.bsCount[line]) % 4;
-        } else {
-          lineIndent++;
-        }
-      } else if (first - lineStart < this.tShift[line]) {
-        // patched tShift masked characters to look like spaces (blockquotes, list markers)
-        lineIndent++;
-      } else {
-        break;
-      }
-
-      first++;
-    }
-
-    if (lineIndent > indent) {
-      // partially expanding tabs in code blocks, e.g '\t\tfoobar'
-      // with indent=2 becomes '  \tfoobar'
-      queue[i] = new Array(lineIndent - indent + 1).join(' ') + this.src.slice(first, last);
-    } else {
-      queue[i] = this.src.slice(first, last);
-    }
-  }
-
-  return queue.join('');
-};
-
-// re-export Token class to use in block rules
-StateBlock.prototype.Token = Token;
-
-
-module.exports = StateBlock;
-
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// GFM table, non-standard
-
-
-
-var isSpace = __webpack_require__(0).isSpace;
-
-
-function getLine(state, line) {
-  var pos = state.bMarks[line] + state.blkIndent,
-      max = state.eMarks[line];
-
-  return state.src.substr(pos, max - pos);
-}
-
-function escapedSplit(str) {
-  var result = [],
-      pos = 0,
-      max = str.length,
-      ch,
-      escapes = 0,
-      lastPos = 0,
-      backTicked = false,
-      lastBackTick = 0;
-
-  ch  = str.charCodeAt(pos);
-
-  while (pos < max) {
-    if (ch === 0x60/* ` */) {
-      if (backTicked) {
-        // make \` close code sequence, but not open it;
-        // the reason is: `\` is correct code block
-        backTicked = false;
-        lastBackTick = pos;
-      } else if (escapes % 2 === 0) {
-        backTicked = true;
-        lastBackTick = pos;
-      }
-    } else if (ch === 0x7c/* | */ && (escapes % 2 === 0) && !backTicked) {
-      result.push(str.substring(lastPos, pos));
-      lastPos = pos + 1;
-    }
-
-    if (ch === 0x5c/* \ */) {
-      escapes++;
-    } else {
-      escapes = 0;
-    }
-
-    pos++;
-
-    // If there was an un-closed backtick, go back to just after
-    // the last backtick, but as if it was a normal character
-    if (pos === max && backTicked) {
-      backTicked = false;
-      pos = lastBackTick + 1;
-    }
-
-    ch = str.charCodeAt(pos);
-  }
-
-  result.push(str.substring(lastPos));
-
-  return result;
-}
-
-
-module.exports = function table(state, startLine, endLine, silent) {
-  var ch, lineText, pos, i, nextLine, columns, columnCount, token,
-      aligns, t, tableLines, tbodyLines;
-
-  // should have at least three lines
-  if (startLine + 2 > endLine) { return false; }
-
-  nextLine = startLine + 1;
-
-  if (state.sCount[nextLine] < state.blkIndent) { return false; }
-
-  // first character of the second line should be '|', '-', ':',
-  // and no other characters are allowed but spaces;
-  // basically, this is the equivalent of /^[-:|][-:|\s]*$/ regexp
-
-  pos = state.bMarks[nextLine] + state.tShift[nextLine];
-  if (pos >= state.eMarks[nextLine]) { return false; }
-
-  ch = state.src.charCodeAt(pos++);
-  if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */ && ch !== 0x3A/* : */) { return false; }
-
-  while (pos < state.eMarks[nextLine]) {
-    ch = state.src.charCodeAt(pos);
-
-    if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */ && ch !== 0x3A/* : */ && !isSpace(ch)) { return false; }
-
-    pos++;
-  }
-
-  lineText = getLine(state, startLine + 1);
-
-  columns = lineText.split('|');
-  aligns = [];
-  for (i = 0; i < columns.length; i++) {
-    t = columns[i].trim();
-    if (!t) {
-      // allow empty columns before and after table, but not in between columns;
-      // e.g. allow ` |---| `, disallow ` ---||--- `
-      if (i === 0 || i === columns.length - 1) {
-        continue;
-      } else {
-        return false;
-      }
-    }
-
-    if (!/^:?-+:?$/.test(t)) { return false; }
-    if (t.charCodeAt(t.length - 1) === 0x3A/* : */) {
-      aligns.push(t.charCodeAt(0) === 0x3A/* : */ ? 'center' : 'right');
-    } else if (t.charCodeAt(0) === 0x3A/* : */) {
-      aligns.push('left');
-    } else {
-      aligns.push('');
-    }
-  }
-
-  lineText = getLine(state, startLine).trim();
-  if (lineText.indexOf('|') === -1) { return false; }
-  columns = escapedSplit(lineText.replace(/^\||\|$/g, ''));
-
-  // header row will define an amount of columns in the entire table,
-  // and align row shouldn't be smaller than that (the rest of the rows can)
-  columnCount = columns.length;
-  if (columnCount > aligns.length) { return false; }
-
-  if (silent) { return true; }
-
-  token     = state.push('table_open', 'table', 1);
-  token.map = tableLines = [ startLine, 0 ];
-
-  token     = state.push('thead_open', 'thead', 1);
-  token.map = [ startLine, startLine + 1 ];
-
-  token     = state.push('tr_open', 'tr', 1);
-  token.map = [ startLine, startLine + 1 ];
-
-  for (i = 0; i < columns.length; i++) {
-    token          = state.push('th_open', 'th', 1);
-    token.map      = [ startLine, startLine + 1 ];
-    if (aligns[i]) {
-      token.attrs  = [ [ 'style', 'text-align:' + aligns[i] ] ];
-    }
-
-    token          = state.push('inline', '', 0);
-    token.content  = columns[i].trim();
-    token.map      = [ startLine, startLine + 1 ];
-    token.children = [];
-
-    token          = state.push('th_close', 'th', -1);
-  }
-
-  token     = state.push('tr_close', 'tr', -1);
-  token     = state.push('thead_close', 'thead', -1);
-
-  token     = state.push('tbody_open', 'tbody', 1);
-  token.map = tbodyLines = [ startLine + 2, 0 ];
-
-  for (nextLine = startLine + 2; nextLine < endLine; nextLine++) {
-    if (state.sCount[nextLine] < state.blkIndent) { break; }
-
-    lineText = getLine(state, nextLine);
-    if (lineText.indexOf('|') === -1) { break; }
-
-    // keep spaces at beginning of line to indicate an empty first cell, but
-    // strip trailing whitespace
-    columns = escapedSplit(lineText.replace(/^\||\|\s*$/g, ''));
-
-    token = state.push('tr_open', 'tr', 1);
-    for (i = 0; i < columnCount; i++) {
-      token          = state.push('td_open', 'td', 1);
-      if (aligns[i]) {
-        token.attrs  = [ [ 'style', 'text-align:' + aligns[i] ] ];
-      }
-
-      token          = state.push('inline', '', 0);
-      token.content  = columns[i] ? columns[i].trim() : '';
-      token.children = [];
-
-      token          = state.push('td_close', 'td', -1);
-    }
-    token = state.push('tr_close', 'tr', -1);
-  }
-  token = state.push('tbody_close', 'tbody', -1);
-  token = state.push('table_close', 'table', -1);
-
-  tableLines[1] = tbodyLines[1] = nextLine;
-  state.line = nextLine;
-  return true;
-};
-
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-module.exports = function block(state) {
-  var token;
-
-  if (state.inlineMode) {
-    token          = new state.Token('inline', '', 0);
-    token.content  = state.src;
-    token.map      = [ 0, 1 ];
-    token.children = [];
-    state.tokens.push(token);
-  } else {
-    state.md.block.parse(state.src, state.md, state.env, state.tokens);
-  }
-};
-
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function inline(state) {
-  var tokens = state.tokens, tok, i, l;
-
-  // Parse inlines
-  for (i = 0, l = tokens.length; i < l; i++) {
-    tok = tokens[i];
-    if (tok.type === 'inline') {
-      state.md.inline.parse(tok.content, state.md, state.env, tok.children);
-    }
-  }
-};
-
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Replace link-like texts with link nodes.
-//
-// Currently restricted by `md.validateLink()` to http/https/ftp
-//
-
-
-
-var arrayReplaceAt = __webpack_require__(0).arrayReplaceAt;
-
-
-function isLinkOpen(str) {
-  return /^<a[>\s]/i.test(str);
-}
-function isLinkClose(str) {
-  return /^<\/a\s*>/i.test(str);
-}
-
-
-module.exports = function linkify(state) {
-  var i, j, l, tokens, token, currentToken, nodes, ln, text, pos, lastPos,
-      level, htmlLinkLevel, url, fullUrl, urlText,
-      blockTokens = state.tokens,
-      links;
-
-  if (!state.md.options.linkify) { return; }
-
-  for (j = 0, l = blockTokens.length; j < l; j++) {
-    if (blockTokens[j].type !== 'inline' ||
-        !state.md.linkify.pretest(blockTokens[j].content)) {
-      continue;
-    }
-
-    tokens = blockTokens[j].children;
-
-    htmlLinkLevel = 0;
-
-    // We scan from the end, to keep position when new tags added.
-    // Use reversed logic in links start/end match
-    for (i = tokens.length - 1; i >= 0; i--) {
-      currentToken = tokens[i];
-
-      // Skip content of markdown links
-      if (currentToken.type === 'link_close') {
-        i--;
-        while (tokens[i].level !== currentToken.level && tokens[i].type !== 'link_open') {
-          i--;
-        }
-        continue;
-      }
-
-      // Skip content of html tag links
-      if (currentToken.type === 'html_inline') {
-        if (isLinkOpen(currentToken.content) && htmlLinkLevel > 0) {
-          htmlLinkLevel--;
-        }
-        if (isLinkClose(currentToken.content)) {
-          htmlLinkLevel++;
-        }
-      }
-      if (htmlLinkLevel > 0) { continue; }
-
-      if (currentToken.type === 'text' && state.md.linkify.test(currentToken.content)) {
-
-        text = currentToken.content;
-        links = state.md.linkify.match(text);
-
-        // Now split string to nodes
-        nodes = [];
-        level = currentToken.level;
-        lastPos = 0;
-
-        for (ln = 0; ln < links.length; ln++) {
-
-          url = links[ln].url;
-          fullUrl = state.md.normalizeLink(url);
-          if (!state.md.validateLink(fullUrl)) { continue; }
-
-          urlText = links[ln].text;
-
-          // Linkifier might send raw hostnames like "example.com", where url
-          // starts with domain name. So we prepend http:// in those cases,
-          // and remove it afterwards.
-          //
-          if (!links[ln].schema) {
-            urlText = state.md.normalizeLinkText('http://' + urlText).replace(/^http:\/\//, '');
-          } else if (links[ln].schema === 'mailto:' && !/^mailto:/i.test(urlText)) {
-            urlText = state.md.normalizeLinkText('mailto:' + urlText).replace(/^mailto:/, '');
-          } else {
-            urlText = state.md.normalizeLinkText(urlText);
-          }
-
-          pos = links[ln].index;
-
-          if (pos > lastPos) {
-            token         = new state.Token('text', '', 0);
-            token.content = text.slice(lastPos, pos);
-            token.level   = level;
-            nodes.push(token);
-          }
-
-          token         = new state.Token('link_open', 'a', 1);
-          token.attrs   = [ [ 'href', fullUrl ] ];
-          token.level   = level++;
-          token.markup  = 'linkify';
-          token.info    = 'auto';
-          nodes.push(token);
-
-          token         = new state.Token('text', '', 0);
-          token.content = urlText;
-          token.level   = level;
-          nodes.push(token);
-
-          token         = new state.Token('link_close', 'a', -1);
-          token.level   = --level;
-          token.markup  = 'linkify';
-          token.info    = 'auto';
-          nodes.push(token);
-
-          lastPos = links[ln].lastIndex;
-        }
-        if (lastPos < text.length) {
-          token         = new state.Token('text', '', 0);
-          token.content = text.slice(lastPos);
-          token.level   = level;
-          nodes.push(token);
-        }
-
-        // replace current node
-        blockTokens[j].children = tokens = arrayReplaceAt(tokens, i, nodes);
-      }
-    }
-  }
-};
-
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Normalize input string
-
-
-
-
-var NEWLINES_RE  = /\r[\n\u0085]?|[\u2424\u2028\u0085]/g;
-var NULL_RE      = /\u0000/g;
-
-
-module.exports = function inline(state) {
-  var str;
-
-  // Normalize newlines
-  str = state.src.replace(NEWLINES_RE, '\n');
-
-  // Replace NULL characters
-  str = str.replace(NULL_RE, '\uFFFD');
-
-  state.src = str;
-};
-
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Simple typographyc replacements
-//
-// (c) (C) → ©
-// (tm) (TM) → ™
-// (r) (R) → ®
-// +- → ±
-// (p) (P) -> §
-// ... → … (also ?.... → ?.., !.... → !..)
-// ???????? → ???, !!!!! → !!!, `,,` → `,`
-// -- → &ndash;, --- → &mdash;
-//
-
-
-// TODO:
-// - fractionals 1/2, 1/4, 3/4 -> ½, ¼, ¾
-// - miltiplication 2 x 4 -> 2 × 4
-
-var RARE_RE = /\+-|\.\.|\?\?\?\?|!!!!|,,|--/;
-
-// Workaround for phantomjs - need regex without /g flag,
-// or root check will fail every second time
-var SCOPED_ABBR_TEST_RE = /\((c|tm|r|p)\)/i;
-
-var SCOPED_ABBR_RE = /\((c|tm|r|p)\)/ig;
-var SCOPED_ABBR = {
-  c: '©',
-  r: '®',
-  p: '§',
-  tm: '™'
-};
-
-function replaceFn(match, name) {
-  return SCOPED_ABBR[name.toLowerCase()];
-}
-
-function replace_scoped(inlineTokens) {
-  var i, token, inside_autolink = 0;
-
-  for (i = inlineTokens.length - 1; i >= 0; i--) {
-    token = inlineTokens[i];
-
-    if (token.type === 'text' && !inside_autolink) {
-      token.content = token.content.replace(SCOPED_ABBR_RE, replaceFn);
-    }
-
-    if (token.type === 'link_open' && token.info === 'auto') {
-      inside_autolink--;
-    }
-
-    if (token.type === 'link_close' && token.info === 'auto') {
-      inside_autolink++;
-    }
-  }
-}
-
-function replace_rare(inlineTokens) {
-  var i, token, inside_autolink = 0;
-
-  for (i = inlineTokens.length - 1; i >= 0; i--) {
-    token = inlineTokens[i];
-
-    if (token.type === 'text' && !inside_autolink) {
-      if (RARE_RE.test(token.content)) {
-        token.content = token.content
-                    .replace(/\+-/g, '±')
-                    // .., ..., ....... -> …
-                    // but ?..... & !..... -> ?.. & !..
-                    .replace(/\.{2,}/g, '…').replace(/([?!])…/g, '$1..')
-                    .replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',')
-                    // em-dash
-                    .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
-                    // en-dash
-                    .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
-                    .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
-      }
-    }
-
-    if (token.type === 'link_open' && token.info === 'auto') {
-      inside_autolink--;
-    }
-
-    if (token.type === 'link_close' && token.info === 'auto') {
-      inside_autolink++;
-    }
-  }
-}
-
-
-module.exports = function replace(state) {
-  var blkIdx;
-
-  if (!state.md.options.typographer) { return; }
-
-  for (blkIdx = state.tokens.length - 1; blkIdx >= 0; blkIdx--) {
-
-    if (state.tokens[blkIdx].type !== 'inline') { continue; }
-
-    if (SCOPED_ABBR_TEST_RE.test(state.tokens[blkIdx].content)) {
-      replace_scoped(state.tokens[blkIdx].children);
-    }
-
-    if (RARE_RE.test(state.tokens[blkIdx].content)) {
-      replace_rare(state.tokens[blkIdx].children);
-    }
-
-  }
-};
-
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Convert straight quotation marks to typographic ones
-//
-
-
-
-var isWhiteSpace   = __webpack_require__(0).isWhiteSpace;
-var isPunctChar    = __webpack_require__(0).isPunctChar;
-var isMdAsciiPunct = __webpack_require__(0).isMdAsciiPunct;
-
-var QUOTE_TEST_RE = /['"]/;
-var QUOTE_RE = /['"]/g;
-var APOSTROPHE = '\u2019'; /* ’ */
-
-
-function replaceAt(str, index, ch) {
-  return str.substr(0, index) + ch + str.substr(index + 1);
-}
-
-function process_inlines(tokens, state) {
-  var i, token, text, t, pos, max, thisLevel, item, lastChar, nextChar,
-      isLastPunctChar, isNextPunctChar, isLastWhiteSpace, isNextWhiteSpace,
-      canOpen, canClose, j, isSingle, stack, openQuote, closeQuote;
-
-  stack = [];
-
-  for (i = 0; i < tokens.length; i++) {
-    token = tokens[i];
-
-    thisLevel = tokens[i].level;
-
-    for (j = stack.length - 1; j >= 0; j--) {
-      if (stack[j].level <= thisLevel) { break; }
-    }
-    stack.length = j + 1;
-
-    if (token.type !== 'text') { continue; }
-
-    text = token.content;
-    pos = 0;
-    max = text.length;
-
-    /*eslint no-labels:0,block-scoped-var:0*/
-    OUTER:
-    while (pos < max) {
-      QUOTE_RE.lastIndex = pos;
-      t = QUOTE_RE.exec(text);
-      if (!t) { break; }
-
-      canOpen = canClose = true;
-      pos = t.index + 1;
-      isSingle = (t[0] === "'");
-
-      // Find previous character,
-      // default to space if it's the beginning of the line
-      //
-      lastChar = 0x20;
-
-      if (t.index - 1 >= 0) {
-        lastChar = text.charCodeAt(t.index - 1);
-      } else {
-        for (j = i - 1; j >= 0; j--) {
-          if (tokens[j].type !== 'text') { continue; }
-
-          lastChar = tokens[j].content.charCodeAt(tokens[j].content.length - 1);
-          break;
-        }
-      }
-
-      // Find next character,
-      // default to space if it's the end of the line
-      //
-      nextChar = 0x20;
-
-      if (pos < max) {
-        nextChar = text.charCodeAt(pos);
-      } else {
-        for (j = i + 1; j < tokens.length; j++) {
-          if (tokens[j].type !== 'text') { continue; }
-
-          nextChar = tokens[j].content.charCodeAt(0);
-          break;
-        }
-      }
-
-      isLastPunctChar = isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar));
-      isNextPunctChar = isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar));
-
-      isLastWhiteSpace = isWhiteSpace(lastChar);
-      isNextWhiteSpace = isWhiteSpace(nextChar);
-
-      if (isNextWhiteSpace) {
-        canOpen = false;
-      } else if (isNextPunctChar) {
-        if (!(isLastWhiteSpace || isLastPunctChar)) {
-          canOpen = false;
-        }
-      }
-
-      if (isLastWhiteSpace) {
-        canClose = false;
-      } else if (isLastPunctChar) {
-        if (!(isNextWhiteSpace || isNextPunctChar)) {
-          canClose = false;
-        }
-      }
-
-      if (nextChar === 0x22 /* " */ && t[0] === '"') {
-        if (lastChar >= 0x30 /* 0 */ && lastChar <= 0x39 /* 9 */) {
-          // special case: 1"" - count first quote as an inch
-          canClose = canOpen = false;
-        }
-      }
-
-      if (canOpen && canClose) {
-        // treat this as the middle of the word
-        canOpen = false;
-        canClose = isNextPunctChar;
-      }
-
-      if (!canOpen && !canClose) {
-        // middle of word
-        if (isSingle) {
-          token.content = replaceAt(token.content, t.index, APOSTROPHE);
-        }
-        continue;
-      }
-
-      if (canClose) {
-        // this could be a closing quote, rewind the stack to get a match
-        for (j = stack.length - 1; j >= 0; j--) {
-          item = stack[j];
-          if (stack[j].level < thisLevel) { break; }
-          if (item.single === isSingle && stack[j].level === thisLevel) {
-            item = stack[j];
-
-            if (isSingle) {
-              openQuote = state.md.options.quotes[2];
-              closeQuote = state.md.options.quotes[3];
-            } else {
-              openQuote = state.md.options.quotes[0];
-              closeQuote = state.md.options.quotes[1];
-            }
-
-            // replace token.content *before* tokens[item.token].content,
-            // because, if they are pointing at the same token, replaceAt
-            // could mess up indices when quote length != 1
-            token.content = replaceAt(token.content, t.index, closeQuote);
-            tokens[item.token].content = replaceAt(
-              tokens[item.token].content, item.pos, openQuote);
-
-            pos += closeQuote.length - 1;
-            if (item.token === i) { pos += openQuote.length - 1; }
-
-            text = token.content;
-            max = text.length;
-
-            stack.length = j;
-            continue OUTER;
-          }
-        }
-      }
-
-      if (canOpen) {
-        stack.push({
-          token: i,
-          pos: t.index,
-          single: isSingle,
-          level: thisLevel
-        });
-      } else if (canClose && isSingle) {
-        token.content = replaceAt(token.content, t.index, APOSTROPHE);
-      }
-    }
-  }
-}
-
-
-module.exports = function smartquotes(state) {
-  /*eslint max-depth:0*/
-  var blkIdx;
-
-  if (!state.md.options.typographer) { return; }
-
-  for (blkIdx = state.tokens.length - 1; blkIdx >= 0; blkIdx--) {
-
-    if (state.tokens[blkIdx].type !== 'inline' ||
-        !QUOTE_TEST_RE.test(state.tokens[blkIdx].content)) {
-      continue;
-    }
-
-    process_inlines(state.tokens[blkIdx].children, state);
-  }
-};
-
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Core state object
-//
-
-
-var Token = __webpack_require__(2);
-
-
-function StateCore(src, md, env) {
-  this.src = src;
-  this.env = env;
-  this.tokens = [];
-  this.inlineMode = false;
-  this.md = md; // link to parser instance
-}
-
-// re-export Token class to use in core rules
-StateCore.prototype.Token = Token;
-
-
-module.exports = StateCore;
-
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Process autolinks '<protocol:...>'
-
-
-
-
-/*eslint max-len:0*/
-var EMAIL_RE    = /^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/;
-var AUTOLINK_RE = /^<([a-zA-Z][a-zA-Z0-9+.\-]{1,31}):([^<>\x00-\x20]*)>/;
-
-
-module.exports = function autolink(state, silent) {
-  var tail, linkMatch, emailMatch, url, fullUrl, token,
-      pos = state.pos;
-
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
-
-  tail = state.src.slice(pos);
-
-  if (tail.indexOf('>') < 0) { return false; }
-
-  if (AUTOLINK_RE.test(tail)) {
-    linkMatch = tail.match(AUTOLINK_RE);
-
-    url = linkMatch[0].slice(1, -1);
-    fullUrl = state.md.normalizeLink(url);
-    if (!state.md.validateLink(fullUrl)) { return false; }
-
-    if (!silent) {
-      token         = state.push('link_open', 'a', 1);
-      token.attrs   = [ [ 'href', fullUrl ] ];
-      token.markup  = 'autolink';
-      token.info    = 'auto';
-
-      token         = state.push('text', '', 0);
-      token.content = state.md.normalizeLinkText(url);
-
-      token         = state.push('link_close', 'a', -1);
-      token.markup  = 'autolink';
-      token.info    = 'auto';
-    }
-
-    state.pos += linkMatch[0].length;
-    return true;
-  }
-
-  if (EMAIL_RE.test(tail)) {
-    emailMatch = tail.match(EMAIL_RE);
-
-    url = emailMatch[0].slice(1, -1);
-    fullUrl = state.md.normalizeLink('mailto:' + url);
-    if (!state.md.validateLink(fullUrl)) { return false; }
-
-    if (!silent) {
-      token         = state.push('link_open', 'a', 1);
-      token.attrs   = [ [ 'href', fullUrl ] ];
-      token.markup  = 'autolink';
-      token.info    = 'auto';
-
-      token         = state.push('text', '', 0);
-      token.content = state.md.normalizeLinkText(url);
-
-      token         = state.push('link_close', 'a', -1);
-      token.markup  = 'autolink';
-      token.info    = 'auto';
-    }
-
-    state.pos += emailMatch[0].length;
-    return true;
-  }
-
-  return false;
-};
-
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Parse backticks
-
-
-
-module.exports = function backtick(state, silent) {
-  var start, max, marker, matchStart, matchEnd, token,
-      pos = state.pos,
-      ch = state.src.charCodeAt(pos);
-
-  if (ch !== 0x60/* ` */) { return false; }
-
-  start = pos;
-  pos++;
-  max = state.posMax;
-
-  while (pos < max && state.src.charCodeAt(pos) === 0x60/* ` */) { pos++; }
-
-  marker = state.src.slice(start, pos);
-
-  matchStart = matchEnd = pos;
-
-  while ((matchStart = state.src.indexOf('`', matchEnd)) !== -1) {
-    matchEnd = matchStart + 1;
-
-    while (matchEnd < max && state.src.charCodeAt(matchEnd) === 0x60/* ` */) { matchEnd++; }
-
-    if (matchEnd - matchStart === marker.length) {
-      if (!silent) {
-        token         = state.push('code_inline', 'code', 0);
-        token.markup  = marker;
-        token.content = state.src.slice(pos, matchStart)
-                                 .replace(/[ \n]+/g, ' ')
-                                 .trim();
-      }
-      state.pos = matchEnd;
-      return true;
-    }
-  }
-
-  if (!silent) { state.pending += marker; }
-  state.pos += marker.length;
-  return true;
-};
-
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// For each opening emphasis-like marker find a matching closing one
-//
-
-
-
-module.exports = function link_pairs(state) {
-  var i, j, lastDelim, currDelim,
-      delimiters = state.delimiters,
-      max = state.delimiters.length;
-
-  for (i = 0; i < max; i++) {
-    lastDelim = delimiters[i];
-
-    if (!lastDelim.close) { continue; }
-
-    j = i - lastDelim.jump - 1;
-
-    while (j >= 0) {
-      currDelim = delimiters[j];
-
-      if (currDelim.open &&
-          currDelim.marker === lastDelim.marker &&
-          currDelim.end < 0 &&
-          currDelim.level === lastDelim.level) {
-
-        // typeofs are for backward compatibility with plugins
-        var odd_match = (currDelim.close || lastDelim.open) &&
-                        typeof currDelim.length !== 'undefined' &&
-                        typeof lastDelim.length !== 'undefined' &&
-                        (currDelim.length + lastDelim.length) % 3 === 0;
-
-        if (!odd_match) {
-          lastDelim.jump = i - j;
-          lastDelim.open = false;
-          currDelim.end  = i;
-          currDelim.jump = 0;
-          break;
-        }
-      }
-
-      j -= currDelim.jump + 1;
-    }
-  }
-};
-
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Process html entity - &#123;, &#xAF;, &quot;, ...
-
-
-
-var entities          = __webpack_require__(4);
-var has               = __webpack_require__(0).has;
-var isValidEntityCode = __webpack_require__(0).isValidEntityCode;
-var fromCodePoint     = __webpack_require__(0).fromCodePoint;
-
-
-var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,8}|[0-9]{1,8}));/i;
-var NAMED_RE   = /^&([a-z][a-z0-9]{1,31});/i;
-
-
-module.exports = function entity(state, silent) {
-  var ch, code, match, pos = state.pos, max = state.posMax;
-
-  if (state.src.charCodeAt(pos) !== 0x26/* & */) { return false; }
-
-  if (pos + 1 < max) {
-    ch = state.src.charCodeAt(pos + 1);
-
-    if (ch === 0x23 /* # */) {
-      match = state.src.slice(pos).match(DIGITAL_RE);
-      if (match) {
-        if (!silent) {
-          code = match[1][0].toLowerCase() === 'x' ? parseInt(match[1].slice(1), 16) : parseInt(match[1], 10);
-          state.pending += isValidEntityCode(code) ? fromCodePoint(code) : fromCodePoint(0xFFFD);
-        }
-        state.pos += match[0].length;
-        return true;
-      }
-    } else {
-      match = state.src.slice(pos).match(NAMED_RE);
-      if (match) {
-        if (has(entities, match[1])) {
-          if (!silent) { state.pending += entities[match[1]]; }
-          state.pos += match[0].length;
-          return true;
-        }
-      }
-    }
-  }
-
-  if (!silent) { state.pending += '&'; }
-  state.pos++;
-  return true;
-};
-
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Proceess escaped chars and hardbreaks
-
-
-
-var isSpace = __webpack_require__(0).isSpace;
-
-var ESCAPED = [];
-
-for (var i = 0; i < 256; i++) { ESCAPED.push(0); }
-
-'\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'
-  .split('').forEach(function (ch) { ESCAPED[ch.charCodeAt(0)] = 1; });
-
-
-module.exports = function escape(state, silent) {
-  var ch, pos = state.pos, max = state.posMax;
-
-  if (state.src.charCodeAt(pos) !== 0x5C/* \ */) { return false; }
-
-  pos++;
-
-  if (pos < max) {
-    ch = state.src.charCodeAt(pos);
-
-    if (ch < 256 && ESCAPED[ch] !== 0) {
-      if (!silent) { state.pending += state.src[pos]; }
-      state.pos += 2;
-      return true;
-    }
-
-    if (ch === 0x0A) {
-      if (!silent) {
-        state.push('hardbreak', 'br', 0);
-      }
-
-      pos++;
-      // skip leading whitespaces from next line
-      while (pos < max) {
-        ch = state.src.charCodeAt(pos);
-        if (!isSpace(ch)) { break; }
-        pos++;
-      }
-
-      state.pos = pos;
-      return true;
-    }
-  }
-
-  if (!silent) { state.pending += '\\'; }
-  state.pos++;
-  return true;
-};
-
-
-/***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Process html tags
-
-
-
-
-var HTML_TAG_RE = __webpack_require__(5).HTML_TAG_RE;
-
-
-function isLetter(ch) {
-  /*eslint no-bitwise:0*/
-  var lc = ch | 0x20; // to lower case
-  return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */);
-}
-
-
-module.exports = function html_inline(state, silent) {
-  var ch, match, max, token,
-      pos = state.pos;
-
-  if (!state.md.options.html) { return false; }
-
-  // Check start
-  max = state.posMax;
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */ ||
-      pos + 2 >= max) {
-    return false;
-  }
-
-  // Quick fail on second char
-  ch = state.src.charCodeAt(pos + 1);
-  if (ch !== 0x21/* ! */ &&
-      ch !== 0x3F/* ? */ &&
-      ch !== 0x2F/* / */ &&
-      !isLetter(ch)) {
-    return false;
-  }
-
-  match = state.src.slice(pos).match(HTML_TAG_RE);
-  if (!match) { return false; }
-
-  if (!silent) {
-    token         = state.push('html_inline', '', 0);
-    token.content = state.src.slice(pos, pos + match[0].length);
-  }
-  state.pos += match[0].length;
-  return true;
-};
-
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Process ![image](<src> "title")
-
-
-
-var normalizeReference   = __webpack_require__(0).normalizeReference;
-var isSpace              = __webpack_require__(0).isSpace;
-
-
-module.exports = function image(state, silent) {
-  var attrs,
-      code,
-      content,
-      label,
-      labelEnd,
-      labelStart,
-      pos,
-      ref,
-      res,
-      title,
-      token,
-      tokens,
-      start,
-      href = '',
-      oldPos = state.pos,
-      max = state.posMax;
-
-  if (state.src.charCodeAt(state.pos) !== 0x21/* ! */) { return false; }
-  if (state.src.charCodeAt(state.pos + 1) !== 0x5B/* [ */) { return false; }
-
-  labelStart = state.pos + 2;
-  labelEnd = state.md.helpers.parseLinkLabel(state, state.pos + 1, false);
-
-  // parser failed to find ']', so it's not a valid link
-  if (labelEnd < 0) { return false; }
-
-  pos = labelEnd + 1;
-  if (pos < max && state.src.charCodeAt(pos) === 0x28/* ( */) {
-    //
-    // Inline link
-    //
-
-    // [link](  <href>  "title"  )
-    //        ^^ skipping these spaces
-    pos++;
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (!isSpace(code) && code !== 0x0A) { break; }
-    }
-    if (pos >= max) { return false; }
-
-    // [link](  <href>  "title"  )
-    //          ^^^^^^ parsing link destination
-    start = pos;
-    res = state.md.helpers.parseLinkDestination(state.src, pos, state.posMax);
-    if (res.ok) {
-      href = state.md.normalizeLink(res.str);
-      if (state.md.validateLink(href)) {
-        pos = res.pos;
-      } else {
-        href = '';
-      }
-    }
-
-    // [link](  <href>  "title"  )
-    //                ^^ skipping these spaces
-    start = pos;
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (!isSpace(code) && code !== 0x0A) { break; }
-    }
-
-    // [link](  <href>  "title"  )
-    //                  ^^^^^^^ parsing link title
-    res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
-    if (pos < max && start !== pos && res.ok) {
-      title = res.str;
-      pos = res.pos;
-
-      // [link](  <href>  "title"  )
-      //                         ^^ skipping these spaces
-      for (; pos < max; pos++) {
-        code = state.src.charCodeAt(pos);
-        if (!isSpace(code) && code !== 0x0A) { break; }
-      }
-    } else {
-      title = '';
-    }
-
-    if (pos >= max || state.src.charCodeAt(pos) !== 0x29/* ) */) {
-      state.pos = oldPos;
-      return false;
-    }
-    pos++;
-  } else {
-    //
-    // Link reference
-    //
-    if (typeof state.env.references === 'undefined') { return false; }
-
-    if (pos < max && state.src.charCodeAt(pos) === 0x5B/* [ */) {
-      start = pos + 1;
-      pos = state.md.helpers.parseLinkLabel(state, pos);
-      if (pos >= 0) {
-        label = state.src.slice(start, pos++);
-      } else {
-        pos = labelEnd + 1;
-      }
-    } else {
-      pos = labelEnd + 1;
-    }
-
-    // covers label === '' and label === undefined
-    // (collapsed reference link and shortcut reference link respectively)
-    if (!label) { label = state.src.slice(labelStart, labelEnd); }
-
-    ref = state.env.references[normalizeReference(label)];
-    if (!ref) {
-      state.pos = oldPos;
-      return false;
-    }
-    href = ref.href;
-    title = ref.title;
-  }
-
-  //
-  // We found the end of the link, and know for a fact it's a valid link;
-  // so all that's left to do is to call tokenizer.
-  //
-  if (!silent) {
-    content = state.src.slice(labelStart, labelEnd);
-
-    state.md.inline.parse(
-      content,
-      state.md,
-      state.env,
-      tokens = []
-    );
-
-    token          = state.push('image', 'img', 0);
-    token.attrs    = attrs = [ [ 'src', href ], [ 'alt', '' ] ];
-    token.children = tokens;
-    token.content  = content;
-
-    if (title) {
-      attrs.push([ 'title', title ]);
-    }
-  }
-
-  state.pos = pos;
-  state.posMax = max;
-  return true;
-};
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Process [link](<to> "stuff")
-
-
-
-var normalizeReference   = __webpack_require__(0).normalizeReference;
-var isSpace              = __webpack_require__(0).isSpace;
-
-
-module.exports = function link(state, silent) {
-  var attrs,
-      code,
-      label,
-      labelEnd,
-      labelStart,
-      pos,
-      res,
-      ref,
-      title,
-      token,
-      href = '',
-      oldPos = state.pos,
-      max = state.posMax,
-      start = state.pos,
-      parseReference = true;
-
-  if (state.src.charCodeAt(state.pos) !== 0x5B/* [ */) { return false; }
-
-  labelStart = state.pos + 1;
-  labelEnd = state.md.helpers.parseLinkLabel(state, state.pos, true);
-
-  // parser failed to find ']', so it's not a valid link
-  if (labelEnd < 0) { return false; }
-
-  pos = labelEnd + 1;
-  if (pos < max && state.src.charCodeAt(pos) === 0x28/* ( */) {
-    //
-    // Inline link
-    //
-
-    // might have found a valid shortcut link, disable reference parsing
-    parseReference = false;
-
-    // [link](  <href>  "title"  )
-    //        ^^ skipping these spaces
-    pos++;
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (!isSpace(code) && code !== 0x0A) { break; }
-    }
-    if (pos >= max) { return false; }
-
-    // [link](  <href>  "title"  )
-    //          ^^^^^^ parsing link destination
-    start = pos;
-    res = state.md.helpers.parseLinkDestination(state.src, pos, state.posMax);
-    if (res.ok) {
-      href = state.md.normalizeLink(res.str);
-      if (state.md.validateLink(href)) {
-        pos = res.pos;
-      } else {
-        href = '';
-      }
-    }
-
-    // [link](  <href>  "title"  )
-    //                ^^ skipping these spaces
-    start = pos;
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (!isSpace(code) && code !== 0x0A) { break; }
-    }
-
-    // [link](  <href>  "title"  )
-    //                  ^^^^^^^ parsing link title
-    res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
-    if (pos < max && start !== pos && res.ok) {
-      title = res.str;
-      pos = res.pos;
-
-      // [link](  <href>  "title"  )
-      //                         ^^ skipping these spaces
-      for (; pos < max; pos++) {
-        code = state.src.charCodeAt(pos);
-        if (!isSpace(code) && code !== 0x0A) { break; }
-      }
-    } else {
-      title = '';
-    }
-
-    if (pos >= max || state.src.charCodeAt(pos) !== 0x29/* ) */) {
-      // parsing a valid shortcut link failed, fallback to reference
-      parseReference = true;
-    }
-    pos++;
-  }
-
-  if (parseReference) {
-    //
-    // Link reference
-    //
-    if (typeof state.env.references === 'undefined') { return false; }
-
-    if (pos < max && state.src.charCodeAt(pos) === 0x5B/* [ */) {
-      start = pos + 1;
-      pos = state.md.helpers.parseLinkLabel(state, pos);
-      if (pos >= 0) {
-        label = state.src.slice(start, pos++);
-      } else {
-        pos = labelEnd + 1;
-      }
-    } else {
-      pos = labelEnd + 1;
-    }
-
-    // covers label === '' and label === undefined
-    // (collapsed reference link and shortcut reference link respectively)
-    if (!label) { label = state.src.slice(labelStart, labelEnd); }
-
-    ref = state.env.references[normalizeReference(label)];
-    if (!ref) {
-      state.pos = oldPos;
-      return false;
-    }
-    href = ref.href;
-    title = ref.title;
-  }
-
-  //
-  // We found the end of the link, and know for a fact it's a valid link;
-  // so all that's left to do is to call tokenizer.
-  //
-  if (!silent) {
-    state.pos = labelStart;
-    state.posMax = labelEnd;
-
-    token        = state.push('link_open', 'a', 1);
-    token.attrs  = attrs = [ [ 'href', href ] ];
-    if (title) {
-      attrs.push([ 'title', title ]);
-    }
-
-    state.md.inline.tokenize(state);
-
-    token        = state.push('link_close', 'a', -1);
-  }
-
-  state.pos = pos;
-  state.posMax = max;
-  return true;
-};
-
-
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Proceess '\n'
-
-
-
-module.exports = function newline(state, silent) {
-  var pmax, max, pos = state.pos;
-
-  if (state.src.charCodeAt(pos) !== 0x0A/* \n */) { return false; }
-
-  pmax = state.pending.length - 1;
-  max = state.posMax;
-
-  // '  \n' -> hardbreak
-  // Lookup in pending chars is bad practice! Don't copy to other rules!
-  // Pending string is stored in concat mode, indexed lookups will cause
-  // convertion to flat mode.
-  if (!silent) {
-    if (pmax >= 0 && state.pending.charCodeAt(pmax) === 0x20) {
-      if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 0x20) {
-        state.pending = state.pending.replace(/ +$/, '');
-        state.push('hardbreak', 'br', 0);
-      } else {
-        state.pending = state.pending.slice(0, -1);
-        state.push('softbreak', 'br', 0);
-      }
-
-    } else {
-      state.push('softbreak', 'br', 0);
-    }
-  }
-
-  pos++;
-
-  // skip heading spaces for next line
-  while (pos < max && state.src.charCodeAt(pos) === 0x20) { pos++; }
-
-  state.pos = pos;
-  return true;
-};
-
-
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Inline parser state
-
-
-
-
-var Token          = __webpack_require__(2);
-var isWhiteSpace   = __webpack_require__(0).isWhiteSpace;
-var isPunctChar    = __webpack_require__(0).isPunctChar;
-var isMdAsciiPunct = __webpack_require__(0).isMdAsciiPunct;
-
-
-function StateInline(src, md, env, outTokens) {
-  this.src = src;
-  this.env = env;
-  this.md = md;
-  this.tokens = outTokens;
-
-  this.pos = 0;
-  this.posMax = this.src.length;
-  this.level = 0;
-  this.pending = '';
-  this.pendingLevel = 0;
-
-  this.cache = {};        // Stores { start: end } pairs. Useful for backtrack
-                          // optimization of pairs parse (emphasis, strikes).
-
-  this.delimiters = [];   // Emphasis-like delimiters
-}
-
-
-// Flush pending text
-//
-StateInline.prototype.pushPending = function () {
-  var token = new Token('text', '', 0);
-  token.content = this.pending;
-  token.level = this.pendingLevel;
-  this.tokens.push(token);
-  this.pending = '';
-  return token;
-};
-
-
-// Push new token to "stream".
-// If pending text exists - flush it as text token
-//
-StateInline.prototype.push = function (type, tag, nesting) {
-  if (this.pending) {
-    this.pushPending();
-  }
-
-  var token = new Token(type, tag, nesting);
-
-  if (nesting < 0) { this.level--; }
-  token.level = this.level;
-  if (nesting > 0) { this.level++; }
-
-  this.pendingLevel = this.level;
-  this.tokens.push(token);
-  return token;
-};
-
-
-// Scan a sequence of emphasis-like markers, and determine whether
-// it can start an emphasis sequence or end an emphasis sequence.
-//
-//  - start - position to scan from (it should point at a valid marker);
-//  - canSplitWord - determine if these markers can be found inside a word
-//
-StateInline.prototype.scanDelims = function (start, canSplitWord) {
-  var pos = start, lastChar, nextChar, count, can_open, can_close,
-      isLastWhiteSpace, isLastPunctChar,
-      isNextWhiteSpace, isNextPunctChar,
-      left_flanking = true,
-      right_flanking = true,
-      max = this.posMax,
-      marker = this.src.charCodeAt(start);
-
-  // treat beginning of the line as a whitespace
-  lastChar = start > 0 ? this.src.charCodeAt(start - 1) : 0x20;
-
-  while (pos < max && this.src.charCodeAt(pos) === marker) { pos++; }
-
-  count = pos - start;
-
-  // treat end of the line as a whitespace
-  nextChar = pos < max ? this.src.charCodeAt(pos) : 0x20;
-
-  isLastPunctChar = isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar));
-  isNextPunctChar = isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar));
-
-  isLastWhiteSpace = isWhiteSpace(lastChar);
-  isNextWhiteSpace = isWhiteSpace(nextChar);
-
-  if (isNextWhiteSpace) {
-    left_flanking = false;
-  } else if (isNextPunctChar) {
-    if (!(isLastWhiteSpace || isLastPunctChar)) {
-      left_flanking = false;
-    }
-  }
-
-  if (isLastWhiteSpace) {
-    right_flanking = false;
-  } else if (isLastPunctChar) {
-    if (!(isNextWhiteSpace || isNextPunctChar)) {
-      right_flanking = false;
-    }
-  }
-
-  if (!canSplitWord) {
-    can_open  = left_flanking  && (!right_flanking || isLastPunctChar);
-    can_close = right_flanking && (!left_flanking  || isNextPunctChar);
-  } else {
-    can_open  = left_flanking;
-    can_close = right_flanking;
-  }
-
-  return {
-    can_open:  can_open,
-    can_close: can_close,
-    length:    count
-  };
-};
-
-
-// re-export Token class to use in block rules
-StateInline.prototype.Token = Token;
-
-
-module.exports = StateInline;
-
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Skip text characters for text token, place those to pending buffer
-// and increment current pos
-
-
-
-
-// Rule to skip pure text
-// '{}$%@~+=:' reserved for extentions
-
-// !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
-
-// !!!! Don't confuse with "Markdown ASCII Punctuation" chars
-// http://spec.commonmark.org/0.15/#ascii-punctuation-character
-function isTerminatorChar(ch) {
-  switch (ch) {
-    case 0x0A/* \n */:
-    case 0x21/* ! */:
-    case 0x23/* # */:
-    case 0x24/* $ */:
-    case 0x25/* % */:
-    case 0x26/* & */:
-    case 0x2A/* * */:
-    case 0x2B/* + */:
-    case 0x2D/* - */:
-    case 0x3A/* : */:
-    case 0x3C/* < */:
-    case 0x3D/* = */:
-    case 0x3E/* > */:
-    case 0x40/* @ */:
-    case 0x5B/* [ */:
-    case 0x5C/* \ */:
-    case 0x5D/* ] */:
-    case 0x5E/* ^ */:
-    case 0x5F/* _ */:
-    case 0x60/* ` */:
-    case 0x7B/* { */:
-    case 0x7D/* } */:
-    case 0x7E/* ~ */:
-      return true;
-    default:
-      return false;
-  }
-}
-
-module.exports = function text(state, silent) {
-  var pos = state.pos;
-
-  while (pos < state.posMax && !isTerminatorChar(state.src.charCodeAt(pos))) {
-    pos++;
-  }
-
-  if (pos === state.pos) { return false; }
-
-  if (!silent) { state.pending += state.src.slice(state.pos, pos); }
-
-  state.pos = pos;
-
-  return true;
-};
-
-// Alternative implementation, for memory.
-//
-// It costs 10% of performance, but allows extend terminators list, if place it
-// to `ParcerInline` property. Probably, will switch to it sometime, such
-// flexibility required.
-
-/*
-var TERMINATOR_RE = /[\n!#$%&*+\-:<=>@[\\\]^_`{}~]/;
-
-module.exports = function text(state, silent) {
-  var pos = state.pos,
-      idx = state.src.slice(pos).search(TERMINATOR_RE);
-
-  // first char is terminator -> empty text
-  if (idx === 0) { return false; }
-
-  // no terminator -> text till end of string
-  if (idx < 0) {
-    if (!silent) { state.pending += state.src.slice(pos); }
-    state.pos = state.src.length;
-    return true;
-  }
-
-  if (!silent) { state.pending += state.src.slice(pos, pos + idx); }
-
-  state.pos += idx;
-
-  return true;
-};*/
-
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Merge adjacent text nodes into one, and re-calculate all token levels
-//
-
-
-
-module.exports = function text_collapse(state) {
-  var curr, last,
-      level = 0,
-      tokens = state.tokens,
-      max = state.tokens.length;
-
-  for (curr = last = 0; curr < max; curr++) {
-    // re-calculate levels
-    level += tokens[curr].nesting;
-    tokens[curr].level = level;
-
-    if (tokens[curr].type === 'text' &&
-        curr + 1 < max &&
-        tokens[curr + 1].type === 'text') {
-
-      // collapse two adjacent text nodes
-      tokens[curr + 1].content = tokens[curr].content + tokens[curr + 1].content;
-    } else {
-      if (curr !== last) { tokens[last] = tokens[curr]; }
-
-      last++;
-    }
-  }
-
-  if (curr !== last) {
-    tokens.length = last;
-  }
-};
-
-
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-
-/* eslint-disable no-bitwise */
-
-var decodeCache = {};
-
-function getDecodeCache(exclude) {
-  var i, ch, cache = decodeCache[exclude];
-  if (cache) { return cache; }
-
-  cache = decodeCache[exclude] = [];
-
-  for (i = 0; i < 128; i++) {
-    ch = String.fromCharCode(i);
-    cache.push(ch);
-  }
-
-  for (i = 0; i < exclude.length; i++) {
-    ch = exclude.charCodeAt(i);
-    cache[ch] = '%' + ('0' + ch.toString(16).toUpperCase()).slice(-2);
-  }
-
-  return cache;
-}
-
-
-// Decode percent-encoded string.
-//
-function decode(string, exclude) {
-  var cache;
-
-  if (typeof exclude !== 'string') {
-    exclude = decode.defaultChars;
-  }
-
-  cache = getDecodeCache(exclude);
-
-  return string.replace(/(%[a-f0-9]{2})+/gi, function(seq) {
-    var i, l, b1, b2, b3, b4, chr,
-        result = '';
-
-    for (i = 0, l = seq.length; i < l; i += 3) {
-      b1 = parseInt(seq.slice(i + 1, i + 3), 16);
-
-      if (b1 < 0x80) {
-        result += cache[b1];
-        continue;
-      }
-
-      if ((b1 & 0xE0) === 0xC0 && (i + 3 < l)) {
-        // 110xxxxx 10xxxxxx
-        b2 = parseInt(seq.slice(i + 4, i + 6), 16);
-
-        if ((b2 & 0xC0) === 0x80) {
-          chr = ((b1 << 6) & 0x7C0) | (b2 & 0x3F);
-
-          if (chr < 0x80) {
-            result += '\ufffd\ufffd';
-          } else {
-            result += String.fromCharCode(chr);
-          }
-
-          i += 3;
-          continue;
-        }
-      }
-
-      if ((b1 & 0xF0) === 0xE0 && (i + 6 < l)) {
-        // 1110xxxx 10xxxxxx 10xxxxxx
-        b2 = parseInt(seq.slice(i + 4, i + 6), 16);
-        b3 = parseInt(seq.slice(i + 7, i + 9), 16);
-
-        if ((b2 & 0xC0) === 0x80 && (b3 & 0xC0) === 0x80) {
-          chr = ((b1 << 12) & 0xF000) | ((b2 << 6) & 0xFC0) | (b3 & 0x3F);
-
-          if (chr < 0x800 || (chr >= 0xD800 && chr <= 0xDFFF)) {
-            result += '\ufffd\ufffd\ufffd';
-          } else {
-            result += String.fromCharCode(chr);
-          }
-
-          i += 6;
-          continue;
-        }
-      }
-
-      if ((b1 & 0xF8) === 0xF0 && (i + 9 < l)) {
-        // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx
-        b2 = parseInt(seq.slice(i + 4, i + 6), 16);
-        b3 = parseInt(seq.slice(i + 7, i + 9), 16);
-        b4 = parseInt(seq.slice(i + 10, i + 12), 16);
-
-        if ((b2 & 0xC0) === 0x80 && (b3 & 0xC0) === 0x80 && (b4 & 0xC0) === 0x80) {
-          chr = ((b1 << 18) & 0x1C0000) | ((b2 << 12) & 0x3F000) | ((b3 << 6) & 0xFC0) | (b4 & 0x3F);
-
-          if (chr < 0x10000 || chr > 0x10FFFF) {
-            result += '\ufffd\ufffd\ufffd\ufffd';
-          } else {
-            chr -= 0x10000;
-            result += String.fromCharCode(0xD800 + (chr >> 10), 0xDC00 + (chr & 0x3FF));
-          }
-
-          i += 9;
-          continue;
-        }
-      }
-
-      result += '\ufffd';
-    }
-
-    return result;
-  });
-}
-
-
-decode.defaultChars   = ';/?:@&=+$,#';
-decode.componentChars = '';
-
-
-module.exports = decode;
-
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-
-var encodeCache = {};
-
-
-// Create a lookup array where anything but characters in `chars` string
-// and alphanumeric chars is percent-encoded.
-//
-function getEncodeCache(exclude) {
-  var i, ch, cache = encodeCache[exclude];
-  if (cache) { return cache; }
-
-  cache = encodeCache[exclude] = [];
-
-  for (i = 0; i < 128; i++) {
-    ch = String.fromCharCode(i);
-
-    if (/^[0-9a-z]$/i.test(ch)) {
-      // always allow unencoded alphanumeric characters
-      cache.push(ch);
-    } else {
-      cache.push('%' + ('0' + i.toString(16).toUpperCase()).slice(-2));
-    }
-  }
-
-  for (i = 0; i < exclude.length; i++) {
-    cache[exclude.charCodeAt(i)] = exclude[i];
-  }
-
-  return cache;
-}
-
-
-// Encode unsafe characters with percent-encoding, skipping already
-// encoded sequences.
-//
-//  - string       - string to encode
-//  - exclude      - list of characters to ignore (in addition to a-zA-Z0-9)
-//  - keepEscaped  - don't encode '%' in a correct escape sequence (default: true)
-//
-function encode(string, exclude, keepEscaped) {
-  var i, l, code, nextCode, cache,
-      result = '';
-
-  if (typeof exclude !== 'string') {
-    // encode(string, keepEscaped)
-    keepEscaped  = exclude;
-    exclude = encode.defaultChars;
-  }
-
-  if (typeof keepEscaped === 'undefined') {
-    keepEscaped = true;
-  }
-
-  cache = getEncodeCache(exclude);
-
-  for (i = 0, l = string.length; i < l; i++) {
-    code = string.charCodeAt(i);
-
-    if (keepEscaped && code === 0x25 /* % */ && i + 2 < l) {
-      if (/^[0-9a-f]{2}$/i.test(string.slice(i + 1, i + 3))) {
-        result += string.slice(i, i + 3);
-        i += 2;
-        continue;
-      }
-    }
-
-    if (code < 128) {
-      result += cache[code];
-      continue;
-    }
-
-    if (code >= 0xD800 && code <= 0xDFFF) {
-      if (code >= 0xD800 && code <= 0xDBFF && i + 1 < l) {
-        nextCode = string.charCodeAt(i + 1);
-        if (nextCode >= 0xDC00 && nextCode <= 0xDFFF) {
-          result += encodeURIComponent(string[i] + string[i + 1]);
-          i++;
-          continue;
-        }
-      }
-      result += '%EF%BF%BD';
-      continue;
-    }
-
-    result += encodeURIComponent(string[i]);
-  }
-
-  return result;
-}
-
-encode.defaultChars   = ";/?:@&=+$,-_.!~*'()#";
-encode.componentChars = "-_.!~*'()";
-
-
-module.exports = encode;
-
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-
-module.exports = function format(url) {
-  var result = '';
-
-  result += url.protocol || '';
-  result += url.slashes ? '//' : '';
-  result += url.auth ? url.auth + '@' : '';
-
-  if (url.hostname && url.hostname.indexOf(':') !== -1) {
-    // ipv6 address
-    result += '[' + url.hostname + ']';
-  } else {
-    result += url.hostname || '';
-  }
-
-  result += url.port ? ':' + url.port : '';
-  result += url.pathname || '';
-  result += url.search || '';
-  result += url.hash || '';
-
-  return result;
-};
-
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-//
-// Changes from joyent/node:
-//
-// 1. No leading slash in paths,
-//    e.g. in `url.parse('http://foo?bar')` pathname is ``, not `/`
-//
-// 2. Backslashes are not replaced with slashes,
-//    so `http:\\example.org\` is treated like a relative path
-//
-// 3. Trailing colon is treated like a part of the path,
-//    i.e. in `http://example.org:foo` pathname is `:foo`
-//
-// 4. Nothing is URL-encoded in the resulting object,
-//    (in joyent/node some chars in auth and paths are encoded)
-//
-// 5. `url.parse()` does not have `parseQueryString` argument
-//
-// 6. Removed extraneous result properties: `host`, `path`, `query`, etc.,
-//    which can be constructed using other parts of the url.
-//
-
-
-function Url() {
-  this.protocol = null;
-  this.slashes = null;
-  this.auth = null;
-  this.port = null;
-  this.hostname = null;
-  this.hash = null;
-  this.search = null;
-  this.pathname = null;
-}
-
-// Reference: RFC 3986, RFC 1808, RFC 2396
-
-// define these here so at least they only have to be
-// compiled once on the first module load.
-var protocolPattern = /^([a-z0-9.+-]+:)/i,
-    portPattern = /:[0-9]*$/,
-
-    // Special case for a simple path URL
-    simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
-
-    // RFC 2396: characters reserved for delimiting URLs.
-    // We actually just auto-escape these.
-    delims = [ '<', '>', '"', '`', ' ', '\r', '\n', '\t' ],
-
-    // RFC 2396: characters not allowed for various reasons.
-    unwise = [ '{', '}', '|', '\\', '^', '`' ].concat(delims),
-
-    // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
-    autoEscape = [ '\'' ].concat(unwise),
-    // Characters that are never ever allowed in a hostname.
-    // Note that any invalid chars are also handled, but these
-    // are the ones that are *expected* to be seen, so we fast-path
-    // them.
-    nonHostChars = [ '%', '/', '?', ';', '#' ].concat(autoEscape),
-    hostEndingChars = [ '/', '?', '#' ],
-    hostnameMaxLen = 255,
-    hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
-    hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
-    // protocols that can allow "unsafe" and "unwise" chars.
-    /* eslint-disable no-script-url */
-    // protocols that never have a hostname.
-    hostlessProtocol = {
-      'javascript': true,
-      'javascript:': true
-    },
-    // protocols that always contain a // bit.
-    slashedProtocol = {
-      'http': true,
-      'https': true,
-      'ftp': true,
-      'gopher': true,
-      'file': true,
-      'http:': true,
-      'https:': true,
-      'ftp:': true,
-      'gopher:': true,
-      'file:': true
-    };
-    /* eslint-enable no-script-url */
-
-function urlParse(url, slashesDenoteHost) {
-  if (url && url instanceof Url) { return url; }
-
-  var u = new Url();
-  u.parse(url, slashesDenoteHost);
-  return u;
-}
-
-Url.prototype.parse = function(url, slashesDenoteHost) {
-  var i, l, lowerProto, hec, slashes,
-      rest = url;
-
-  // trim before proceeding.
-  // This is to support parse stuff like "  http://foo.com  \n"
-  rest = rest.trim();
-
-  if (!slashesDenoteHost && url.split('#').length === 1) {
-    // Try fast path regexp
-    var simplePath = simplePathPattern.exec(rest);
-    if (simplePath) {
-      this.pathname = simplePath[1];
-      if (simplePath[2]) {
-        this.search = simplePath[2];
-      }
-      return this;
-    }
-  }
-
-  var proto = protocolPattern.exec(rest);
-  if (proto) {
-    proto = proto[0];
-    lowerProto = proto.toLowerCase();
-    this.protocol = proto;
-    rest = rest.substr(proto.length);
-  }
-
-  // figure out if it's got a host
-  // user@server is *always* interpreted as a hostname, and url
-  // resolution will treat //foo/bar as host=foo,path=bar because that's
-  // how the browser resolves relative URLs.
-  if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
-    slashes = rest.substr(0, 2) === '//';
-    if (slashes && !(proto && hostlessProtocol[proto])) {
-      rest = rest.substr(2);
-      this.slashes = true;
-    }
-  }
-
-  if (!hostlessProtocol[proto] &&
-      (slashes || (proto && !slashedProtocol[proto]))) {
-
-    // there's a hostname.
-    // the first instance of /, ?, ;, or # ends the host.
-    //
-    // If there is an @ in the hostname, then non-host chars *are* allowed
-    // to the left of the last @ sign, unless some host-ending character
-    // comes *before* the @-sign.
-    // URLs are obnoxious.
-    //
-    // ex:
-    // http://a@b@c/ => user:a@b host:c
-    // http://a@b?@c => user:a host:c path:/?@c
-
-    // v0.12 TODO(isaacs): This is not quite how Chrome does things.
-    // Review our test case against browsers more comprehensively.
-
-    // find the first instance of any hostEndingChars
-    var hostEnd = -1;
-    for (i = 0; i < hostEndingChars.length; i++) {
-      hec = rest.indexOf(hostEndingChars[i]);
-      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd)) {
-        hostEnd = hec;
-      }
-    }
-
-    // at this point, either we have an explicit point where the
-    // auth portion cannot go past, or the last @ char is the decider.
-    var auth, atSign;
-    if (hostEnd === -1) {
-      // atSign can be anywhere.
-      atSign = rest.lastIndexOf('@');
-    } else {
-      // atSign must be in auth portion.
-      // http://a@b/c@d => host:b auth:a path:/c@d
-      atSign = rest.lastIndexOf('@', hostEnd);
-    }
-
-    // Now we have a portion which is definitely the auth.
-    // Pull that off.
-    if (atSign !== -1) {
-      auth = rest.slice(0, atSign);
-      rest = rest.slice(atSign + 1);
-      this.auth = auth;
-    }
-
-    // the host is the remaining to the left of the first non-host char
-    hostEnd = -1;
-    for (i = 0; i < nonHostChars.length; i++) {
-      hec = rest.indexOf(nonHostChars[i]);
-      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd)) {
-        hostEnd = hec;
-      }
-    }
-    // if we still have not hit it, then the entire thing is a host.
-    if (hostEnd === -1) {
-      hostEnd = rest.length;
-    }
-
-    if (rest[hostEnd - 1] === ':') { hostEnd--; }
-    var host = rest.slice(0, hostEnd);
-    rest = rest.slice(hostEnd);
-
-    // pull out port.
-    this.parseHost(host);
-
-    // we've indicated that there is a hostname,
-    // so even if it's empty, it has to be present.
-    this.hostname = this.hostname || '';
-
-    // if hostname begins with [ and ends with ]
-    // assume that it's an IPv6 address.
-    var ipv6Hostname = this.hostname[0] === '[' &&
-        this.hostname[this.hostname.length - 1] === ']';
-
-    // validate a little.
-    if (!ipv6Hostname) {
-      var hostparts = this.hostname.split(/\./);
-      for (i = 0, l = hostparts.length; i < l; i++) {
-        var part = hostparts[i];
-        if (!part) { continue; }
-        if (!part.match(hostnamePartPattern)) {
-          var newpart = '';
-          for (var j = 0, k = part.length; j < k; j++) {
-            if (part.charCodeAt(j) > 127) {
-              // we replace non-ASCII char with a temporary placeholder
-              // we need this to make sure size of hostname is not
-              // broken by replacing non-ASCII by nothing
-              newpart += 'x';
-            } else {
-              newpart += part[j];
-            }
-          }
-          // we test again with ASCII char only
-          if (!newpart.match(hostnamePartPattern)) {
-            var validParts = hostparts.slice(0, i);
-            var notHost = hostparts.slice(i + 1);
-            var bit = part.match(hostnamePartStart);
-            if (bit) {
-              validParts.push(bit[1]);
-              notHost.unshift(bit[2]);
-            }
-            if (notHost.length) {
-              rest = notHost.join('.') + rest;
-            }
-            this.hostname = validParts.join('.');
-            break;
-          }
-        }
-      }
-    }
-
-    if (this.hostname.length > hostnameMaxLen) {
-      this.hostname = '';
-    }
-
-    // strip [ and ] from the hostname
-    // the host field still retains them, though
-    if (ipv6Hostname) {
-      this.hostname = this.hostname.substr(1, this.hostname.length - 2);
-    }
-  }
-
-  // chop off from the tail first.
-  var hash = rest.indexOf('#');
-  if (hash !== -1) {
-    // got a fragment string.
-    this.hash = rest.substr(hash);
-    rest = rest.slice(0, hash);
-  }
-  var qm = rest.indexOf('?');
-  if (qm !== -1) {
-    this.search = rest.substr(qm);
-    rest = rest.slice(0, qm);
-  }
-  if (rest) { this.pathname = rest; }
-  if (slashedProtocol[lowerProto] &&
-      this.hostname && !this.pathname) {
-    this.pathname = '';
-  }
-
-  return this;
-};
-
-Url.prototype.parseHost = function(host) {
-  var port = portPattern.exec(host);
-  if (port) {
-    port = port[0];
-    if (port !== ':') {
-      this.port = port.substr(1);
-    }
-    host = host.substr(0, host.length - port.length);
-  }
-  if (host) { this.hostname = host; }
-};
-
-module.exports = urlParse;
-
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
-;(function(root) {
-
-	/** Detect free variables */
-	var freeExports = typeof exports == 'object' && exports &&
-		!exports.nodeType && exports;
-	var freeModule = typeof module == 'object' && module &&
-		!module.nodeType && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (
-		freeGlobal.global === freeGlobal ||
-		freeGlobal.window === freeGlobal ||
-		freeGlobal.self === freeGlobal
-	) {
-		root = freeGlobal;
-	}
-
-	/**
-	 * The `punycode` object.
-	 * @name punycode
-	 * @type Object
-	 */
-	var punycode,
-
-	/** Highest positive signed 32-bit float value */
-	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-
-	/** Bootstring parameters */
-	base = 36,
-	tMin = 1,
-	tMax = 26,
-	skew = 38,
-	damp = 700,
-	initialBias = 72,
-	initialN = 128, // 0x80
-	delimiter = '-', // '\x2D'
-
-	/** Regular expressions */
-	regexPunycode = /^xn--/,
-	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-
-	/** Error messages */
-	errors = {
-		'overflow': 'Overflow: input needs wider integers to process',
-		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-		'invalid-input': 'Invalid input'
-	},
-
-	/** Convenience shortcuts */
-	baseMinusTMin = base - tMin,
-	floor = Math.floor,
-	stringFromCharCode = String.fromCharCode,
-
-	/** Temporary variable */
-	key;
-
-	/*--------------------------------------------------------------------------*/
-
-	/**
-	 * A generic error utility function.
-	 * @private
-	 * @param {String} type The error type.
-	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-	 */
-	function error(type) {
-		throw new RangeError(errors[type]);
-	}
-
-	/**
-	 * A generic `Array#map` utility function.
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} callback The function that gets called for every array
-	 * item.
-	 * @returns {Array} A new array of values returned by the callback function.
-	 */
-	function map(array, fn) {
-		var length = array.length;
-		var result = [];
-		while (length--) {
-			result[length] = fn(array[length]);
-		}
-		return result;
-	}
-
-	/**
-	 * A simple `Array#map`-like wrapper to work with domain name strings or email
-	 * addresses.
-	 * @private
-	 * @param {String} domain The domain name or email address.
-	 * @param {Function} callback The function that gets called for every
-	 * character.
-	 * @returns {Array} A new string of characters returned by the callback
-	 * function.
-	 */
-	function mapDomain(string, fn) {
-		var parts = string.split('@');
-		var result = '';
-		if (parts.length > 1) {
-			// In email addresses, only the domain name should be punycoded. Leave
-			// the local part (i.e. everything up to `@`) intact.
-			result = parts[0] + '@';
-			string = parts[1];
-		}
-		// Avoid `split(regex)` for IE8 compatibility. See #17.
-		string = string.replace(regexSeparators, '\x2E');
-		var labels = string.split('.');
-		var encoded = map(labels, fn).join('.');
-		return result + encoded;
-	}
-
-	/**
-	 * Creates an array containing the numeric code points of each Unicode
-	 * character in the string. While JavaScript uses UCS-2 internally,
-	 * this function will convert a pair of surrogate halves (each of which
-	 * UCS-2 exposes as separate characters) into a single code point,
-	 * matching UTF-16.
-	 * @see `punycode.ucs2.encode`
-	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-	 * @memberOf punycode.ucs2
-	 * @name decode
-	 * @param {String} string The Unicode input string (UCS-2).
-	 * @returns {Array} The new array of code points.
-	 */
-	function ucs2decode(string) {
-		var output = [],
-		    counter = 0,
-		    length = string.length,
-		    value,
-		    extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	/**
-	 * Creates a string based on an array of numeric code points.
-	 * @see `punycode.ucs2.decode`
-	 * @memberOf punycode.ucs2
-	 * @name encode
-	 * @param {Array} codePoints The array of numeric code points.
-	 * @returns {String} The new Unicode string (UCS-2).
-	 */
-	function ucs2encode(array) {
-		return map(array, function(value) {
-			var output = '';
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-			return output;
-		}).join('');
-	}
-
-	/**
-	 * Converts a basic code point into a digit/integer.
-	 * @see `digitToBasic()`
-	 * @private
-	 * @param {Number} codePoint The basic numeric code point value.
-	 * @returns {Number} The numeric value of a basic code point (for use in
-	 * representing integers) in the range `0` to `base - 1`, or `base` if
-	 * the code point does not represent a value.
-	 */
-	function basicToDigit(codePoint) {
-		if (codePoint - 48 < 10) {
-			return codePoint - 22;
-		}
-		if (codePoint - 65 < 26) {
-			return codePoint - 65;
-		}
-		if (codePoint - 97 < 26) {
-			return codePoint - 97;
-		}
-		return base;
-	}
-
-	/**
-	 * Converts a digit/integer into a basic code point.
-	 * @see `basicToDigit()`
-	 * @private
-	 * @param {Number} digit The numeric value of a basic code point.
-	 * @returns {Number} The basic code point whose value (when used for
-	 * representing integers) is `digit`, which needs to be in the range
-	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-	 * used; else, the lowercase form is used. The behavior is undefined
-	 * if `flag` is non-zero and `digit` has no uppercase form.
-	 */
-	function digitToBasic(digit, flag) {
-		//  0..25 map to ASCII a..z or A..Z
-		// 26..35 map to ASCII 0..9
-		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-	}
-
-	/**
-	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * https://tools.ietf.org/html/rfc3492#section-3.4
-	 * @private
-	 */
-	function adapt(delta, numPoints, firstTime) {
-		var k = 0;
-		delta = firstTime ? floor(delta / damp) : delta >> 1;
-		delta += floor(delta / numPoints);
-		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-			delta = floor(delta / baseMinusTMin);
-		}
-		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-	}
-
-	/**
-	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The Punycode string of ASCII-only symbols.
-	 * @returns {String} The resulting string of Unicode symbols.
-	 */
-	function decode(input) {
-		// Don't use UCS-2
-		var output = [],
-		    inputLength = input.length,
-		    out,
-		    i = 0,
-		    n = initialN,
-		    bias = initialBias,
-		    basic,
-		    j,
-		    index,
-		    oldi,
-		    w,
-		    k,
-		    digit,
-		    t,
-		    /** Cached calculation results */
-		    baseMinusT;
-
-		// Handle the basic code points: let `basic` be the number of input code
-		// points before the last delimiter, or `0` if there is none, then copy
-		// the first basic code points to the output.
-
-		basic = input.lastIndexOf(delimiter);
-		if (basic < 0) {
-			basic = 0;
-		}
-
-		for (j = 0; j < basic; ++j) {
-			// if it's not a basic code point
-			if (input.charCodeAt(j) >= 0x80) {
-				error('not-basic');
-			}
-			output.push(input.charCodeAt(j));
-		}
-
-		// Main decoding loop: start just after the last delimiter if any basic code
-		// points were copied; start at the beginning otherwise.
-
-		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
-
-			// `index` is the index of the next character to be consumed.
-			// Decode a generalized variable-length integer into `delta`,
-			// which gets added to `i`. The overflow checking is easier
-			// if we increase `i` as we go, then subtract off its starting
-			// value at the end to obtain `delta`.
-			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
-
-				if (index >= inputLength) {
-					error('invalid-input');
-				}
-
-				digit = basicToDigit(input.charCodeAt(index++));
-
-				if (digit >= base || digit > floor((maxInt - i) / w)) {
-					error('overflow');
-				}
-
-				i += digit * w;
-				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-
-				if (digit < t) {
-					break;
-				}
-
-				baseMinusT = base - t;
-				if (w > floor(maxInt / baseMinusT)) {
-					error('overflow');
-				}
-
-				w *= baseMinusT;
-
-			}
-
-			out = output.length + 1;
-			bias = adapt(i - oldi, out, oldi == 0);
-
-			// `i` was supposed to wrap around from `out` to `0`,
-			// incrementing `n` each time, so we'll fix that now:
-			if (floor(i / out) > maxInt - n) {
-				error('overflow');
-			}
-
-			n += floor(i / out);
-			i %= out;
-
-			// Insert `n` at position `i` of the output
-			output.splice(i++, 0, n);
-
-		}
-
-		return ucs2encode(output);
-	}
-
-	/**
-	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
-	 * Punycode string of ASCII-only symbols.
-	 * @memberOf punycode
-	 * @param {String} input The string of Unicode symbols.
-	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */
-	function encode(input) {
-		var n,
-		    delta,
-		    handledCPCount,
-		    basicLength,
-		    bias,
-		    j,
-		    m,
-		    q,
-		    k,
-		    t,
-		    currentValue,
-		    output = [],
-		    /** `inputLength` will hold the number of code points in `input`. */
-		    inputLength,
-		    /** Cached calculation results */
-		    handledCPCountPlusOne,
-		    baseMinusT,
-		    qMinusT;
-
-		// Convert the input in UCS-2 to Unicode
-		input = ucs2decode(input);
-
-		// Cache the length
-		inputLength = input.length;
-
-		// Initialize the state
-		n = initialN;
-		delta = 0;
-		bias = initialBias;
-
-		// Handle the basic code points
-		for (j = 0; j < inputLength; ++j) {
-			currentValue = input[j];
-			if (currentValue < 0x80) {
-				output.push(stringFromCharCode(currentValue));
-			}
-		}
-
-		handledCPCount = basicLength = output.length;
-
-		// `handledCPCount` is the number of code points that have been handled;
-		// `basicLength` is the number of basic code points.
-
-		// Finish the basic string - if it is not empty - with a delimiter
-		if (basicLength) {
-			output.push(delimiter);
-		}
-
-		// Main encoding loop:
-		while (handledCPCount < inputLength) {
-
-			// All non-basic code points < n have been handled already. Find the next
-			// larger one:
-			for (m = maxInt, j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-				if (currentValue >= n && currentValue < m) {
-					m = currentValue;
-				}
-			}
-
-			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-			// but guard against overflow
-			handledCPCountPlusOne = handledCPCount + 1;
-			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-				error('overflow');
-			}
-
-			delta += (m - n) * handledCPCountPlusOne;
-			n = m;
-
-			for (j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-
-				if (currentValue < n && ++delta > maxInt) {
-					error('overflow');
-				}
-
-				if (currentValue == n) {
-					// Represent delta as a generalized variable-length integer
-					for (q = delta, k = base; /* no condition */; k += base) {
-						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-						if (q < t) {
-							break;
-						}
-						qMinusT = q - t;
-						baseMinusT = base - t;
-						output.push(
-							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-						);
-						q = floor(qMinusT / baseMinusT);
-					}
-
-					output.push(stringFromCharCode(digitToBasic(q, 0)));
-					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-					delta = 0;
-					++handledCPCount;
-				}
-			}
-
-			++delta;
-			++n;
-
-		}
-		return output.join('');
-	}
-
-	/**
-	 * Converts a Punycode string representing a domain name or an email address
-	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-	 * it doesn't matter if you call it on a string that has already been
-	 * converted to Unicode.
-	 * @memberOf punycode
-	 * @param {String} input The Punycoded domain name or email address to
-	 * convert to Unicode.
-	 * @returns {String} The Unicode representation of the given Punycode
-	 * string.
-	 */
-	function toUnicode(input) {
-		return mapDomain(input, function(string) {
-			return regexPunycode.test(string)
-				? decode(string.slice(4).toLowerCase())
-				: string;
-		});
-	}
-
-	/**
-	 * Converts a Unicode string representing a domain name or an email address to
-	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
-	 * i.e. it doesn't matter if you call it with a domain that's already in
-	 * ASCII.
-	 * @memberOf punycode
-	 * @param {String} input The domain name or email address to convert, as a
-	 * Unicode string.
-	 * @returns {String} The Punycode representation of the given domain name or
-	 * email address.
-	 */
-	function toASCII(input) {
-		return mapDomain(input, function(string) {
-			return regexNonASCII.test(string)
-				? 'xn--' + encode(string)
-				: string;
-		});
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	/** Define the public API */
-	punycode = {
-		/**
-		 * A string representing the current Punycode.js version number.
-		 * @memberOf punycode
-		 * @type String
-		 */
-		'version': '1.4.1',
-		/**
-		 * An object of methods to convert from JavaScript's internal character
-		 * representation (UCS-2) to Unicode code points, and back.
-		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-		 * @memberOf punycode
-		 * @type Object
-		 */
-		'ucs2': {
-			'decode': ucs2decode,
-			'encode': ucs2encode
-		},
-		'decode': decode,
-		'encode': encode,
-		'toASCII': toASCII,
-		'toUnicode': toUnicode
-	};
-
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		true
-	) {
-		!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
-			return punycode;
-		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) {
-			// in Node.js, io.js, or RingoJS v0.8.0+
-			freeModule.exports = punycode;
-		} else {
-			// in Narwhal or RingoJS v0.7.0-
-			for (key in punycode) {
-				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-			}
-		}
-	} else {
-		// in Rhino or a web browser
-		root.punycode = punycode;
-	}
-
-}(this));
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(70)(module), __webpack_require__(69)))
-
-/***/ },
-/* 67 */
-/***/ function(module, exports) {
-
-module.exports=/[\xAD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF\uFFF9-\uFFFB]|\uD804\uDCBD|\uD82F[\uDCA0-\uDCA3]|\uD834[\uDD73-\uDD7A]|\uDB40[\uDC01\uDC20-\uDC7F]/
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.Any = __webpack_require__(11);
-exports.Cc  = __webpack_require__(9);
-exports.Cf  = __webpack_require__(67);
-exports.P   = __webpack_require__(3);
-exports.Z   = __webpack_require__(10);
-
-
-/***/ },
-/* 69 */
-/***/ function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() { return this; })();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			configurable: false,
-			get: function() { return module.l; }
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			configurable: false,
-			get: function() { return module.i; }
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-}
-
-
-/***/ },
-/* 71 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_markdown_it__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_markdown_it___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_markdown_it__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_promise_worker_register__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_promise_worker_register___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_promise_worker_register__);
-
-
-
-const markdown = new __WEBPACK_IMPORTED_MODULE_0_markdown_it___default.a();
-
-__WEBPACK_IMPORTED_MODULE_1_promise_worker_register___default()(async url => {
-  const response = await fetch(url);
-  const text = await response.text();
-  return markdown.render(text);
-});
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_whatwg_fetch__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_whatwg_fetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_whatwg_fetch__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_markdown_it__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_markdown_it___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_markdown_it__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_promise_worker_register__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_promise_worker_register___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_promise_worker_register__);
+function _asyncToGenerator(fn){return function(){var gen=fn.apply(this,arguments);return new Promise(function(resolve,reject){function step(key,arg){try{var info=gen[key](arg),value=info.value}catch(error){return void reject(error)}return info.done?void resolve(value):Promise.resolve(value).then(function(value){step('next',value)},function(err){step('throw',err)})}return step('next')})}}const markdown=new __WEBPACK_IMPORTED_MODULE_1_markdown_it___default.a;__WEBPACK_IMPORTED_MODULE_2_promise_worker_register___default()((()=>{var _ref=_asyncToGenerator(function*(a){const b=yield fetch(a),c=yield b.text();return markdown.render(c)});return function(_x){return _ref.apply(this,arguments)}})());
 
 /***/ }
 /******/ ]);
