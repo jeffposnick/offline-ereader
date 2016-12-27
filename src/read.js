@@ -46,6 +46,7 @@ const onCurrentPageChanged = currentPage => {
   const textElement = document.querySelector('#text');
   const translateOffset = (currentPage - 1) * (textElement.clientWidth + columnGap);
   document.querySelector('#text').style.transform = `translateX(-${translateOffset}px)`;
+  document.querySelector('#currentPage').textContent = currentPage;
 };
 
 const onTitleChanged = title => {
@@ -63,6 +64,7 @@ const onTotalPagesChanged = (newTotalPages, _, oldTotalPages) => {
   const currentPage = bookState.read('currentPage');
   const percentageRead = currentPage / (oldTotalPages || newTotalPages);
   bookState.write('currentPage', Math.floor(percentageRead * newTotalPages));
+  document.querySelector('#totalPages').textContent = newTotalPages;
 };
 
 const calculateTotalPages = () => {
