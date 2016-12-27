@@ -48,10 +48,17 @@ module.exports = {
     }, {
       test: /\.js$/,
       exclude: /(node_modules|bower_components)/,
-      loader: 'babel-loader',
-      options: {
-        plugins: ['transform-async-to-generator']
-      }
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          plugins: ['transform-async-to-generator']
+        }
+      }]
+    }, {
+      test: /\.css$/,
+      use: [{
+        loader: 'postcss-loader'
+      }]
     }]
   },
 

@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "author": "Jeff Posnick <jeffy@google.com>",
   "devDependencies": {
+    "autoprefixer": "^6.6.0",
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
@@ -21,6 +22,7 @@
     "idb-keyval": "^2.3.0",
     "js-csvparser": "^1.5.0",
     "markdown-it": "^8.2.2",
+    "postcss-loader": "^1.2.1",
     "promise-worker": "^1.1.1",
     "sw-precache-webpack-plugin": "^0.7.0",
     "webpack": "^2.2.0-rc.2",

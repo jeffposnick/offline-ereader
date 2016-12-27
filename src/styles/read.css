@@ -1,7 +1,7 @@
 * {
-  -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
   outline: 0;
+  tap-highlight-color: transparent;
 }
 
 body {
@@ -38,10 +38,7 @@ header {
 }
 
 #text {
-  -moz-user-select: none;
-  -ms-user-select: none;
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
   bottom: 0;
   column-count: 2;
   column-gap: 40px;
@@ -52,6 +49,7 @@ header {
   text-align: justify;
   top: 0;
   transition: transform 0.5s cubic-bezier(0, 0, 0.21, 1);
+  user-select: none;
   will-change: transform;
 }
 
@@ -66,15 +64,12 @@ header {
 }
 
 #font {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -webkit-mask-image: url("ic_font_download_black_48px.svg");
-  -webkit-mask-size: contain;
   appearance: none;
   background-color: white;
   border: none;
   color: white;
   height: 32px;
+  mask-image: url("ic_font_download_black_48px.svg");
   overflow: hidden;
   padding-right: 32px;
   width: 32px;
