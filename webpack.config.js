@@ -50,7 +50,7 @@ if (!isDevServer) {
       loader: 'babel-loader',
       options: {
         plugins: ['transform-async-to-generator'],
-        presets: ['babili']
+        presets: ['minify']
       }
     }]
   });
@@ -58,7 +58,7 @@ if (!isDevServer) {
   plugins.unshift(new CleanWebpackPlugin([BUILD_DIR]));
   plugins.push(new SWPrecacheWebpackPlugin({
     filename: 'service-worker.js',
-    stripPrefix: 'build/',
+    stripPrefix: path.resolve(__dirname, BUILD_DIR),
     runtimeCaching: [{
       default: 'networkFirst'
     }],
@@ -70,7 +70,7 @@ module.exports = {
   entry: entries,
   output: {
     filename: '[name].js',
-    path: BUILD_DIR
+    path: path.resolve(__dirname, BUILD_DIR)
   },
   module: {rules},
   plugins
